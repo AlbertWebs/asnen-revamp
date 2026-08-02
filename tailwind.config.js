@@ -1,0 +1,158 @@
+import defaultTheme from 'tailwindcss/defaultTheme';
+import forms from '@tailwindcss/forms';
+import typography from '@tailwindcss/typography';
+
+/** @type {import('tailwindcss').Config} */
+export default {
+    content: [
+        './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
+        './storage/framework/views/*.php',
+        './resources/views/**/*.blade.php',
+    ],
+
+    theme: {
+        extend: {
+            fontFamily: {
+                display: ['"Work Sans"', 'sans-serif'],
+                sans: ['"Work Sans"', 'sans-serif'],
+                mono: ['"Work Sans"', 'sans-serif'],
+            },
+            maxWidth: {
+                editorial: '1360px',
+            },
+            container: {
+                center: true,
+                padding: {
+                    DEFAULT: '1rem',
+                    sm: '1.5rem',
+                    lg: '2rem',
+                },
+                screens: {
+                    sm: '640px',
+                    md: '768px',
+                    lg: '1024px',
+                    xl: '1280px',
+                    '2xl': '1360px',
+                },
+            },
+            colors: {
+                brand: {
+                    DEFAULT: '#0C77BC',
+                    50: '#E8F4FB',
+                    100: '#D1E9F7',
+                    200: '#A3D3EF',
+                    300: '#75BDE7',
+                    400: '#3B9FD4',
+                    500: '#0C77BC',
+                    600: '#0A5F96',
+                    700: '#084770',
+                    800: '#06304B',
+                    900: '#031825',
+                    950: '#020C13',
+                },
+                lime: {
+                    DEFAULT: '#8CC63F',
+                    50: '#F4FBEA',
+                    100: '#E9F7D5',
+                    200: '#D3EFAB',
+                    300: '#BDE781',
+                    400: '#A7DF57',
+                    500: '#8CC63F',
+                    600: '#709E32',
+                    700: '#547726',
+                    800: '#384F19',
+                    900: '#1C280D',
+                },
+                forest: {
+                    DEFAULT: '#0C77BC',
+                    50: '#E8F4FB',
+                    100: '#D1E9F7',
+                    200: '#A3D3EF',
+                    300: '#75BDE7',
+                    400: '#3B9FD4',
+                    500: '#0C77BC',
+                    600: '#0A5F96',
+                    700: '#084770',
+                    800: '#06304B',
+                    900: '#031825',
+                    950: '#020C13',
+                },
+                teal: {
+                    DEFAULT: '#4A4C70',
+                    50: '#EEEEF2',
+                    100: '#DDDDE5',
+                    200: '#BBBBCB',
+                    300: '#9999B1',
+                    400: '#6E7090',
+                    500: '#4A4C70',
+                    600: '#3B3D5A',
+                    700: '#2C2E43',
+                    800: '#1E1F2D',
+                    900: '#0F0F16',
+                },
+                gold: {
+                    DEFAULT: '#FFF200',
+                    50: '#FFFCE0',
+                    100: '#FFF9C2',
+                    200: '#FFF585',
+                    300: '#FFF24D',
+                    400: '#FFF200',
+                    500: '#E6DA00',
+                    600: '#B3AA00',
+                    700: '#807900',
+                    800: '#4D4900',
+                    900: '#1A1800',
+                },
+                sand: {
+                    DEFAULT: '#F3F6FF',
+                    50: '#FFFFFF',
+                    100: '#F8F9FA',
+                    200: '#F3F6FF',
+                    300: '#E4EAF8',
+                    400: '#D0D9EF',
+                    500: '#B8C4E0',
+                    600: '#939DB3',
+                    700: '#6E7686',
+                    800: '#4A4E5A',
+                    900: '#25272D',
+                },
+                charcoal: {
+                    DEFAULT: '#20212B',
+                    50: '#F5F5F6',
+                    100: '#EBEBEC',
+                    200: '#D6D6D8',
+                    300: '#B8B8BC',
+                    400: '#8F8F96',
+                    500: '#666670',
+                    600: '#4D4D56',
+                    700: '#383840',
+                    800: '#2A2A34',
+                    900: '#20212B',
+                    950: '#121318',
+                },
+                ivory: {
+                    DEFAULT: '#FFFFFF',
+                    50: '#FFFFFF',
+                    100: '#F8F9FA',
+                    200: '#F3F6FF',
+                    300: '#E4EAF8',
+                },
+            },
+            keyframes: {
+                'ring-spin': {
+                    to: { transform: 'rotate(360deg)' },
+                },
+                'ring-in': {
+                    from: { opacity: '0' },
+                    to: { opacity: '1' },
+                },
+            },
+            animation: {
+                'ring-spin': 'ring-spin 90s linear infinite',
+                'ring-in': 'ring-in 0.8s ease forwards',
+            },
+        },
+    },
+
+    plugins: [forms, typography],
+};

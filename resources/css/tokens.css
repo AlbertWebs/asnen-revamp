@@ -1,0 +1,44 @@
+:root {
+    /* Brand tokens from asnenafrica.org (css/style.css + logo.png) */
+    --color-brand: #0C77BC;
+    --color-brand-dark: #095A8F;
+    --color-slate: #4A4C70;
+    --color-lime: #8CC63F;
+    --color-sun: #FFF200;
+    --color-ink: #20212B;
+    --color-muted: #777777;
+    --color-soft: #F3F6FF;
+    --color-white: #FFFFFF;
+
+    /* Semantic aliases used by Tailwind/utility classes */
+    --color-forest: var(--color-brand);
+    --color-teal: var(--color-slate);
+    --color-gold: var(--color-sun);
+    --color-sand: var(--color-soft);
+    --color-charcoal: var(--color-ink);
+    --color-ivory: var(--color-white);
+
+    --color-focus-ring: var(--color-brand);
+    --color-focus-ring-offset: var(--color-white);
+
+    --font-display: 'Work Sans', sans-serif;
+    --font-body: 'Work Sans', sans-serif;
+    --font-mono: 'Work Sans', sans-serif;
+    --max: 1360px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+:focus-visible {
+    outline: 2px solid var(--color-focus-ring);
+    outline-offset: 2px;
+}

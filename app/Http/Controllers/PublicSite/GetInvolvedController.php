@@ -1,0 +1,109 @@
+<?php
+
+namespace App\Http\Controllers\PublicSite;
+
+use App\Http\Controllers\Controller;
+use App\Http\Requests\PublicSite\DonateFormRequest;
+use App\Http\Requests\PublicSite\MembershipFormRequest;
+use App\Http\Requests\PublicSite\PartnerFormRequest;
+use App\Http\Requests\PublicSite\VolunteerFormRequest;
+use App\Models\DonationCampaign;
+use App\Models\FormDefinition;
+use App\Models\MembershipPlan;
+use App\Models\Program;
+use App\Repositories\PageRepository;
+use App\Services\Donations\PaymentGatewayInterface;
+use App\Services\FormSubmissionService;
+use App\Services\HtmlSanitizer;
+
+class GetInvolvedController extends Controller
+{
+    public function __construct(
+        private PageRepository $pages,
+        private HtmlSanitizer $sanitizer,
+        private FormSubmissionService $forms,
+        private PaymentGatewayInterface $payments,
+    ) {}
+
+    public function index()
+    {
+        $page = $this->pages->findBySlug('get-involved');
+        abort_unless($page, 404);
+
+        return view('public.page', ['page' => $page, 'sanitizer' => $this->sanitizer]);
+    }
+
+    public function membership()
+    {
+        $page = $this->pages->findBySlug('get-involved-membership');
+        abort_unless($page, 404);
+
+        $plans = MembershipPlan::published()->orderBy('sort_order')->get();
+
+        return view('public.get-involved.membership', array_merge(compact('page', 'plans'), ['sanitizer' => $this->sanitizer]));
+    }
+
+    public function storeMembership(MembershipFormRequest $request)
+    {
+        return $this->storeForm('membership', $request->safe()->except('website'), $request);
+    }
+
+    public function volunteer()
+    {
+        $page = $this->pages->findBySlug('get-involved-volunteer');
+        abort_unless($page, 404);
+
+        return view('public.get-involved.volunteer', [
+            'page' => $page,
+            'sanitizer' => $this->sanitizer,
+        ]);
+    }
+
+    public function storeVolunteer(VolunteerFormRequest $request)
+    {
+        return $this->storeForm('volunteer', $request->safe()->except('website'), $request);
+    }
+
+    public function partner()
+    {
+        $page = $this->pages->findBySlug('get-involved-partner');
+        abort_unless($page, 404);
+
+        return view('public.get-involved.partner', [
+            'page' => $page,
+            'sanitizer' => $this->sanitizer,
+        ]);
+    }
+
+    public function storePartner(PartnerFormRequest $request)
+    {
+        return $this->storeForm('partner', $request->safe()->except('website'), $request);
+    }
+
+    public function donate()
+    {
+        $page = $this->pages->findBySlug('get-involved-donate');
+        abort_unless($page, 404);
+
+        $campaign = DonationCampaign::published()->first();
+        $programs = Program::published()->orderBy('sort_order')->get();
+
+        return view('public.get-involved.donate', array_merge(compact('page', 'campaign', 'programs'), ['sanitizer' => $this->sanitizer]));
+    }
+
+    public function storeDonate(DonateFormRequest $request)
+    {
+        return $this->storeForm('donate', $request->safe()->except('website'), $request);
+    }
+
+    protected function storeForm(string $slug, array $data, $request)
+    {
+        $form = FormDefinition::where('slug', $slug)->where('is_active', true)->firstOrFail();
+        $submission = $this->forms->store($form, $data, $request);
+
+        return redirect()->route('site.forms.confirmation', [
+            'token' => $submission->confirmation_token,
+            'type' => $slug,
+        ]);
+    }
+}

@@ -1,0 +1,278 @@
+/* Site-wide accessibility modes - driven by classes on <html> */
+
+:root {
+    --a11y-text-scale: 1;
+    --a11y-line-height: 1.6;
+    --a11y-letter-spacing: 0;
+    --a11y-word-spacing: 0;
+}
+
+html {
+    font-size: calc(100% * var(--a11y-text-scale));
+}
+
+body {
+    line-height: var(--a11y-line-height);
+    letter-spacing: var(--a11y-letter-spacing);
+    word-spacing: var(--a11y-word-spacing);
+}
+
+/* Text scale */
+html.a11y-text-lg { --a11y-text-scale: 1.2; }
+html.a11y-text-xl { --a11y-text-scale: 1.4; }
+html.a11y-text-2xl { --a11y-text-scale: 1.6; }
+
+/* Spacing */
+html.a11y-spacing-relaxed {
+    --a11y-line-height: 1.85;
+    --a11y-letter-spacing: 0.04em;
+    --a11y-word-spacing: 0.08em;
+}
+html.a11y-spacing-loose {
+    --a11y-line-height: 2.1;
+    --a11y-letter-spacing: 0.08em;
+    --a11y-word-spacing: 0.16em;
+}
+
+/* Readable / dyslexia-friendly type */
+html.a11y-readable-font,
+html.a11y-readable-font body,
+html.a11y-readable-font .font-sans,
+html.a11y-readable-font .font-display {
+    font-family: "Atkinson Hyperlegible", "Source Sans 3", system-ui, sans-serif !important;
+    font-style: normal !important;
+}
+
+/* High contrast */
+html.a11y-contrast-high {
+    --color-forest: #003d73;
+    --color-teal: #000000;
+    --color-gold: #000000;
+    --color-sand: #ffffff;
+    --color-charcoal: #000000;
+    --color-ivory: #ffffff;
+    --color-brand: #003d73;
+    --color-ink: #000000;
+    --color-soft: #ffffff;
+}
+html.a11y-contrast-high body {
+    background: #ffffff !important;
+    color: #000000 !important;
+}
+html.a11y-contrast-high a {
+    color: #003d73 !important;
+    text-decoration: underline !important;
+}
+html.a11y-contrast-high .bg-forest,
+html.a11y-contrast-high footer {
+    background: #000000 !important;
+    color: #ffffff !important;
+}
+html.a11y-contrast-high footer a {
+    color: #ffff00 !important;
+}
+html.a11y-contrast-high img {
+    filter: contrast(1.15);
+}
+
+/* Dark accessible mode */
+html.a11y-contrast-dark {
+    color-scheme: dark;
+}
+html.a11y-contrast-dark body {
+    background: #0b0c10 !important;
+    color: #f4f4f5 !important;
+}
+html.a11y-contrast-dark .bg-ivory,
+html.a11y-contrast-dark .bg-sand,
+html.a11y-contrast-dark .bg-white,
+html.a11y-contrast-dark header {
+    background: #16181f !important;
+    color: #f4f4f5 !important;
+    border-color: #3f4454 !important;
+}
+html.a11y-contrast-dark .text-charcoal,
+html.a11y-contrast-dark .text-teal,
+html.a11y-contrast-dark .text-forest {
+    color: #e8eaf0 !important;
+}
+html.a11y-contrast-dark a {
+    color: #7eb8e8 !important;
+}
+
+/* Always underline links */
+html.a11y-underline-links a[href] {
+    text-decoration: underline !important;
+    text-underline-offset: 0.2em;
+}
+
+/* Enhanced focus */
+html.a11y-focus-strong *:focus {
+    outline: 3px solid #0C77BC !important;
+    outline-offset: 3px !important;
+}
+html.a11y-focus-strong *:focus:not(:focus-visible) {
+    outline: none !important;
+}
+html.a11y-focus-strong *:focus-visible {
+    outline: 4px solid #FFF200 !important;
+    outline-offset: 3px !important;
+    box-shadow: 0 0 0 6px #000000 !important;
+}
+
+/* Highlight headings */
+html.a11y-highlight-headings h1,
+html.a11y-highlight-headings h2,
+html.a11y-highlight-headings h3,
+html.a11y-highlight-headings h4 {
+    background: #FFF200 !important;
+    color: #000000 !important;
+    padding: 0.15em 0.35em;
+    display: inline-block;
+    max-width: 100%;
+}
+
+/* Reduce / stop motion */
+html.a11y-reduce-motion *,
+html.a11y-reduce-motion *::before,
+html.a11y-reduce-motion *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+}
+
+/* Large hit targets */
+html.a11y-large-targets a,
+html.a11y-large-targets button,
+html.a11y-large-targets [role="button"],
+html.a11y-large-targets input,
+html.a11y-large-targets select,
+html.a11y-large-targets textarea,
+html.a11y-large-targets summary {
+    min-height: 44px;
+    min-width: 44px;
+}
+
+/* Big cursor */
+html.a11y-big-cursor,
+html.a11y-big-cursor * {
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 24 24'%3E%3Cpath fill='%23000' stroke='%23fff' stroke-width='1' d='M4 3l8 17 2-7 7-2z'/%3E%3C/svg%3E") 4 4, auto !important;
+}
+
+/* Low saturation / grayscale */
+html.a11y-grayscale {
+    filter: grayscale(1);
+}
+html.a11y-low-saturation {
+    filter: saturate(0.4);
+}
+
+/* Hide decorative images; keep meaningful ones with alt via caption fallback */
+html.a11y-hide-images img:not([alt=""]),
+html.a11y-hide-images picture {
+    opacity: 0.15;
+}
+html.a11y-hide-images.a11y-show-alt img[alt]:not([alt=""]) {
+    opacity: 0;
+    position: relative;
+}
+html.a11y-show-alt img[alt]:not([alt=""])::after {
+    content: attr(alt);
+    display: block;
+    font-size: 0.9rem;
+    color: inherit;
+    border: 1px dashed currentColor;
+    padding: 0.5rem;
+}
+
+/* Readable content column */
+html.a11y-readable-width main,
+html.a11y-readable-width .prose {
+    max-width: 40rem !important;
+    margin-inline: auto;
+}
+
+/* Text align left (helps some screen magnification / RTL confusion) */
+html.a11y-text-left,
+html.a11y-text-left body,
+html.a11y-text-left p,
+html.a11y-text-left li {
+    text-align: left !important;
+}
+
+/* Pause autoplay / carousels helpers */
+html.a11y-pause-media [data-autoplay],
+html.a11y-pause-media .carousel,
+html.a11y-pause-media [data-partner-marquee] .partner-marquee__track,
+html.a11y-pause-media [x-ref="heroCarousel"] {
+    animation-play-state: paused !important;
+}
+html.a11y-reduce-motion [data-partner-marquee] .partner-marquee__track {
+    animation: none !important;
+}
+
+/* Toolbar */
+.a11y-fab {
+    position: fixed;
+    bottom: 1.25rem;
+    left: 1.25rem;
+    z-index: 60;
+}
+.easy-read-fab {
+    position: fixed;
+    bottom: 1.25rem;
+    right: 1.25rem;
+    z-index: 60;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+.a11y-panel {
+    max-height: min(80vh, 36rem);
+    overflow-y: auto;
+}
+.a11y-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    width: 100%;
+    text-align: left;
+    border-radius: 0.5rem;
+    border: 1px solid #d6d6d8;
+    background: #fff;
+    padding: 0.75rem;
+    min-height: 44px;
+}
+.a11y-option[aria-pressed="true"] {
+    border-color: #0C77BC;
+    background: #E8F4FB;
+    box-shadow: inset 0 0 0 1px #0C77BC;
+}
+.a11y-option:focus-visible {
+    outline: 3px solid #FFF200;
+    outline-offset: 2px;
+}
+
+/* Skip link cluster */
+.a11y-skip-group {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 100;
+}
+.a11y-skip-group a {
+    position: absolute;
+    left: -9999px;
+    top: 0.75rem;
+}
+.a11y-skip-group a:focus {
+    left: 0.75rem;
+    display: inline-block;
+    background: #FFF200;
+    color: #000;
+    font-weight: 700;
+    padding: 0.75rem 1rem;
+    border-radius: 0.375rem;
+    min-height: 44px;
+    text-decoration: underline;
+}
