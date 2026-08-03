@@ -5,6 +5,7 @@ import { accessibilityToolbar } from './accessibility';
 import { galleryDropzone } from './gallery-dropzone';
 import { partnerLogosDropzone } from './partner-logos-dropzone';
 import { impactRegionsMap, regionMapPicker } from './impact-map';
+import { initSiteForms } from './site-forms';
 
 window.Alpine = Alpine;
 Alpine.data('accessibilityToolbar', accessibilityToolbar);
@@ -37,4 +38,7 @@ function initReveal() {
     nodes.forEach((el) => io.observe(el));
 }
 
-document.addEventListener('DOMContentLoaded', initReveal);
+document.addEventListener('DOMContentLoaded', () => {
+    initReveal();
+    initSiteForms();
+});

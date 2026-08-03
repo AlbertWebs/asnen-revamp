@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\PublicSite;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\PublicSite\Concerns\RespondsToAjaxForms;
 use App\Http\Requests\PublicSite\DonateFormRequest;
 use App\Http\Requests\PublicSite\MembershipFormRequest;
 use App\Http\Requests\PublicSite\PartnerFormRequest;
@@ -18,6 +19,8 @@ use App\Services\HtmlSanitizer;
 
 class GetInvolvedController extends Controller
 {
+    use RespondsToAjaxForms;
+
     public function __construct(
         private PageRepository $pages,
         private HtmlSanitizer $sanitizer,
@@ -45,7 +48,7 @@ class GetInvolvedController extends Controller
 
     public function storeMembership(MembershipFormRequest $request)
     {
-        return $this->storeForm('membership', $request->safe()->except('website'), $request);
+        return $this->storeForm('membership', $request->formData(), $request);
     }
 
     public function volunteer()
@@ -61,7 +64,7 @@ class GetInvolvedController extends Controller
 
     public function storeVolunteer(VolunteerFormRequest $request)
     {
-        return $this->storeForm('volunteer', $request->safe()->except('website'), $request);
+        return $this->storeForm('volunteer', $request->formData(), $request);
     }
 
     public function partner()
@@ -77,7 +80,7 @@ class GetInvolvedController extends Controller
 
     public function storePartner(PartnerFormRequest $request)
     {
-        return $this->storeForm('partner', $request->safe()->except('website'), $request);
+        return $this->storeForm('partner', $request->formData(), $request);
     }
 
     public function donate()
@@ -93,7 +96,7 @@ class GetInvolvedController extends Controller
 
     public function storeDonate(DonateFormRequest $request)
     {
-        return $this->storeForm('donate', $request->safe()->except('website'), $request);
+        return $this->storeForm('donate', $request->formData(), $request);
     }
 
     protected function storeForm(string $slug, array $data, $request)
@@ -101,9 +104,11 @@ class GetInvolvedController extends Controller
         $form = FormDefinition::where('slug', $slug)->where('is_active', true)->firstOrFail();
         $submission = $this->forms->store($form, $data, $request);
 
-        return redirect()->route('site.forms.confirmation', [
-            'token' => $submission->confirmation_token,
-            'type' => $slug,
-        ]);
+        return $this->formSuccessResponse(
+            $request,
+            $submission->confirmation_token,
+            $slug,
+            $form->success_message
+        );
     }
 }

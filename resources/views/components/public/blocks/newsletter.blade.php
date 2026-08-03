@@ -28,7 +28,13 @@
                     </div>
                 @endif
 
-                <form action="{{ route('site.newsletter.subscribe') }}" method="POST" class="newsletter-form">
+                <form
+                    action="{{ route('site.newsletter.subscribe') }}"
+                    method="POST"
+                    class="newsletter-form"
+                    data-ajax-form
+                    novalidate
+                >
                     @csrf
                     <div class="newsletter-form__row">
                         <label for="newsletter-name" class="newsletter-form__label">Name <span class="newsletter-form__optional">(optional)</span></label>
@@ -57,7 +63,9 @@
                         <input type="checkbox" name="consent" value="1" required class="newsletter-form__checkbox" @checked(old('consent'))>
                         <span>I consent to receive ASNEN updates by email.</span>
                     </label>
-                    <input type="text" name="website" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true">
+                    <input type="text" name="website" tabindex="-1" autocomplete="off" class="site-form__honeypot" aria-hidden="true">
+                    <input type="hidden" name="math_token" value="">
+                    <input type="hidden" name="math_answer" value="">
                     <button type="submit" class="btn-primary newsletter-form__submit">Subscribe</button>
                 </form>
             </div>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\PublicSite;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\PublicSite\Concerns\RespondsToAjaxForms;
 use App\Http\Requests\PublicSite\ContactFormRequest;
 use App\Models\FormDefinition;
 use App\Repositories\PageRepository;
@@ -12,6 +13,8 @@ use App\Services\Settings;
 
 class ContactController extends Controller
 {
+    use RespondsToAjaxForms;
+
     public function __construct(
         private PageRepository $pages,
         private HtmlSanitizer $sanitizer,
@@ -36,11 +39,13 @@ class ContactController extends Controller
     public function store(ContactFormRequest $request)
     {
         $form = FormDefinition::where('slug', 'contact')->where('is_active', true)->firstOrFail();
-        $submission = $this->forms->store($form, $request->safe()->except('website'), $request);
+        $submission = $this->forms->store($form, $request->formData(), $request);
 
-        return redirect()->route('site.forms.confirmation', [
-            'token' => $submission->confirmation_token,
-            'type' => 'contact',
-        ]);
+        return $this->formSuccessResponse(
+            $request,
+            $submission->confirmation_token,
+            'contact',
+            $form->success_message
+        );
     }
 }

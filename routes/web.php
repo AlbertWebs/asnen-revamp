@@ -9,6 +9,7 @@ use App\Http\Controllers\PublicSite\GalleryController;
 use App\Http\Controllers\PublicSite\GetInvolvedController;
 use App\Http\Controllers\PublicSite\HomeController;
 use App\Http\Controllers\PublicSite\ImpactController;
+use App\Http\Controllers\PublicSite\MathCaptchaController;
 use App\Http\Controllers\PublicSite\NewsletterController;
 use App\Http\Controllers\PublicSite\PageController;
 use App\Http\Controllers\PublicSite\PreviewController;
@@ -36,6 +37,9 @@ Route::name('site.')->group(function () {
         ->name('preview.page');
 
     Route::get('/forms/confirmation/{token}', FormConfirmationController::class)->name('forms.confirmation');
+    Route::get('/forms/math-challenge', MathCaptchaController::class)
+        ->middleware('throttle:30,1')
+        ->name('forms.math-challenge');
 
     Route::post('/newsletter/subscribe', [NewsletterController::class, 'subscribe'])
         ->middleware('throttle:5,1')

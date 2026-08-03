@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\PublicSite;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\PublicSite\Concerns\RespondsToAjaxForms;
 use App\Http\Requests\PublicSite\NewsletterFormRequest;
 use App\Models\FormDefinition;
 use App\Models\NewsletterSubscriber;
@@ -11,12 +12,14 @@ use Illuminate\Http\Request;
 
 class NewsletterController extends Controller
 {
+    use RespondsToAjaxForms;
+
     public function __construct(private FormSubmissionService $forms) {}
 
     public function subscribe(NewsletterFormRequest $request)
     {
         $form = FormDefinition::where('slug', 'newsletter')->where('is_active', true)->firstOrFail();
-        $data = $request->safe()->except('website');
+        $data = $request->formData();
 
         NewsletterSubscriber::updateOrCreate(
             ['email' => $data['email']],
@@ -31,14 +34,12 @@ class NewsletterController extends Controller
 
         $submission = $this->forms->store($form, $data, $request);
 
-        if ($request->expectsJson()) {
-            return response()->json(['message' => $form->success_message]);
-        }
-
-        return redirect()->route('site.forms.confirmation', [
-            'token' => $submission->confirmation_token,
-            'type' => 'newsletter',
-        ]);
+        return $this->formSuccessResponse(
+            $request,
+            $submission->confirmation_token,
+            'newsletter',
+            $form->success_message ?? 'You are subscribed. Thank you.'
+        );
     }
 
     public function unsubscribe(Request $request)

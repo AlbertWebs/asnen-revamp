@@ -77,7 +77,10 @@
     </script>
     @stack('head')
 </head>
-<body class="flex min-h-screen flex-col bg-ivory text-charcoal">
+<body
+    class="flex min-h-screen flex-col bg-ivory text-charcoal"
+    data-math-challenge-url="{{ route('site.forms.math-challenge') }}"
+>
     <x-public.a11y-skip-links />
 
     @if($globalAnnouncement ?? null)
@@ -189,6 +192,23 @@
 
     <x-public.a11y-toolbar />
     <x-public.cookie-consent />
+
+    <div id="math-captcha-modal" class="math-captcha" hidden>
+        <div class="math-captcha__backdrop" data-math-cancel tabindex="-1"></div>
+        <div class="math-captcha__dialog" role="dialog" aria-modal="true" aria-labelledby="math-captcha-title">
+            <h2 id="math-captcha-title" class="math-captcha__title">Quick check</h2>
+            <p class="math-captcha__intro">Solve this short sum so we know you are human.</p>
+            <p class="math-captcha__question" data-math-question aria-live="polite"></p>
+            <label for="math-captcha-answer" class="math-captcha__label">Your answer</label>
+            <input id="math-captcha-answer" type="number" inputmode="numeric" class="math-captcha__input" data-math-answer autocomplete="off">
+            <p class="math-captcha__error" data-math-error hidden></p>
+            <div class="math-captcha__actions">
+                <button type="button" class="btn-secondary" data-math-cancel>Cancel</button>
+                <button type="button" class="btn-primary" data-math-confirm>Confirm &amp; send</button>
+            </div>
+        </div>
+    </div>
+
     @stack('scripts')
     <style>[x-cloak]{display:none!important}</style>
 </body>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\PublicSite;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\PublicSite\Concerns\RespondsToAjaxForms;
 use App\Http\Requests\PublicSite\EventRegistrationFormRequest;
 use App\Models\Event;
 use App\Models\EventRegistration;
@@ -12,6 +13,8 @@ use Illuminate\Support\Str;
 
 class EventController extends Controller
 {
+    use RespondsToAjaxForms;
+
     public function __construct(
         private HtmlSanitizer $sanitizer,
     ) {}
@@ -106,7 +109,12 @@ class EventController extends Controller
         $token = Str::random(64);
         session(['event_registration_token_'.$token => $registration->id]);
 
-        return redirect()->route('site.forms.confirmation', ['token' => $token, 'type' => 'event']);
+        return $this->formSuccessResponse(
+            $request,
+            $token,
+            'event',
+            'Your event registration has been received. We will be in touch with details.'
+        );
     }
 
     protected function upcomingQuery()
