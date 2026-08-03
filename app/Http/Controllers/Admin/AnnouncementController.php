@@ -62,13 +62,17 @@ class AnnouncementController extends Controller
 
     private function validateAnnouncement(Request $request): array
     {
-        return $request->validate([
+        $validated = $request->validate([
             'message' => ['required', 'string'],
-            'link_url' => ['nullable', 'url', 'max:500'],
+            'link_url' => ['nullable', 'string', 'max:500', new \App\Rules\PublicUrlOrPath],
             'link_label' => ['nullable', 'string', 'max:255'],
             'is_active' => ['nullable', 'boolean'],
             'starts_at' => ['nullable', 'date'],
             'ends_at' => ['nullable', 'date', 'after:starts_at'],
         ]);
+
+        $validated['is_active'] = $request->boolean('is_active');
+
+        return $validated;
     }
 }

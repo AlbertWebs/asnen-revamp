@@ -15,16 +15,28 @@ L.Icon.Default.mergeOptions({
 const BRAND = '#0C77BC';
 const LIME = '#8CC63F';
 
-function brandIcon(featured = false) {
-    const color = featured ? LIME : BRAND;
+function brandIcon(featured = false, color = null) {
+    const fill = color || (featured ? LIME : BRAND);
     const size = featured ? 22 : 16;
     return L.divIcon({
         className: 'impact-map-marker',
-        html: `<span class="impact-map-marker__dot${featured ? ' is-featured' : ''}" style="--marker:${color};--size:${size}px"></span>`,
+        html: `<span class="impact-map-marker__dot${featured ? ' is-featured' : ''}" style="--marker:${fill};--size:${size}px"></span>`,
         iconSize: [size, size],
         iconAnchor: [size / 2, size / 2],
         popupAnchor: [0, -size / 2],
     });
+}
+
+function areaStyle(region, active = false) {
+    const color = region.map_color || (region.is_featured ? LIME : BRAND);
+    return {
+        color,
+        weight: active ? 2.5 : 1.5,
+        opacity: active ? 0.95 : 0.8,
+        fillColor: color,
+        fillOpacity: active ? 0.45 : 0.28,
+        className: active ? 'impact-map-area is-active' : 'impact-map-area',
+    };
 }
 
 export function impactRegionsMap(config) {
@@ -33,10 +45,10 @@ export function impactRegionsMap(config) {
         activeId: null,
         map: null,
         markers: {},
+        areas: {},
         layer: null,
 
         init() {
-            const mappable = this.regions.filter((r) => r.latitude != null && r.longitude != null);
             this.map = L.map(this.$refs.map, {
                 scrollWheelZoom: false,
                 zoomControl: true,
@@ -51,30 +63,103 @@ export function impactRegionsMap(config) {
 
             this.layer = L.featureGroup().addTo(this.map);
 
-            mappable.forEach((region) => {
-                const marker = L.marker([region.latitude, region.longitude], {
-                    icon: brandIcon(region.is_featured),
-                    title: region.name,
-                });
-
-                marker.bindPopup(this.popupHtml(region), { className: 'impact-map-popup', maxWidth: 280 });
-                marker.on('click', () => {
-                    this.activeId = region.id;
-                });
-                marker.addTo(this.layer);
-                this.markers[region.id] = marker;
+            this.regions.forEach((region) => {
+                this.addRegionArea(region);
+                this.addRegionMarker(region);
             });
 
-            if (mappable.length) {
-                this.map.fitBounds(this.layer.getBounds().pad(0.35), { maxZoom: 8 });
+            if (this.layer.getLayers().length) {
+                this.map.fitBounds(this.layer.getBounds().pad(0.28), { maxZoom: 8 });
             }
 
-            // Allow wheel zoom only after focus/interaction.
             this.map.on('focus', () => this.map.scrollWheelZoom.enable());
             this.map.on('blur', () => this.map.scrollWheelZoom.disable());
             this.$refs.map.addEventListener('click', () => this.map.scrollWheelZoom.enable());
 
             setTimeout(() => this.map.invalidateSize(), 80);
+        },
+
+        addRegionArea(region) {
+            let area = null;
+
+            if (region.boundary) {
+                area = L.geoJSON(
+                    {
+                        type: 'Feature',
+                        properties: { id: region.id, name: region.name },
+                        geometry: region.boundary,
+                    },
+                    {
+                        style: () => areaStyle(region, false),
+                        onEachFeature: (feature, layer) => {
+                            layer.bindPopup(this.popupHtml(region), {
+                                className: 'impact-map-popup',
+                                maxWidth: 280,
+                            });
+                            layer.on('click', () => {
+                                this.activeId = region.id;
+                                this.highlightArea(region.id);
+                            });
+                        },
+                    }
+                );
+            } else if (
+                region.latitude != null &&
+                region.longitude != null &&
+                region.reach_radius_km
+            ) {
+                area = L.circle([region.latitude, region.longitude], {
+                    radius: Number(region.reach_radius_km) * 1000,
+                    ...areaStyle(region, false),
+                });
+                area.bindPopup(this.popupHtml(region), {
+                    className: 'impact-map-popup',
+                    maxWidth: 280,
+                });
+                area.on('click', () => {
+                    this.activeId = region.id;
+                    this.highlightArea(region.id);
+                });
+            }
+
+            if (!area) return;
+
+            area.addTo(this.layer);
+            this.areas[region.id] = area;
+        },
+
+        addRegionMarker(region) {
+            if (region.latitude == null || region.longitude == null) return;
+
+            const marker = L.marker([region.latitude, region.longitude], {
+                icon: brandIcon(region.is_featured, region.map_color),
+                title: region.name,
+                zIndexOffset: region.is_featured ? 400 : 200,
+            });
+
+            marker.bindPopup(this.popupHtml(region), { className: 'impact-map-popup', maxWidth: 280 });
+            marker.on('click', () => {
+                this.activeId = region.id;
+                this.highlightArea(region.id);
+            });
+            marker.addTo(this.layer);
+            this.markers[region.id] = marker;
+        },
+
+        highlightArea(regionId) {
+            Object.entries(this.areas).forEach(([id, layer]) => {
+                const region = this.regions.find((item) => String(item.id) === String(id));
+                if (!region) return;
+                const active = String(id) === String(regionId);
+                if (typeof layer.setStyle === 'function') {
+                    layer.setStyle(areaStyle(region, active));
+                } else if (typeof layer.eachLayer === 'function') {
+                    layer.eachLayer((child) => child.setStyle(areaStyle(region, active)));
+                }
+                if (active && typeof layer.bringToFront === 'function') {
+                    layer.bringToFront();
+                }
+            });
         },
 
         popupHtml(region) {
@@ -108,10 +193,35 @@ export function impactRegionsMap(config) {
 
         selectRegion(region) {
             this.activeId = region.id;
+            this.highlightArea(region.id);
+
+            const area = this.areas[region.id];
             const marker = this.markers[region.id];
-            if (!marker || !this.map) return;
-            this.map.flyTo([region.latitude, region.longitude], Math.max(this.map.getZoom(), 8), { duration: 0.7 });
-            marker.openPopup();
+
+            if (area && this.map) {
+                const bounds = typeof area.getBounds === 'function' ? area.getBounds() : null;
+                if (bounds && bounds.isValid()) {
+                    this.map.flyToBounds(bounds.pad(0.2), { maxZoom: 9, duration: 0.7 });
+                } else if (region.latitude != null && region.longitude != null) {
+                    this.map.flyTo([region.latitude, region.longitude], Math.max(this.map.getZoom(), 8), {
+                        duration: 0.7,
+                    });
+                }
+                if (typeof area.openPopup === 'function') {
+                    area.openPopup();
+                } else if (typeof area.eachLayer === 'function') {
+                    const first = area.getLayers()[0];
+                    first?.openPopup?.();
+                }
+                return;
+            }
+
+            if (marker && this.map && region.latitude != null && region.longitude != null) {
+                this.map.flyTo([region.latitude, region.longitude], Math.max(this.map.getZoom(), 8), {
+                    duration: 0.7,
+                });
+                marker.openPopup();
+            }
         },
     };
 }

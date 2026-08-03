@@ -116,6 +116,9 @@
             </header>
 
             @include('admin.partials.flash')
+            <div class="px-4 lg:px-6">
+                @include('admin.partials.validation-errors')
+            </div>
 
             <main id="main-content" class="flex-1 p-4 lg:p-6" role="main">
                 @yield('content')

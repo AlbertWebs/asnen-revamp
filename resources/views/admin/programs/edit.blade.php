@@ -4,12 +4,17 @@
 @section('heading', $program->exists ? 'Edit' : 'New')
 
 @section('content')
+    @if ($program->exists)
+        <div class="mb-4 flex flex-wrap items-center gap-3">
+            @include('admin.partials.publish-buttons', ['model' => $program, 'routePrefix' => 'programs'])
+        </div>
+    @endif
+
     <form method="POST" action="{{ $program->exists ? route('admin.programs.update', $program) : route('admin.programs.store') }}">
         @csrf
         @if ($program->exists) @method('PUT') @endif
 
-        <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
-            @include('admin.partials.publish-buttons', ['model' => $program, 'routePrefix' => 'programs'])
+        <div class="mb-4 flex justify-end">
             <button type="submit" class="rounded-md bg-forest-700 px-4 py-2 text-sm font-medium text-white hover:bg-forest-800">Save</button>
         </div>
 

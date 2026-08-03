@@ -6,7 +6,7 @@
 @section('content')
     @php
         $mapRegions = $regions
-            ->filter(fn ($region) => $region->hasCoordinates())
+            ->filter(fn ($region) => $region->hasCoordinates() || $region->hasBoundary())
             ->values()
             ->map->toMapPayload()
             ->all();
@@ -33,7 +33,7 @@
                 <div class="section-head">
                     <span class="eyebrow mb-3 block">Impact map</span>
                     <h2>Communities we have reached</h2>
-                    <p class="section-head-row__intro">Select a place on the map or in the list to learn how ASNEN's work shows up on the ground.</p>
+                    <p class="section-head-row__intro">Coloured areas show ASNEN's regions of reach. Select a place on the map or in the list to learn more.</p>
                 </div>
                 @if($regions->isNotEmpty())
                     <p class="section-head-row__cta impact-map-count">{{ $regions->count() }} {{ \Illuminate\Support\Str::plural('region', $regions->count()) }}</p>
@@ -57,16 +57,28 @@
                         zoom: 6,
                     })"
                 >
+                    <div class="impact-map__legend" aria-label="Map colour key">
+                        <span class="impact-map__legend-item">
+                            <span class="impact-map__legend-swatch" style="--swatch:#0C77BC"></span>
+                            County / programme reach
+                        </span>
+                        <span class="impact-map__legend-item">
+                            <span class="impact-map__legend-swatch impact-map__legend-swatch--featured" style="--swatch:#8CC63F"></span>
+                            Featured site
+                        </span>
+                    </div>
+
                     <div class="impact-map__layout">
                         <div class="impact-map__canvas-wrap">
                             <div class="impact-map__canvas" x-ref="map" role="region" aria-label="Map of ASNEN impact regions"></div>
-                            <p class="impact-map__hint">Click a pin or use the list. Scroll to zoom after clicking the map.</p>
+                            <p class="impact-map__hint">Coloured shapes mark reach. Click an area, pin, or list item. Scroll to zoom after clicking the map.</p>
                         </div>
 
                         <div class="impact-map__list" role="list">
                             @foreach($regions as $region)
                                 @php
-                                    $hasPin = $region->hasCoordinates();
+                                    $hasPin = $region->hasCoordinates() || $region->hasBoundary();
+                                    $swatch = $region->resolvedMapColor();
                                 @endphp
                                 <button
                                     type="button"
@@ -79,7 +91,10 @@
                                     @disabled(! $hasPin)
                                 >
                                     <span class="impact-map__item-top">
-                                        <span class="impact-map__item-name">{{ $region->name }}</span>
+                                        <span class="impact-map__item-name">
+                                            <span class="impact-map__item-swatch" style="--swatch: {{ $swatch }}" aria-hidden="true"></span>
+                                            {{ $region->name }}
+                                        </span>
                                         @if($region->is_featured)
                                             <span class="impact-map__item-badge">Featured</span>
                                         @endif
@@ -121,10 +136,10 @@
                     </div>
                     <aside class="who-identity__aside">
                         <p class="who-identity__aside-label">Updated from admin</p>
-                        <p class="who-identity__aside-quote">Every pin is published when the place and story are ready.</p>
+                        <p class="who-identity__aside-quote">Every coloured area is published when the place and story are ready.</p>
                         <ul class="who-identity__aside-list">
-                            <li>Coordinates set by ASNEN editors</li>
-                            <li>Descriptions kept concise and accurate</li>
+                            <li>County shapes show broader reach</li>
+                            <li>Pins mark specific programme sites</li>
                             <li>Links to case studies where available</li>
                         </ul>
                     </aside>

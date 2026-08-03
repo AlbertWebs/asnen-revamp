@@ -92,7 +92,7 @@ class WebinarController extends Controller
             'held_at' => ['nullable', 'date'],
             'moderator' => ['nullable', 'string', 'max:255'],
             'participant_count' => ['nullable', 'integer', 'min:0'],
-            'recording_url' => ['nullable', 'url', 'max:500'],
+            'recording_url' => ['nullable', 'string', 'max:500', new \App\Rules\PublicUrlOrPath],
             'transcript' => ['nullable', 'string'],
             'featured_image_id' => ['nullable', 'integer', 'exists:media_assets,id'],
             'verification_status' => ['nullable', 'string'],

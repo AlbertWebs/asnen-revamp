@@ -4,12 +4,17 @@
 @section('heading', $campaign->exists ? 'Edit' : 'New')
 
 @section('content')
+    @if ($campaign->exists)
+        <div class="mb-4 flex flex-wrap items-center gap-3">
+            @include('admin.partials.publish-buttons', ['model' => $campaign, 'routePrefix' => 'donation-campaigns'])
+        </div>
+    @endif
+
     <form method="POST" action="{{ $campaign->exists ? route('admin.donation-campaigns.update', $campaign) : route('admin.donation-campaigns.store') }}">
         @csrf
         @if ($campaign->exists) @method('PUT') @endif
 
-        <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
-            @include('admin.partials.publish-buttons', ['model' => $campaign, 'routePrefix' => 'donation-campaigns'])
+        <div class="mb-4 flex justify-end">
             <button type="submit" class="rounded-md bg-forest-700 px-4 py-2 text-sm font-medium text-white hover:bg-forest-800">Save</button>
         </div>
 

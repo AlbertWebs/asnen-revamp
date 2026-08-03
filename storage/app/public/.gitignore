@@ -1,2 +1,10 @@
 *
 !.gitignore
+!events/
+!events/**
+!galleries/
+!galleries/**
+!partners/
+!partners/**
+!team/
+!team/**

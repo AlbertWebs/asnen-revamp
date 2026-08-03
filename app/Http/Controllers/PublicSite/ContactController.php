@@ -39,4 +39,8 @@ class ContactController extends Controller
         $submission = $this->forms->store($form, $request->safe()->except('website'), $request);
 
         return redirect()->route('site.forms.confirmation', [
-            'token' =
+            'token' => $submission->confirmation_token,
+            'type' => 'contact',
+        ]);
+    }
+}

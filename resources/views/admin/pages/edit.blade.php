@@ -4,6 +4,12 @@
 @section('heading', $page->exists ? 'Edit Page' : 'New Page')
 
 @section('content')
+    @if ($page->exists)
+        <div class="mb-4 flex flex-wrap items-center gap-3">
+            @include('admin.partials.publish-buttons', ['model' => $page, 'routePrefix' => 'pages'])
+        </div>
+    @endif
+
     <form
         method="POST"
         action="{{ $page->exists ? route('admin.pages.update', $page) : route('admin.pages.store') }}"
@@ -31,10 +37,7 @@
 
         <input type="hidden" name="blocks" :value="JSON.stringify(blocks)">
 
-        <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
-            @if ($page->exists)
-                @include('admin.partials.publish-buttons', ['model' => $page, 'routePrefix' => 'pages'])
-            @endif
+        <div class="mb-4 flex justify-end">
             <button type="submit" class="rounded-md bg-forest-700 px-4 py-2 text-sm font-medium text-white hover:bg-forest-800">Save page</button>
         </div>
 

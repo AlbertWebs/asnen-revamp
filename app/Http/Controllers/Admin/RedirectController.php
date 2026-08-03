@@ -62,11 +62,16 @@ class RedirectController extends Controller
 
     private function validateRedirect(Request $request, ?Redirect $redirect = null): array
     {
-        return $request->validate([
+        $validated = $request->validate([
             'from_path' => ['required', 'string', 'max:255', 'unique:redirects,from_path,'.($redirect?->id ?? 'NULL')],
             'to_path' => ['required', 'string', 'max:500'],
             'status_code' => ['nullable', 'integer', 'in:301,302,307,308'],
             'is_active' => ['nullable', 'boolean'],
         ]);
+
+        $validated['is_active'] = $request->boolean('is_active');
+        $validated['status_code'] = (int) ($validated['status_code'] ?? 301);
+
+        return $validated;
     }
 }

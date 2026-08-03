@@ -4,12 +4,17 @@
 @section('heading', $region->exists ? 'Edit Region' : 'New Region')
 
 @section('content')
+    @if ($region->exists)
+        <div class="mb-4 flex flex-wrap items-center gap-3">
+            @include('admin.partials.publish-buttons', ['model' => $region, 'routePrefix' => 'regions'])
+        </div>
+    @endif
+
     <form method="POST" action="{{ $region->exists ? route('admin.regions.update', $region) : route('admin.regions.store') }}">
         @csrf
         @if ($region->exists) @method('PUT') @endif
 
-        <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
-            @include('admin.partials.publish-buttons', ['model' => $region, 'routePrefix' => 'regions'])
+        <div class="mb-4 flex justify-end">
             <button type="submit" class="rounded-md bg-forest-700 px-4 py-2 text-sm font-medium text-white hover:bg-forest-800">Save</button>
         </div>
 
@@ -44,6 +49,26 @@
                         <label for="link_label" class="block text-sm font-medium text-charcoal-700">Link label</label>
                         <input type="text" name="link_label" id="link_label" value="{{ old('link_label', $region->link_label) }}" placeholder="Read case study" class="mt-1 block w-full rounded-md border-charcoal-300 shadow-sm focus:border-forest-500 focus:ring-forest-500">
                     </div>
+                </div>
+                <div class="grid gap-4 sm:grid-cols-2">
+                    <div>
+                        <label for="map_color" class="block text-sm font-medium text-charcoal-700">Map colour</label>
+                        <input type="color" name="map_color" id="map_color" value="{{ old('map_color', $region->map_color ?: ($region->is_featured ? '#8CC63F' : '#0C77BC')) }}" class="mt-1 h-10 w-full cursor-pointer rounded-md border border-charcoal-300 bg-white p-1 shadow-sm">
+                        <p class="mt-1 text-xs text-charcoal-500">Used to colour this region’s reach area on the public map.</p>
+                    </div>
+                    <div>
+                        <label for="reach_radius_km" class="block text-sm font-medium text-charcoal-700">Reach radius (km)</label>
+                        <input type="number" min="1" max="500" name="reach_radius_km" id="reach_radius_km" value="{{ old('reach_radius_km', $region->reach_radius_km) }}" placeholder="e.g. 12" class="mt-1 block w-full rounded-md border-charcoal-300 shadow-sm focus:border-forest-500 focus:ring-forest-500">
+                        <p class="mt-1 text-xs text-charcoal-500">Draws a coloured circle when no county boundary is set.</p>
+                    </div>
+                </div>
+                <div>
+                    <label for="boundary_geojson" class="block text-sm font-medium text-charcoal-700">Boundary GeoJSON (optional)</label>
+                    <textarea name="boundary_geojson" id="boundary_geojson" rows="6" placeholder='{"type":"Polygon","coordinates":[[[lng,lat],...]]}' class="mt-1 block w-full rounded-md border-charcoal-300 font-mono text-xs shadow-sm focus:border-forest-500 focus:ring-forest-500">{{ old('boundary_geojson', $region->boundary_geojson ? json_encode($region->boundary_geojson, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) : '') }}</textarea>
+                    <p class="mt-1 text-xs text-charcoal-500">Paste a Polygon or MultiPolygon geometry to shade the county or area of reach.</p>
+                    @error('boundary_geojson')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
                 </div>
                 <div class="grid gap-4 sm:grid-cols-2">
                     <div>

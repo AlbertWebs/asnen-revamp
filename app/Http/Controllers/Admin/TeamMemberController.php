@@ -84,17 +84,22 @@ class TeamMemberController extends Controller
 
     private function validateMember(Request $request, ?TeamMember $member = null): array
     {
-        return $request->validate([
+        $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'slug' => ['nullable', 'string', 'max:255', 'unique:team_members,slug,'.($member?->id ?? 'NULL')],
             'title_role' => ['required', 'string', 'max:255'],
             'bio' => ['nullable', 'string'],
             'photo_id' => ['nullable', 'integer', 'exists:media_assets,id'],
             'email' => ['nullable', 'email', 'max:255'],
-            'linkedin_url' => ['nullable', 'url', 'max:500'],
+            'linkedin_url' => ['nullable', 'string', 'max:500', new \App\Rules\PublicUrlOrPath],
             'sort_order' => ['nullable', 'integer'],
             'is_board' => ['nullable', 'boolean'],
             'verification_status' => ['nullable', 'string'],
         ]);
+
+        $validated['is_board'] = $request->boolean('is_board');
+        $validated['sort_order'] = (int) ($validated['sort_order'] ?? 0);
+
+        return $validated;
     }
 }

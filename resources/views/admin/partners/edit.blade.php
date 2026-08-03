@@ -4,12 +4,17 @@
 @section('heading', $partner->exists ? 'Edit' : 'New')
 
 @section('content')
+    @if ($partner->exists)
+        <div class="mb-4 flex flex-wrap items-center gap-3">
+            @include('admin.partials.publish-buttons', ['model' => $partner, 'routePrefix' => 'partners'])
+        </div>
+    @endif
+
     <form method="POST" action="{{ $partner->exists ? route('admin.partners.update', $partner) : route('admin.partners.store') }}">
         @csrf
         @if ($partner->exists) @method('PUT') @endif
 
-        <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
-            @include('admin.partials.publish-buttons', ['model' => $partner, 'routePrefix' => 'partners'])
+        <div class="mb-4 flex justify-end">
             <button type="submit" class="rounded-md bg-forest-700 px-4 py-2 text-sm font-medium text-white hover:bg-forest-800">Save</button>
         </div>
 

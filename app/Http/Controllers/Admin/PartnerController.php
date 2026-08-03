@@ -92,7 +92,7 @@ class PartnerController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'slug' => ['nullable', 'string', 'max:255', 'unique:partners,slug,'.($partner?->id ?? 'NULL')],
             'description' => ['nullable', 'string'],
-            'url' => ['nullable', 'url', 'max:500'],
+            'url' => ['nullable', 'string', 'max:500', new \App\Rules\PublicUrlOrPath],
             'logo_id' => ['nullable', 'integer', 'exists:media_assets,id'],
             'category' => ['nullable', 'string', 'max:100'],
             'partnership_start' => ['nullable', 'date'],

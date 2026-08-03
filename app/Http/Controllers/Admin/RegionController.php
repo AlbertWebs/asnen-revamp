@@ -93,6 +93,9 @@ class RegionController extends Controller
             'description' => ['nullable', 'string'],
             'latitude' => ['nullable', 'numeric', 'between:-90,90'],
             'longitude' => ['nullable', 'numeric', 'between:-180,180'],
+            'map_color' => ['nullable', 'string', 'regex:/^#[0-9A-Fa-f]{6}$/'],
+            'reach_radius_km' => ['nullable', 'integer', 'min:1', 'max:500'],
+            'boundary_geojson' => ['nullable', 'string'],
             'country' => ['nullable', 'string', 'max:120'],
             'impact_label' => ['nullable', 'string', 'max:255'],
             'link_url' => ['nullable', 'string', 'max:500'],
@@ -103,6 +106,30 @@ class RegionController extends Controller
 
         $validated['is_featured'] = $request->boolean('is_featured');
         $validated['sort_order'] = (int) ($validated['sort_order'] ?? 0);
+        $validated['reach_radius_km'] = filled($validated['reach_radius_km'] ?? null)
+            ? (int) $validated['reach_radius_km']
+            : null;
+        $validated['map_color'] = filled($validated['map_color'] ?? null)
+            ? strtoupper($validated['map_color'])
+            : null;
+
+        $boundaryRaw = trim((string) ($validated['boundary_geojson'] ?? ''));
+        if ($boundaryRaw === '') {
+            $validated['boundary_geojson'] = null;
+        } else {
+            $decoded = json_decode($boundaryRaw, true);
+            if (! is_array($decoded) || ! isset($decoded['type'], $decoded['coordinates'])) {
+                throw \Illuminate\Validation\ValidationException::withMessages([
+                    'boundary_geojson' => 'Boundary must be valid GeoJSON Polygon or MultiPolygon geometry.',
+                ]);
+            }
+            if (! in_array($decoded['type'], ['Polygon', 'MultiPolygon'], true)) {
+                throw \Illuminate\Validation\ValidationException::withMessages([
+                    'boundary_geojson' => 'Boundary type must be Polygon or MultiPolygon.',
+                ]);
+            }
+            $validated['boundary_geojson'] = $decoded;
+        }
 
         return $validated;
     }

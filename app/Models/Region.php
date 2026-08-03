@@ -19,6 +19,9 @@ class Region extends Model
         'description',
         'latitude',
         'longitude',
+        'boundary_geojson',
+        'reach_radius_km',
+        'map_color',
         'country',
         'impact_label',
         'link_url',
@@ -34,6 +37,8 @@ class Region extends Model
         return [
             'latitude' => 'float',
             'longitude' => 'float',
+            'boundary_geojson' => 'array',
+            'reach_radius_km' => 'integer',
             'is_featured' => 'boolean',
             'sort_order' => 'integer',
         ];
@@ -54,6 +59,22 @@ class Region extends Model
         return $this->latitude !== null && $this->longitude !== null;
     }
 
+    public function hasBoundary(): bool
+    {
+        return is_array($this->boundary_geojson)
+            && ($this->boundary_geojson['type'] ?? null)
+            && ! empty($this->boundary_geojson['coordinates']);
+    }
+
+    public function resolvedMapColor(): string
+    {
+        if (filled($this->map_color)) {
+            return $this->map_color;
+        }
+
+        return $this->is_featured ? '#8CC63F' : '#0C77BC';
+    }
+
     public function toMapPayload(): array
     {
         return [
@@ -63,6 +84,9 @@ class Region extends Model
             'description' => $this->description,
             'latitude' => $this->latitude,
             'longitude' => $this->longitude,
+            'boundary' => $this->hasBoundary() ? $this->boundary_geojson : null,
+            'reach_radius_km' => $this->reach_radius_km,
+            'map_color' => $this->resolvedMapColor(),
             'country' => $this->country,
             'impact_label' => $this->impact_label,
             'link_url' => $this->link_url,

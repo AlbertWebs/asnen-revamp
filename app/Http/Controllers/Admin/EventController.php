@@ -34,6 +34,7 @@ class EventController extends Controller
     {
         abort_unless(auth()->user()?->can('events.create'), 403);
 
+        $this->nullEmptyIds($request, ['featured_image_id']);
         $validated = $this->validateEvent($request);
         $event = Event::create($validated);
 
@@ -51,6 +52,7 @@ class EventController extends Controller
     {
         abort_unless(auth()->user()?->can('events.update'), 403);
 
+        $this->nullEmptyIds($request, ['featured_image_id']);
         $event->update($this->validateEvent($request, $event));
 
         return back()->with('success', 'Event updated.');
@@ -85,7 +87,7 @@ class EventController extends Controller
 
     private function validateEvent(Request $request, ?Event $event = null): array
     {
-        return $request->validate([
+        $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
             'slug' => ['nullable', 'string', 'max:255', 'unique:events,slug,'.($event?->id ?? 'NULL')],
             'type' => ['nullable', 'string', 'max:50'],
@@ -93,7 +95,7 @@ class EventController extends Controller
             'body' => ['nullable', 'string'],
             'venue' => ['nullable', 'string', 'max:255'],
             'is_online' => ['nullable', 'boolean'],
-            'online_url' => ['nullable', 'url', 'max:500'],
+            'online_url' => ['nullable', 'string', 'max:500', new \App\Rules\PublicUrlOrPath],
             'starts_at' => ['required', 'date'],
             'ends_at' => ['nullable', 'date', 'after:starts_at'],
             'timezone' => ['nullable', 'string', 'max:50'],
@@ -101,5 +103,9 @@ class EventController extends Controller
             'featured_image_id' => ['nullable', 'integer', 'exists:media_assets,id'],
             'verification_status' => ['nullable', 'string'],
         ]);
+
+        $validated['is_online'] = $request->boolean('is_online');
+
+        return $validated;
     }
 }

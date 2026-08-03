@@ -32,10 +32,17 @@
                 $boolOn = filter_var($raw, FILTER_VALIDATE_BOOLEAN);
                 $labels = [
                     'features.easy_read_enabled' => 'Show Easy Read floating button',
+                    'contact.city' => 'City / location',
+                    'contact.email' => 'Primary email',
+                    'contact.phone_primary' => 'Primary phone',
+                    'contact.phone_secondary' => 'Secondary phone',
                 ];
                 $label = $labels[$setting->key] ?? $setting->key;
                 $help = [
                     'features.easy_read_enabled' => 'When enabled, visitors see the Easy Read button on the home page and accessibility page.',
+                    'contact.email' => 'Shown on the public contact page and used for inquiries.',
+                    'contact.phone_primary' => 'Shown as the primary call line on the contact page.',
+                    'contact.phone_secondary' => 'Optional second phone line on the contact page.',
                 ][$setting->key] ?? null;
             @endphp
 
@@ -63,6 +70,9 @@
                 </div>
             @else
                 <label for="setting_{{ $index }}" class="{{ $index > 0 ? 'mt-4' : '' }} block text-sm font-medium text-charcoal-700">{{ $label }}</label>
+                @if($help)
+                    <p class="mt-1 text-xs text-charcoal-500">{{ $help }}</p>
+                @endif
                 <input
                     type="text"
                     name="settings[{{ $index }}][value]"
@@ -75,6 +85,8 @@
             <p class="text-sm text-charcoal-500">No settings in this group yet.</p>
         @endforelse
 
-        <button type="submit" class="mt-6 rounded-md bg-forest-700 px-4 py-2 text-sm font-medium text-white hover:bg-forest-800">Save settings</button>
+        @if ($settings->isNotEmpty())
+            <button type="submit" class="mt-6 rounded-md bg-forest-700 px-4 py-2 text-sm font-medium text-white hover:bg-forest-800">Save settings</button>
+        @endif
     </form>
 @endsection

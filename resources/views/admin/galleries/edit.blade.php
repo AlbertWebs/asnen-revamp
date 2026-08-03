@@ -4,12 +4,17 @@
 @section('heading', $gallery->exists ? 'Edit Gallery' : 'New Gallery')
 
 @section('content')
+    @if ($gallery->exists)
+        <div class="mb-4 flex flex-wrap items-center gap-3">
+            @include('admin.partials.publish-buttons', ['model' => $gallery, 'routePrefix' => 'galleries'])
+        </div>
+    @endif
+
     <form method="POST" action="{{ $gallery->exists ? route('admin.galleries.update', $gallery) : route('admin.galleries.store') }}">
         @csrf
         @if ($gallery->exists) @method('PUT') @endif
 
-        <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
-            @include('admin.partials.publish-buttons', ['model' => $gallery, 'routePrefix' => 'galleries'])
+        <div class="mb-4 flex justify-end">
             <button type="submit" class="rounded-md bg-forest-700 px-4 py-2 text-sm font-medium text-white hover:bg-forest-800">Save</button>
         </div>
 
