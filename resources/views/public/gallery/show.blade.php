@@ -51,7 +51,6 @@
                     <div class="section-head">
                         <span class="eyebrow mb-3 block">Album</span>
                         <h2>Browse photos</h2>
-                        <p class="section-head-row__intro">Click any image to expand. Use arrow keys in the lightbox, or Escape to close.</p>
                     </div>
                 </div>
 
@@ -91,7 +90,7 @@
                                     type="button"
                                     class="gallery-thumb__btn group"
                                     @click="openAt(index)"
-                                    :aria-label="'Expand photo ' + (index + 1) + (slide.caption ? ': ' + slide.caption : '')"
+                                    :aria-label="'View photo ' + (index + 1) + (slide.caption ? ': ' + slide.caption : '')"
                                 >
                                     <img
                                         :src="slide.src"
@@ -99,6 +98,8 @@
                                         class="gallery-thumb__image"
                                         loading="lazy"
                                         decoding="async"
+                                        width="1600"
+                                        height="1200"
                                     >
                                     <span class="gallery-thumb__hint" aria-hidden="true">
                                         <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -127,7 +128,7 @@
                         :aria-label="current?.alt || 'Expanded photo'"
                         @click.self="close()"
                     >
-                        <button type="button" class="gallery-lightbox__close" @click="close()" aria-label="Close expanded photo">
+                        <button type="button" class="gallery-lightbox__close" @click="close()" aria-label="Close photo">
                             <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                                 <path stroke-linecap="round" d="M6 6l12 12M18 6L6 18"/>
                             </svg>

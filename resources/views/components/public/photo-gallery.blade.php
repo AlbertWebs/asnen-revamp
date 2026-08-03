@@ -47,19 +47,21 @@
             >
                 <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                     <template x-for="(slide, index) in slides" :key="index">
-                        <figure class="gallery-thumb overflow-hidden rounded-lg border border-charcoal/10 bg-white">
+                        <figure class="gallery-thumb">
                             <button
                                 type="button"
-                                class="gallery-thumb__btn group relative block w-full overflow-hidden"
+                                class="gallery-thumb__btn group"
                                 @click="openAt(index)"
-                                :aria-label="'Expand photo ' + (index + 1) + (slide.caption ? ': ' + slide.caption : '')"
+                                :aria-label="'View photo ' + (index + 1) + (slide.caption ? ': ' + slide.caption : '')"
                             >
                                 <img
                                     :src="slide.src"
                                     :alt="slide.alt"
-                                    class="h-56 w-full object-cover transition duration-300 group-hover:scale-[1.03]"
+                                    class="gallery-thumb__image"
                                     loading="lazy"
                                     decoding="async"
+                                    width="1600"
+                                    height="1200"
                                 >
                                 <span class="gallery-thumb__hint" aria-hidden="true">
                                     <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -88,7 +90,7 @@
                     :aria-label="current?.alt || 'Expanded photo'"
                     @click.self="close()"
                 >
-                    <button type="button" class="gallery-lightbox__close" @click="close()" aria-label="Close expanded photo">
+                    <button type="button" class="gallery-lightbox__close" @click="close()" aria-label="Close photo">
                         <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                             <path stroke-linecap="round" d="M6 6l12 12M18 6L6 18"/>
                         </svg>

@@ -1,6 +1,14 @@
+@props([
+    'side' => 'left',
+])
+
+@php
+    $side = in_array($side, ['left', 'right'], true) ? $side : 'left';
+@endphp
+
 {{-- Persistent site-wide accessibility toolbar --}}
 <div
-    class="a11y-fab"
+    {{ $attributes->class(['a11y-fab', 'a11y-fab--right' => $side === 'right']) }}
     x-data="accessibilityToolbar()"
     x-cloak
     @keydown.escape.window="if (open) { open = false; $refs.fab.focus() }"
@@ -32,7 +40,11 @@
         aria-modal="false"
         aria-labelledby="a11y-panel-title"
         tabindex="-1"
-        class="a11y-panel absolute bottom-16 left-0 w-[min(100vw-2rem,22rem)] rounded-xl border border-charcoal/15 bg-white p-4 text-charcoal shadow-2xl"
+        @class([
+            'a11y-panel absolute bottom-16 w-[min(100vw-2rem,22rem)] rounded-xl border border-charcoal/15 bg-white p-4 text-charcoal shadow-2xl',
+            'left-0' => $side === 'left',
+            'right-0' => $side === 'right',
+        ])
     >
         <div class="mb-3 flex items-start justify-between gap-3">
             <div>

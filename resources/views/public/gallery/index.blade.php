@@ -39,11 +39,11 @@
                 </div>
                 <aside class="who-identity__aside">
                     <p class="who-identity__aside-label">How to browse</p>
-                    <p class="who-identity__aside-quote">Open an album, then expand any photo.</p>
+                    <p class="who-identity__aside-quote">Open an album, then tap a photo to see it larger.</p>
                     <ul class="who-identity__aside-list">
                         <li>Albums by place and programme</li>
                         <li>Captions where available</li>
-                        <li>Keyboard-friendly lightbox viewing</li>
+                        <li>Photos reviewed before publishing</li>
                     </ul>
                     <a href="{{ route('site.impact.komolion') }}" class="who-identity__aside-link">
                         See Komolion story

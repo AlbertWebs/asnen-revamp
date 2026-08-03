@@ -32,7 +32,7 @@ class MediaAssetController extends Controller
         ]);
     }
 
-    public function store(MediaUploadRequest $request): RedirectResponse
+    public function store(MediaUploadRequest $request): RedirectResponse|\Illuminate\Http\JsonResponse
     {
         $file = $request->file('file');
         $folder = $request->input('folder', 'uploads');
@@ -49,6 +49,19 @@ class MediaAssetController extends Controller
             'folder' => $folder,
             'consent_status' => $request->input('consent_status', ConsentStatus::Pending->value),
         ]);
+
+        if ($request->expectsJson() || $request->wantsJson()) {
+            return response()->json([
+                'message' => 'Media uploaded successfully.',
+                'asset' => [
+                    'id' => $asset->id,
+                    'label' => ($asset->alt ?: $asset->filename).' (#'.$asset->id.')',
+                    'url' => $asset->publicUrl(),
+                    'mime' => $asset->mime,
+                    'folder' => $asset->folder,
+                ],
+            ], 201);
+        }
 
         $return = $request->input('return');
         if (is_string($return) && str_starts_with($return, url('/'))) {

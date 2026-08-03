@@ -8,7 +8,7 @@
     }
 @endphp
 @if($story)
-    <x-public.section eyebrow="Impact" :heading="$c['heading'] ?? 'Evidence from the field'" tone="soft">
+    <x-public.section eyebrow="Impact" :heading="$c['heading'] ?? 'Featured Impact Story'" tone="soft">
         <x-public.story-feature :story="$story" />
     </x-public.section>
 @endif

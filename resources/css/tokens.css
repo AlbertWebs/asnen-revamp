@@ -21,7 +21,7 @@
     --color-focus-ring: var(--color-brand);
     --color-focus-ring-offset: var(--color-white);
 
-    --font-display: 'Work Sans', sans-serif;
+    --font-display: 'Source Serif 4', Georgia, serif;
     --font-body: 'Work Sans', sans-serif;
     --font-mono: 'Work Sans', sans-serif;
     --max: 1360px;

@@ -40,11 +40,11 @@ class ContentSeeder extends Seeder
         $this->seedTeamMembers();
         $this->seedEvents();
         $this->seedGalleries();
-        $webinarMetric = $this->seedImpactMetrics();
+        $metricIds = $this->seedImpactMetrics();
         $webinars = $this->seedWebinars();
         $komolion = $this->seedKomolionStory($programs, $partners);
         $this->seedPublications();
-        $this->seedPages($webinarMetric, $komolion, $programs);
+        $this->seedPages($metricIds, $komolion, $programs);
         $this->seedFaqs();
         $this->seedFormDefinitions();
         $this->seedDonationCampaign();
@@ -602,70 +602,71 @@ class ContentSeeder extends Seeder
         );
     }
 
-    private function seedImpactMetrics(): ImpactMetric
+    private function seedImpactMetrics(): array
     {
-        ImpactMetric::updateOrCreate(
-            ['label' => 'Workshops delivered'],
+        $defs = [
             [
+                'label' => 'Workshops',
                 'value' => '150',
                 'numeric_value' => 150,
-                'public_label' => '150 workshops',
-                'source_label' => 'Legacy website (unverified)',
-                'verification_status' => VerificationStatus::NeedsVerification,
-                'status' => PublishStatus::Draft,
-            ]
-        );
-
-        ImpactMetric::updateOrCreate(
-            ['label' => 'Volunteers engaged'],
+                'public_label' => '150',
+                'source_label' => 'asnenafrica.org',
+            ],
             [
+                'label' => 'Volunteers',
                 'value' => '400',
                 'numeric_value' => 400,
-                'public_label' => '400 volunteers',
-                'source_label' => 'Legacy website (unverified)',
-                'verification_status' => VerificationStatus::NeedsVerification,
-                'status' => PublishStatus::Draft,
-            ]
-        );
-
-        ImpactMetric::updateOrCreate(
-            ['label' => 'Conferences held'],
+                'public_label' => '400',
+                'source_label' => 'asnenafrica.org',
+            ],
             [
+                'label' => 'Conference',
                 'value' => '2',
                 'numeric_value' => 2,
-                'public_label' => '2 conferences',
-                'source_label' => 'Legacy website (unverified)',
-                'verification_status' => VerificationStatus::NeedsVerification,
-                'status' => PublishStatus::Draft,
-            ]
-        );
-
-        ImpactMetric::updateOrCreate(
-            ['label' => 'Webinars (legacy count)'],
+                'public_label' => '2',
+                'source_label' => 'asnenafrica.org',
+            ],
             [
+                'label' => 'Webinars',
                 'value' => '15',
                 'numeric_value' => 15,
-                'public_label' => '15 webinars',
-                'source_label' => 'Legacy website (unverified)',
-                'verification_status' => VerificationStatus::NeedsVerification,
-                'status' => PublishStatus::Draft,
-            ]
-        );
+                'public_label' => '15',
+                'source_label' => 'asnenafrica.org',
+            ],
+        ];
 
-        return ImpactMetric::updateOrCreate(
-            ['label' => '2024 webinar participants'],
-            [
-                'value' => '792',
-                'numeric_value' => 792,
-                'unit' => 'participants',
-                'public_label' => '700+',
-                'source_label' => '2024 Annual Report',
-                'as_of_date' => '2024-12-31',
-                'verification_status' => VerificationStatus::Verified,
-                'status' => PublishStatus::Published,
-                'published_at' => now(),
-            ]
-        );
+        $ids = [];
+        foreach ($defs as $def) {
+            $metric = ImpactMetric::updateOrCreate(
+                ['label' => $def['label']],
+                [
+                    'value' => $def['value'],
+                    'numeric_value' => $def['numeric_value'],
+                    'public_label' => $def['public_label'],
+                    'source_label' => $def['source_label'],
+                    'verification_status' => VerificationStatus::Verified,
+                    'status' => PublishStatus::Published,
+                    'published_at' => now(),
+                ]
+            );
+            $ids[] = $metric->id;
+        }
+
+        // Keep older draft/legacy labels from colliding with homepage counters.
+        ImpactMetric::query()
+            ->whereIn('label', [
+                'Workshops delivered',
+                'Volunteers engaged',
+                'Conferences held',
+                'Webinars (legacy count)',
+                '2024 webinar participants',
+            ])
+            ->update([
+                'status' => PublishStatus::Draft,
+                'published_at' => null,
+            ]);
+
+        return $ids;
     }
 
     /** @return list<Webinar> */
@@ -961,9 +962,9 @@ HTML,
     /**
      * @param  array<string, Program>  $programs
      */
-    private function seedPages(ImpactMetric $webinarMetric, ImpactStory $komolion, array $programs): void
+    private function seedPages(array $metricIds, ImpactStory $komolion, array $programs): void
     {
-        $this->seedHomePage($webinarMetric, $komolion, $programs);
+        $this->seedHomePage($metricIds, $komolion, $programs);
         $this->seedAboutPages();
         $this->seedWhatWeDoPages($programs);
         $this->seedImpactPages($komolion);
@@ -974,7 +975,7 @@ HTML,
     /**
      * @param  array<string, Program>  $programs
      */
-    private function seedHomePage(ImpactMetric $webinarMetric, ImpactStory $komolion, array $programs): void
+    private function seedHomePage(array $metricIds, ImpactStory $komolion, array $programs): void
     {
         $page = Page::updateOrCreate(
             ['slug' => 'home'],
@@ -1000,8 +1001,8 @@ HTML,
             [
                 'type' => 'hero',
                 'content' => [
-                    'headline' => 'Inclusion for all, in all.',
-                    'supporting_text' => 'ASNEN champions African homegrown models of inclusive education, disability inclusion, and neurodiversity-grounded in UBUNTU, compassion, and dignity.',
+                    'headline' => 'Inclusion for all, in all. No child left behind.',
+                    'supporting_text' => 'ASNEN is a coalition of families, educators and advocates across Africa, building a model of inclusion rooted in Ubuntu — carried by the people who live it, not delivered to them.',
                     'primary_cta' => ['label' => 'Explore Our Programs', 'url' => '/what-we-do'],
                     'secondary_cta' => ['label' => 'See Our Impact', 'url' => '/impact'],
                 ],
@@ -1017,8 +1018,7 @@ HTML,
                 'type' => 'statistics',
                 'content' => [
                     'heading' => 'Impact at a Glance',
-                    'metric_ids' => [$webinarMetric->id],
-                    'footnote' => 'Figures drawn from ASNEN\'s 2024 Annual Report.',
+                    'metric_ids' => $metricIds,
                 ],
             ],
             [

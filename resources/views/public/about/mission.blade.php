@@ -76,7 +76,7 @@
 
     <x-public.ubuntu-values
         eyebrow="Ubuntu in practice"
-        heading="Behaviours we can be held to by families, members, and partners."
+        heading="Written as behaviours, not aspirations — so members and partners can hold us to them."
     />
 
     <x-public.about-explore current="mission" />

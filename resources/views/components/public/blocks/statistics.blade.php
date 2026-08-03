@@ -1,9 +1,22 @@
 @php
     $c = $content;
-    $metricIds = $c['metric_ids'] ?? [];
-    $metrics = \App\Models\ImpactMetric::published()
-        ->where('verification_status', \App\Enums\VerificationStatus::Verified)
-        ->when($metricIds, fn ($q) => $q->whereIn('id', $metricIds))
-        ->get();
+    $metricIds = collect($c['metric_ids'] ?? [])->filter()->map(fn ($id) => (int) $id)->values();
+
+    $query = \App\Models\ImpactMetric::published();
+
+    if ($metricIds->isNotEmpty()) {
+        $metrics = $query->whereIn('id', $metricIds->all())->get()
+            ->sortBy(fn ($metric) => $metricIds->search($metric->id))
+            ->values();
+    } else {
+        $metrics = $query
+            ->where('verification_status', \App\Enums\VerificationStatus::Verified)
+            ->latest('id')
+            ->get();
+    }
 @endphp
-<x-public.stats :metrics="$metrics" :footnote="$c['footnote'] ?? null" />
+<x-public.stats
+    :metrics="$metrics"
+    :heading="$c['heading'] ?? null"
+    :footnote="$c['footnote'] ?? null"
+/>

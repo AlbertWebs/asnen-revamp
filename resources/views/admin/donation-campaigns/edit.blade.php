@@ -10,27 +10,48 @@
         </div>
     @endif
 
-    <form method="POST" action="{{ $campaign->exists ? route('admin.donation-campaigns.update', $campaign) : route('admin.donation-campaigns.store') }}">
+    <form method="POST" action="{{ $campaign->exists ? route('admin.donation-campaigns.update', $campaign) : route('admin.donation-campaigns.store') }}" class="admin-form admin-form--wide">
         @csrf
         @if ($campaign->exists) @method('PUT') @endif
 
-        <div class="mb-4 flex justify-end">
-            <button type="submit" class="rounded-md bg-forest-700 px-4 py-2 text-sm font-medium text-white hover:bg-forest-800">Save</button>
-        </div>
+        <div class="admin-form__body">
+            <header class="admin-form__header">
+                <p class="admin-form__eyebrow">Donation campaigns</p>
+                <h2 class="admin-form__title">{{ $campaign->exists ? 'Edit campaign' : 'New campaign' }}</h2>
+            </header>
 
-        <div class="max-w-3xl rounded-lg border border-charcoal-200 bg-white p-4 shadow-sm">
-            <label for="title" class="mt-4 block text-sm font-medium text-charcoal-700">Title</label>
-            <input type="text" name="title" id="title" value="{{ old('title', $campaign->title) }}" class="mt-1 block w-full rounded-md border-charcoal-300 shadow-sm focus:border-forest-500 focus:ring-forest-500">
-            <label for="slug" class="mt-4 block text-sm font-medium text-charcoal-700">Slug</label>
-            <input type="text" name="slug" id="slug" value="{{ old('slug', $campaign->slug) }}" class="mt-1 block w-full rounded-md border-charcoal-300 shadow-sm focus:border-forest-500 focus:ring-forest-500">
-            <label for="summary" class="mt-4 block text-sm font-medium text-charcoal-700">Summary</label>
-            <textarea name="summary" id="summary" rows="4" class="mt-1 block w-full rounded-md border-charcoal-300 shadow-sm focus:border-forest-500 focus:ring-forest-500">{{ old('summary', $campaign->summary) }}</textarea>
-            <label for="body" class="mt-4 block text-sm font-medium text-charcoal-700">Body</label>
-            <textarea name="body" id="body" rows="4" class="mt-1 block w-full rounded-md border-charcoal-300 shadow-sm focus:border-forest-500 focus:ring-forest-500">{{ old('body', $campaign->body) }}</textarea>
-            <label for="goal_amount" class="mt-4 block text-sm font-medium text-charcoal-700">Goal Amount</label>
-            <input type="number" name="goal_amount" id="goal_amount" value="{{ old('goal_amount', $campaign->goal_amount) }}" class="mt-1 block w-full rounded-md border-charcoal-300 shadow-sm focus:border-forest-500 focus:ring-forest-500">
-            <label for="currency" class="mt-4 block text-sm font-medium text-charcoal-700">Currency</label>
-            <input type="text" name="currency" id="currency" value="{{ old('currency', $campaign->currency) }}" class="mt-1 block w-full rounded-md border-charcoal-300 shadow-sm focus:border-forest-500 focus:ring-forest-500">
+            <div class="admin-form__section">
+                <div class="admin-field">
+                    <label for="title" class="admin-label">Title</label>
+                    <input type="text" name="title" id="title" value="{{ old('title', $campaign->title) }}" class="admin-input">
+                </div>
+                <div class="admin-field">
+                    <label for="slug" class="admin-label">Slug</label>
+                    <input type="text" name="slug" id="slug" value="{{ old('slug', $campaign->slug) }}" class="admin-input">
+                </div>
+                <div class="admin-field">
+                    <label for="summary" class="admin-label">Summary</label>
+                    <textarea name="summary" id="summary" rows="4" class="admin-textarea">{{ old('summary', $campaign->summary) }}</textarea>
+                </div>
+                <div class="admin-field">
+                    <label for="body" class="admin-label">Body</label>
+                    <textarea name="body" id="body" rows="4" class="admin-textarea">{{ old('body', $campaign->body) }}</textarea>
+                </div>
+                <div class="grid gap-4 sm:grid-cols-2">
+                    <div class="admin-field">
+                        <label for="goal_amount" class="admin-label">Goal amount</label>
+                        <input type="number" name="goal_amount" id="goal_amount" value="{{ old('goal_amount', $campaign->goal_amount) }}" class="admin-input">
+                    </div>
+                    <div class="admin-field">
+                        <label for="currency" class="admin-label">Currency</label>
+                        <input type="text" name="currency" id="currency" value="{{ old('currency', $campaign->currency) }}" class="admin-input">
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin-form__actions">
+                <button type="submit" class="admin-btn-primary">Save</button>
+            </div>
         </div>
     </form>
 @endsection

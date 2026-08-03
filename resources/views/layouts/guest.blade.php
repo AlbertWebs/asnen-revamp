@@ -5,10 +5,11 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'ASNEN') }}</title>
+        <title>{{ $title ?? 'Admin Login' }} | {{ config('app.name', 'ASNEN') }}</title>
 
+        <link rel="icon" href="{{ asset('brand/logo.png') }}" type="image/png">
         <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=atkinson-hyperlegible:400,700|figtree:400,500,600&display=swap" rel="stylesheet" />
+        <link href="https://fonts.bunny.net/css?family=work-sans:400,500,600,700,800&display=swap" rel="stylesheet" />
         <script>
             (function () {
                 try {
@@ -45,19 +46,32 @@
         </script>
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans text-gray-900 antialiased">
+    <body class="font-sans text-charcoal antialiased bg-sand">
         <a href="#main-content" class="skip-link">Skip to main content</a>
-        <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100">
-            <div>
-                <a href="/">
-                    <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
-                </a>
+
+        <div class="relative min-h-screen flex items-center justify-center overflow-hidden p-4 sm:p-8">
+            <div aria-hidden="true" class="pointer-events-none absolute inset-0">
+                <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(12,119,188,0.08),transparent_55%)]"></div>
+                <div class="absolute -top-24 right-[12%] h-64 w-64 rounded-full bg-[radial-gradient(circle,rgba(140,198,63,0.22),transparent_70%)] blur-2xl"></div>
+                <div class="absolute -bottom-28 left-[8%] h-72 w-72 rounded-full bg-[radial-gradient(circle,rgba(12,119,188,0.18),transparent_70%)] blur-2xl"></div>
             </div>
 
-            <div id="main-content" class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg" role="main">
-                {{ $slot }}
+            <div class="relative w-full max-w-md">
+                <div aria-hidden="true" class="pointer-events-none absolute -inset-6 opacity-60 blur-2xl">
+                    <div class="absolute inset-0 bg-[radial-gradient(closest-side,rgba(12,119,188,0.18),transparent_70%)]"></div>
+                    <div class="absolute -top-10 -right-10 h-48 w-48 rounded-full bg-[radial-gradient(circle,rgba(140,198,63,0.28),transparent_70%)]"></div>
+                    <div class="absolute -bottom-12 -left-12 h-56 w-56 rounded-full bg-[radial-gradient(circle,rgba(74,76,112,0.16),transparent_70%)]"></div>
+                </div>
+
+                <div id="main-content" class="relative overflow-hidden rounded-2xl border border-charcoal/10 bg-white shadow-lg" role="main">
+                    <div aria-hidden="true" class="h-1.5 bg-gradient-to-r from-brand via-lime to-gold"></div>
+                    <div class="p-8">
+                        {{ $slot }}
+                    </div>
+                </div>
             </div>
         </div>
+
         <x-public.a11y-toolbar />
         <style>[x-cloak]{display:none!important}</style>
     </body>

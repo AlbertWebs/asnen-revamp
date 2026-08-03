@@ -16,12 +16,12 @@
             @if ($model->status?->value === 'published' || (string) $model->status === 'published')
                 <form method="POST" action="{{ route('admin.'.$routePrefix.'.unpublish', $model) }}">
                     @csrf
-                    <button type="submit" class="rounded-md border border-charcoal-300 bg-white px-3 py-1.5 text-sm text-charcoal-700 hover:bg-charcoal-50">Unpublish</button>
+                    <button type="submit" class="admin-btn-secondary">Unpublish</button>
                 </form>
             @else
                 <form method="POST" action="{{ route('admin.'.$routePrefix.'.publish', $model) }}">
                     @csrf
-                    <button type="submit" class="rounded-md bg-forest-700 px-3 py-1.5 text-sm font-medium text-white hover:bg-forest-800">Publish</button>
+                    <button type="submit" class="admin-btn-primary">Publish</button>
                 </form>
             @endif
         @endcan

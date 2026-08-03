@@ -10,33 +10,52 @@
         </div>
     @endif
 
-    <form method="POST" action="{{ $article->exists ? route('admin.articles.update', $article) : route('admin.articles.store') }}">
+    <form method="POST" action="{{ $article->exists ? route('admin.articles.update', $article) : route('admin.articles.store') }}" class="admin-form admin-form--wide">
         @csrf
         @if ($article->exists) @method('PUT') @endif
 
-        <div class="mb-4 flex justify-end">
-            <button type="submit" class="rounded-md bg-forest-700 px-4 py-2 text-sm font-medium text-white hover:bg-forest-800">Save</button>
-        </div>
+        <div class="admin-form__body">
+            <header class="admin-form__header">
+                <p class="admin-form__eyebrow">Articles</p>
+                <h2 class="admin-form__title">{{ $article->exists ? 'Edit article' : 'New article' }}</h2>
+            </header>
 
-        <div class="max-w-3xl rounded-lg border border-charcoal-200 bg-white p-4 shadow-sm">
-            <label for="title" class="mt-4 block text-sm font-medium text-charcoal-700">Title</label>
-            <input type="text" name="title" id="title" value="{{ old('title', $article->title) }}" class="mt-1 block w-full rounded-md border-charcoal-300 shadow-sm focus:border-forest-500 focus:ring-forest-500">
-            <label for="slug" class="mt-4 block text-sm font-medium text-charcoal-700">Slug</label>
-            <input type="text" name="slug" id="slug" value="{{ old('slug', $article->slug) }}" class="mt-1 block w-full rounded-md border-charcoal-300 shadow-sm focus:border-forest-500 focus:ring-forest-500">
-            <label for="excerpt" class="mt-4 block text-sm font-medium text-charcoal-700">Excerpt</label>
-            <input type="text" name="excerpt" id="excerpt" value="{{ old('excerpt', $article->excerpt) }}" class="mt-1 block w-full rounded-md border-charcoal-300 shadow-sm focus:border-forest-500 focus:ring-forest-500">
-            <label for="body" class="mt-4 block text-sm font-medium text-charcoal-700">Body</label>
-            <textarea name="body" id="body" rows="4" class="mt-1 block w-full rounded-md border-charcoal-300 shadow-sm focus:border-forest-500 focus:ring-forest-500">{{ old('body', $article->body) }}</textarea>
-            <label for="category" class="mt-4 block text-sm font-medium text-charcoal-700">Category</label>
-            <input type="text" name="category" id="category" value="{{ old('category', $article->category) }}" class="mt-1 block w-full rounded-md border-charcoal-300 shadow-sm focus:border-forest-500 focus:ring-forest-500">
-            <label for="reading_time_minutes" class="mt-4 block text-sm font-medium text-charcoal-700">Reading Time Minutes</label>
-            <input type="number" name="reading_time_minutes" id="reading_time_minutes" value="{{ old('reading_time_minutes', $article->reading_time_minutes) }}" class="mt-1 block w-full rounded-md border-charcoal-300 shadow-sm focus:border-forest-500 focus:ring-forest-500">
+            <div class="admin-form__section">
+                <div class="admin-field">
+                    <label for="title" class="admin-label">Title</label>
+                    <input type="text" name="title" id="title" value="{{ old('title', $article->title) }}" class="admin-input">
+                </div>
+                <div class="admin-field">
+                    <label for="slug" class="admin-label">Slug</label>
+                    <input type="text" name="slug" id="slug" value="{{ old('slug', $article->slug) }}" class="admin-input">
+                </div>
+                <div class="admin-field">
+                    <label for="excerpt" class="admin-label">Excerpt</label>
+                    <input type="text" name="excerpt" id="excerpt" value="{{ old('excerpt', $article->excerpt) }}" class="admin-input">
+                </div>
+                <div class="admin-field">
+                    <label for="body" class="admin-label">Body</label>
+                    <textarea name="body" id="body" rows="4" class="admin-textarea">{{ old('body', $article->body) }}</textarea>
+                </div>
+                <div class="admin-field">
+                    <label for="category" class="admin-label">Category</label>
+                    <input type="text" name="category" id="category" value="{{ old('category', $article->category) }}" class="admin-input">
+                </div>
+                <div class="admin-field">
+                    <label for="reading_time_minutes" class="admin-label">Reading time (minutes)</label>
+                    <input type="number" name="reading_time_minutes" id="reading_time_minutes" value="{{ old('reading_time_minutes', $article->reading_time_minutes) }}" class="admin-input">
+                </div>
 
-            @include('admin.partials.media-picker', [
-                'name' => 'featured_image_id',
-                'value' => $article->featured_image_id,
-                'label' => 'Article image',
-            ])
+                @include('admin.partials.media-picker', [
+                    'name' => 'featured_image_id',
+                    'value' => $article->featured_image_id,
+                    'label' => 'Article image',
+                ])
+            </div>
+
+            <div class="admin-form__actions">
+                <button type="submit" class="admin-btn-primary">Save</button>
+            </div>
         </div>
     </form>
 @endsection

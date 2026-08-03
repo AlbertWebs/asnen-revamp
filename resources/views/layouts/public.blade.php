@@ -7,7 +7,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=Work+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,500;0,8..60,600;0,8..60,700;1,8..60,500;1,8..60,600&family=Work+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
 
     <link rel="icon" href="{{ asset('brand/logo.png') }}" type="image/png">
     <title>@yield('title', $defaultSeoTitle ?? $siteName)</title>
@@ -58,6 +58,22 @@
     @endif
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <script>
+        (function () {
+            function syncSiteChrome() {
+                var ann = document.querySelector('[aria-label="Site announcement"]');
+                var header = document.getElementById('site-header');
+                var h = (ann ? ann.offsetHeight : 0) + (header ? header.offsetHeight : 0);
+                if (h) document.documentElement.style.setProperty('--site-chrome', h + 'px');
+            }
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', syncSiteChrome);
+            } else {
+                syncSiteChrome();
+            }
+            window.addEventListener('resize', syncSiteChrome);
+        })();
+    </script>
     <script type="application/ld+json">
     {!! json_encode([
         '@context' => 'https://schema.org',
@@ -84,11 +100,11 @@
     <x-public.a11y-skip-links />
 
     @if($globalAnnouncement ?? null)
-        <div class="bg-gold text-sm text-charcoal" role="region" aria-label="Site announcement">
+        <div class="bg-brand text-sm text-white" role="region" aria-label="Site announcement">
             <div class="mx-auto flex max-w-editorial flex-wrap items-center justify-center gap-2 px-6 py-2 text-center lg:px-7">
                 <span>{{ $globalAnnouncement->message }}</span>
                 @if($globalAnnouncement->link_url)
-                    <a href="{{ $globalAnnouncement->link_url }}" class="font-semibold underline underline-offset-2 hover:text-brand">
+                    <a href="{{ $globalAnnouncement->link_url }}" class="font-semibold text-white underline underline-offset-2 hover:text-gold">
                         {{ $globalAnnouncement->link_label ?? 'Learn more' }}
                     </a>
                 @endif
@@ -191,6 +207,7 @@
     />
 
     <x-public.a11y-toolbar />
+    <x-public.back-to-top />
     <x-public.cookie-consent />
 
     <div id="math-captcha-modal" class="math-captcha" hidden>

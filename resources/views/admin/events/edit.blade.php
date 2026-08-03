@@ -10,80 +10,87 @@
         </div>
     @endif
 
-    <form method="POST" action="{{ $event->exists ? route('admin.events.update', $event) : route('admin.events.store') }}">
+    <form method="POST" action="{{ $event->exists ? route('admin.events.update', $event) : route('admin.events.store') }}" class="admin-form admin-form--wide">
         @csrf
         @if ($event->exists) @method('PUT') @endif
 
-        <div class="mb-4 flex justify-end">
-            <button type="submit" class="rounded-md bg-forest-700 px-4 py-2 text-sm font-medium text-white hover:bg-forest-800">Save</button>
-        </div>
+        <div class="admin-form__body">
+            <header class="admin-form__header">
+                <p class="admin-form__eyebrow">Events</p>
+                <h2 class="admin-form__title">{{ $event->exists ? 'Edit event' : 'New event' }}</h2>
+            </header>
 
-        <div class="max-w-3xl space-y-4 rounded-lg border border-charcoal-200 bg-white p-4 shadow-sm">
-            <div>
-                <label for="title" class="block text-sm font-medium text-charcoal-700">Title</label>
-                <input type="text" name="title" id="title" value="{{ old('title', $event->title) }}" required class="mt-1 block w-full rounded-md border-charcoal-300 shadow-sm focus:border-forest-500 focus:ring-forest-500">
-            </div>
-            <div>
-                <label for="slug" class="block text-sm font-medium text-charcoal-700">Slug</label>
-                <input type="text" name="slug" id="slug" value="{{ old('slug', $event->slug) }}" class="mt-1 block w-full rounded-md border-charcoal-300 shadow-sm focus:border-forest-500 focus:ring-forest-500">
-            </div>
-            <div>
-                <label for="type" class="block text-sm font-medium text-charcoal-700">Type</label>
-                <select name="type" id="type" class="mt-1 block w-full rounded-md border-charcoal-300 shadow-sm focus:border-forest-500 focus:ring-forest-500">
-                    @php $type = old('type', $event->type); @endphp
-                    <option value="">Select type</option>
-                    @foreach (['conference' => 'Conference', 'workshop' => 'Workshop', 'webinar' => 'Webinar', 'outreach' => 'Outreach', 'other' => 'Other'] as $value => $label)
-                        <option value="{{ $value }}" @selected($type === $value)>{{ $label }}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div>
-                <label for="summary" class="block text-sm font-medium text-charcoal-700">Summary</label>
-                <textarea name="summary" id="summary" rows="3" class="mt-1 block w-full rounded-md border-charcoal-300 shadow-sm focus:border-forest-500 focus:ring-forest-500">{{ old('summary', $event->summary) }}</textarea>
-            </div>
-            <div>
-                <label for="body" class="block text-sm font-medium text-charcoal-700">Body</label>
-                <textarea name="body" id="body" rows="6" class="mt-1 block w-full rounded-md border-charcoal-300 shadow-sm focus:border-forest-500 focus:ring-forest-500">{{ old('body', $event->body) }}</textarea>
-            </div>
-            <div>
-                <label for="venue" class="block text-sm font-medium text-charcoal-700">Venue</label>
-                <input type="text" name="venue" id="venue" value="{{ old('venue', $event->venue) }}" class="mt-1 block w-full rounded-md border-charcoal-300 shadow-sm focus:border-forest-500 focus:ring-forest-500">
-            </div>
-            <div class="flex items-center gap-2">
-                <input type="checkbox" name="is_online" id="is_online" value="1" class="rounded border-charcoal-300 text-forest-700 focus:ring-forest-500" @checked(old('is_online', $event->is_online))>
-                <label for="is_online" class="text-sm text-charcoal-700">Online event</label>
-            </div>
-            <div>
-                <label for="online_url" class="block text-sm font-medium text-charcoal-700">Online URL</label>
-                <input type="text" name="online_url" id="online_url" value="{{ old('online_url', $event->online_url) }}" placeholder="https://… or /events-learning/…" class="mt-1 block w-full rounded-md border-charcoal-300 shadow-sm focus:border-forest-500 focus:ring-forest-500">
-            </div>
-            <div class="grid gap-4 sm:grid-cols-2">
-                <div>
-                    <label for="starts_at" class="block text-sm font-medium text-charcoal-700">Starts at</label>
-                    <input type="datetime-local" name="starts_at" id="starts_at" required value="{{ old('starts_at', optional($event->starts_at)->format('Y-m-d\TH:i')) }}" class="mt-1 block w-full rounded-md border-charcoal-300 shadow-sm focus:border-forest-500 focus:ring-forest-500">
+            <div class="admin-form__section">
+                <div class="admin-field">
+                    <label for="title" class="admin-label">Title</label>
+                    <input type="text" name="title" id="title" value="{{ old('title', $event->title) }}" required class="admin-input">
                 </div>
-                <div>
-                    <label for="ends_at" class="block text-sm font-medium text-charcoal-700">Ends at</label>
-                    <input type="datetime-local" name="ends_at" id="ends_at" value="{{ old('ends_at', optional($event->ends_at)->format('Y-m-d\TH:i')) }}" class="mt-1 block w-full rounded-md border-charcoal-300 shadow-sm focus:border-forest-500 focus:ring-forest-500">
+                <div class="admin-field">
+                    <label for="slug" class="admin-label">Slug</label>
+                    <input type="text" name="slug" id="slug" value="{{ old('slug', $event->slug) }}" class="admin-input">
                 </div>
-            </div>
-            <div class="grid gap-4 sm:grid-cols-2">
-                <div>
-                    <label for="timezone" class="block text-sm font-medium text-charcoal-700">Timezone</label>
-                    <input type="text" name="timezone" id="timezone" value="{{ old('timezone', $event->timezone ?: 'Africa/Nairobi') }}" class="mt-1 block w-full rounded-md border-charcoal-300 shadow-sm focus:border-forest-500 focus:ring-forest-500">
+                <div class="admin-field">
+                    <label for="type" class="admin-label">Type</label>
+                    <select name="type" id="type" class="admin-select">
+                        @php $type = old('type', $event->type); @endphp
+                        <option value="">Select type</option>
+                        @foreach (['conference' => 'Conference', 'workshop' => 'Workshop', 'webinar' => 'Webinar', 'outreach' => 'Outreach', 'other' => 'Other'] as $value => $label)
+                            <option value="{{ $value }}" @selected($type === $value)>{{ $label }}</option>
+                        @endforeach
+                    </select>
                 </div>
-                <div>
-                    <label for="capacity" class="block text-sm font-medium text-charcoal-700">Capacity</label>
-                    <input type="number" name="capacity" id="capacity" min="1" value="{{ old('capacity', $event->capacity) }}" class="mt-1 block w-full rounded-md border-charcoal-300 shadow-sm focus:border-forest-500 focus:ring-forest-500">
+                <div class="admin-field">
+                    <label for="summary" class="admin-label">Summary</label>
+                    <textarea name="summary" id="summary" rows="3" class="admin-textarea">{{ old('summary', $event->summary) }}</textarea>
                 </div>
+                <div class="admin-field">
+                    <label for="body" class="admin-label">Body</label>
+                    <textarea name="body" id="body" rows="6" class="admin-textarea">{{ old('body', $event->body) }}</textarea>
+                </div>
+                <div class="admin-field">
+                    <label for="venue" class="admin-label">Venue</label>
+                    <input type="text" name="venue" id="venue" value="{{ old('venue', $event->venue) }}" class="admin-input">
+                </div>
+                <label class="admin-check">
+                    <input type="checkbox" name="is_online" id="is_online" value="1" @checked(old('is_online', $event->is_online))>
+                    <span>Online event</span>
+                </label>
+                <div class="admin-field">
+                    <label for="online_url" class="admin-label">Online URL</label>
+                    <input type="text" name="online_url" id="online_url" value="{{ old('online_url', $event->online_url) }}" placeholder="https://… or /events-learning/…" class="admin-input">
+                </div>
+                <div class="grid gap-4 sm:grid-cols-2">
+                    <div class="admin-field">
+                        <label for="starts_at" class="admin-label">Starts at</label>
+                        <input type="datetime-local" name="starts_at" id="starts_at" required value="{{ old('starts_at', optional($event->starts_at)->format('Y-m-d\TH:i')) }}" class="admin-input">
+                    </div>
+                    <div class="admin-field">
+                        <label for="ends_at" class="admin-label">Ends at</label>
+                        <input type="datetime-local" name="ends_at" id="ends_at" value="{{ old('ends_at', optional($event->ends_at)->format('Y-m-d\TH:i')) }}" class="admin-input">
+                    </div>
+                </div>
+                <div class="grid gap-4 sm:grid-cols-2">
+                    <div class="admin-field">
+                        <label for="timezone" class="admin-label">Timezone</label>
+                        <input type="text" name="timezone" id="timezone" value="{{ old('timezone', $event->timezone ?: 'Africa/Nairobi') }}" class="admin-input">
+                    </div>
+                    <div class="admin-field">
+                        <label for="capacity" class="admin-label">Capacity</label>
+                        <input type="number" name="capacity" id="capacity" min="1" value="{{ old('capacity', $event->capacity) }}" class="admin-input">
+                    </div>
+                </div>
+
+                @include('admin.partials.media-picker', [
+                    'name' => 'featured_image_id',
+                    'value' => $event->featured_image_id,
+                    'label' => 'Event image',
+                    'help' => 'Card and event detail hero image.',
+                ])
             </div>
 
-            @include('admin.partials.media-picker', [
-                'name' => 'featured_image_id',
-                'value' => $event->featured_image_id,
-                'label' => 'Event image',
-                'help' => 'Card and event detail hero image.',
-            ])
+            <div class="admin-form__actions">
+                <button type="submit" class="admin-btn-primary">Save</button>
+            </div>
         </div>
     </form>
 @endsection

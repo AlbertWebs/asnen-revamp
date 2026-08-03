@@ -4,44 +4,72 @@
         ? \App\Models\MediaAsset::query()->find($c['image_id'])
         : null;
     $imageUrl = $image?->publicUrl();
-    $imageAlt = $c['image_alt'] ?? ($image?->alt ?? 'About ASNEN');
+    $imageAlt = $c['image_alt'] ?? ($image?->alt ?? 'ASNEN community');
+    $ctaUrl = $c['cta_url'] ?? route('site.about.who-we-are');
+    $ctaLabel = $c['cta_label'] ?? 'Learn more about ASNEN';
+    $pillars = $c['pillars'] ?? [
+        ['label' => 'Knowledge', 'text' => 'Homegrown insight that shapes inclusive practice.'],
+        ['label' => 'Capacity', 'text' => 'Training families, educators, and communities.'],
+        ['label' => 'Collaboration', 'text' => 'A pan-African network walking together.'],
+    ];
 @endphp
-<x-public.section tone="ivory">
-    <div class="grid gap-10 lg:grid-cols-2 lg:items-stretch">
-        <div class="flex flex-col">
-            <div class="section-head">
-                <span class="eyebrow mb-3 block">About ASNEN</span>
-                <h2>{{ $c['heading'] ?? 'Who We Are' }}</h2>
-            </div>
-            <div class="max-w-[75ch] text-lg leading-relaxed text-charcoal-500">
-                <x-public.prose :html="$sanitizer->clean($c['body'] ?? '')" />
-            </div>
-        </div>
 
-        <div class="relative min-h-[16rem] overflow-hidden rounded-xl bg-sand lg:min-h-0">
-            @if($imageUrl)
-                <img
-                    src="{{ $imageUrl }}"
-                    alt="{{ $imageAlt }}"
-                    class="absolute inset-0 h-full w-full object-cover"
-                    loading="lazy"
-                    decoding="async"
-                >
-            @else
-                <div
-                    class="absolute inset-0 flex flex-col items-center justify-center gap-2 border border-dashed border-brand/30 bg-gradient-to-br from-brand-50 via-sand to-lime-50 text-center"
-                    role="img"
-                    aria-label="About image placeholder"
-                >
-                    <svg class="h-10 w-10 text-brand/40" viewBox="0 0 48 48" fill="none" aria-hidden="true">
-                        <circle cx="16" cy="16" r="8" stroke="currentColor" stroke-width="2"/>
-                        <circle cx="30" cy="14" r="6" stroke="currentColor" stroke-width="2"/>
-                        <circle cx="34" cy="28" r="8" stroke="currentColor" stroke-width="2"/>
-                        <circle cx="18" cy="32" r="5" stroke="currentColor" stroke-width="2"/>
-                    </svg>
-                    <span class="px-3 font-mono text-[0.65rem] uppercase tracking-wider text-brand/70">About image placeholder</span>
+<section class="section-editorial bg-ivory home-about" aria-labelledby="home-about-heading">
+    <div class="home-about__atmosphere" aria-hidden="true"></div>
+
+    <div class="mx-auto max-w-editorial px-6 lg:px-7">
+        <div class="home-about__grid">
+            <div class="home-about__copy reveal">
+                <p class="home-about__eyebrow">About ASNEN</p>
+                <p class="home-about__brand">ASNEN</p>
+                <h2 id="home-about-heading" class="home-about__title">{{ $c['heading'] ?? 'Who We Are' }}</h2>
+
+                <div class="home-about__body">
+                    <x-public.prose :html="$sanitizer->clean($c['body'] ?? '')" />
                 </div>
-            @endif
+
+                @if(is_array($pillars) && count($pillars))
+                    <ul class="home-about__pillars" role="list">
+                        @foreach($pillars as $pillar)
+                            <li class="home-about__pillar">
+                                <span class="home-about__pillar-label">{{ $pillar['label'] ?? '' }}</span>
+                                <span class="home-about__pillar-text">{{ $pillar['text'] ?? '' }}</span>
+                            </li>
+                        @endforeach
+                    </ul>
+                @endif
+
+                <div class="home-about__actions">
+                    <a href="{{ $ctaUrl }}" class="btn-primary">{{ $ctaLabel }}</a>
+                    <a href="{{ route('site.about.mission') }}" class="btn-secondary">Mission &amp; values</a>
+                </div>
+            </div>
+
+            <aside class="home-about__aside reveal">
+                <div class="home-about__visual">
+                    @if($imageUrl)
+                        <img
+                            src="{{ $imageUrl }}"
+                            alt="{{ $imageAlt }}"
+                            class="home-about__photo"
+                            width="720"
+                            height="900"
+                            loading="lazy"
+                            decoding="async"
+                        >
+                    @else
+                        <div class="home-about__placeholder" role="img" aria-label="About ASNEN">
+                            <span class="home-about__placeholder-mark">A</span>
+                        </div>
+                    @endif
+                    <span class="home-about__rule" aria-hidden="true"></span>
+                </div>
+
+                <blockquote class="home-about__quote">
+                    <p class="home-about__quote-label">Our compass</p>
+                    <p class="home-about__quote-text">Inclusion for all, in all. No child left behind.</p>
+                </blockquote>
+            </aside>
         </div>
     </div>
-</x-public.section>
+</section>

@@ -218,14 +218,52 @@ html.a11y-reduce-motion [data-partner-marquee] .partner-marquee__track {
     left: 1.25rem;
     z-index: 60;
 }
+.a11y-fab--right {
+    left: auto;
+    right: 1.25rem;
+    bottom: 5rem; /* sit above back-to-top */
+}
 .easy-read-fab {
     position: fixed;
-    bottom: 1.25rem;
+    bottom: 5rem; /* sit above back-to-top */
     right: 1.25rem;
     z-index: 60;
     display: flex;
     flex-direction: column;
     align-items: flex-end;
+}
+.back-to-top {
+    position: fixed;
+    right: 1.25rem;
+    bottom: 1.25rem;
+    z-index: 61;
+}
+.back-to-top__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 9999px;
+    border: none;
+    background: #0C77BC;
+    color: #fff;
+    box-shadow: 0 8px 20px rgba(12, 119, 188, 0.28);
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+.back-to-top__btn:hover {
+    background: #084770;
+    transform: translateY(-2px);
+}
+.back-to-top__btn:focus-visible {
+    outline: 3px solid #FFF200;
+    outline-offset: 2px;
+}
+html.a11y-reduce-motion .back-to-top__btn,
+html.a11y-reduce-motion .back-to-top__btn:hover {
+    transition: none;
+    transform: none;
 }
 .a11y-panel {
     max-height: min(80vh, 36rem);

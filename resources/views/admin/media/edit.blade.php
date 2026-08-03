@@ -4,44 +4,141 @@
 @section('heading', 'Edit Media')
 
 @section('content')
-    <form method="POST" action="{{ route('admin.media.update', $asset) }}" class="max-w-xl rounded-lg border border-charcoal-200 bg-white p-4 shadow-sm">
-        @csrf
-        @method('PUT')
+    <div class="mb-5">
+        <a href="{{ route('admin.media.index') }}" class="admin-btn-ghost !min-h-0 !px-0 !py-0 text-sm">
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Back to media library
+        </a>
+    </div>
 
-        <p class="text-sm text-charcoal-600">{{ $asset->filename }} ({{ number_format($asset->size / 1024, 1) }} KB)</p>
-
-        <label for="alt" class="mt-4 block text-sm font-medium text-charcoal-700">Alt text</label>
-        <input type="text" name="alt" id="alt" value="{{ old('alt', $asset->alt) }}" class="mt-1 block w-full rounded-md border-charcoal-300 shadow-sm focus:border-forest-500 focus:ring-forest-500">
-
-        <label for="caption" class="mt-4 block text-sm font-medium text-charcoal-700">Caption</label>
-        <textarea name="caption" id="caption" rows="3" class="mt-1 block w-full rounded-md border-charcoal-300 shadow-sm focus:border-forest-500 focus:ring-forest-500">{{ old('caption', $asset->caption) }}</textarea>
-
-        <label for="consent_status" class="mt-4 block text-sm font-medium text-charcoal-700">Consent status</label>
-        <select name="consent_status" id="consent_status" class="mt-1 block w-full rounded-md border-charcoal-300 shadow-sm focus:border-forest-500 focus:ring-forest-500">
-            @foreach (\App\Enums\ConsentStatus::cases() as $status)
-                <option value="{{ $status->value }}" @selected(old('consent_status', $asset->consent_status?->value ?? $asset->consent_status) === $status->value)>{{ ucfirst(str_replace('_', ' ', $status->value)) }}</option>
-            @endforeach
-        </select>
-
-        <label for="consent_notes" class="mt-4 block text-sm font-medium text-charcoal-700">Consent notes</label>
-        <textarea name="consent_notes" id="consent_notes" rows="2" class="mt-1 block w-full rounded-md border-charcoal-300 shadow-sm focus:border-forest-500 focus:ring-forest-500">{{ old('consent_notes', $asset->consent_notes) }}</textarea>
-
-        <label for="credit" class="mt-4 block text-sm font-medium text-charcoal-700">Credit</label>
-        <input type="text" name="credit" id="credit" value="{{ old('credit', $asset->credit) }}" class="mt-1 block w-full rounded-md border-charcoal-300 shadow-sm focus:border-forest-500 focus:ring-forest-500">
-
-        <label class="mt-4 flex items-center gap-2 text-sm text-charcoal-700">
-            <input type="checkbox" name="is_private" value="1" @checked(old('is_private', $asset->is_private)) class="rounded border-charcoal-300 text-forest-600 focus:ring-forest-500">
-            Private asset
-        </label>
-
-        <button type="submit" class="rounded-md bg-forest-700 px-4 py-2 text-sm font-medium text-white hover:bg-forest-800">Save</button>
-    </form>
-
-    @can('media.delete')
-        <form method="POST" action="{{ route('admin.media.destroy', $asset) }}" class="mt-4" onsubmit="return confirm('Delete this media asset?')">
+    <div class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_16rem]">
+        <form method="POST" action="{{ route('admin.media.update', $asset) }}" class="admin-form">
             @csrf
-            @method('DELETE')
-            <button type="submit" class="rounded-md border border-red-300 px-4 py-2 text-sm text-red-700 hover:bg-red-50">Delete</button>
+            @method('PUT')
+
+            <div class="admin-form__body">
+                <header class="admin-form__header">
+                    <p class="admin-form__eyebrow">Media library</p>
+                    <h2 class="admin-form__title">Edit asset details</h2>
+                    <p class="admin-form__intro">
+                        Update accessibility text, consent, and credit for
+                        <span class="font-semibold text-charcoal">{{ $asset->filename }}</span>
+                        ({{ number_format($asset->size / 1024, 1) }} KB).
+                    </p>
+                </header>
+
+                <div class="admin-form__section">
+                    <p class="admin-form__section-title">Details</p>
+
+                    <div class="admin-field">
+                        <label for="alt" class="admin-label">Alt text</label>
+                        <p class="admin-hint">Describe the image for screen readers and when the file can’t load.</p>
+                        <input
+                            type="text"
+                            name="alt"
+                            id="alt"
+                            value="{{ old('alt', $asset->alt) }}"
+                            class="admin-input"
+                            @error('alt') aria-invalid="true" @enderror
+                        >
+                        @error('alt')
+                            <p class="admin-error">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div class="admin-field">
+                        <label for="caption" class="admin-label">Caption</label>
+                        <textarea
+                            name="caption"
+                            id="caption"
+                            rows="3"
+                            class="admin-textarea"
+                            @error('caption') aria-invalid="true" @enderror
+                        >{{ old('caption', $asset->caption) }}</textarea>
+                        @error('caption')
+                            <p class="admin-error">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div class="admin-field">
+                        <label for="credit" class="admin-label">Credit</label>
+                        <input
+                            type="text"
+                            name="credit"
+                            id="credit"
+                            value="{{ old('credit', $asset->credit) }}"
+                            class="admin-input"
+                            placeholder="Photographer or source"
+                        >
+                    </div>
+                </div>
+
+                <div class="admin-form__section">
+                    <p class="admin-form__section-title">Consent & privacy</p>
+
+                    <div class="admin-field">
+                        <label for="consent_status" class="admin-label">Consent status</label>
+                        <select name="consent_status" id="consent_status" class="admin-select">
+                            @foreach (\App\Enums\ConsentStatus::cases() as $status)
+                                <option value="{{ $status->value }}" @selected(old('consent_status', $asset->consent_status?->value ?? $asset->consent_status) === $status->value)>
+                                    {{ ucfirst(str_replace('_', ' ', $status->value)) }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="admin-field">
+                        <label for="consent_notes" class="admin-label">Consent notes</label>
+                        <textarea
+                            name="consent_notes"
+                            id="consent_notes"
+                            rows="2"
+                            class="admin-textarea"
+                            placeholder="Where consent was recorded, restrictions, expiry…"
+                        >{{ old('consent_notes', $asset->consent_notes) }}</textarea>
+                    </div>
+
+                    <label class="admin-check">
+                        <input type="checkbox" name="is_private" value="1" @checked(old('is_private', $asset->is_private))>
+                        <span>
+                            <span class="block font-semibold text-charcoal">Private asset</span>
+                            <span class="block text-xs text-charcoal/50">Hide from public media URLs where supported.</span>
+                        </span>
+                    </label>
+                </div>
+
+                <div class="admin-form__actions">
+                    <button type="submit" class="admin-btn-primary">Save changes</button>
+                    <a href="{{ route('admin.media.index') }}" class="admin-btn-secondary">Cancel</a>
+                </div>
+            </div>
         </form>
-    @endcan
+
+        <aside class="space-y-4">
+            <div class="overflow-hidden rounded-2xl border border-charcoal/10 bg-white shadow-sm">
+                <div class="aspect-video bg-sand flex items-center justify-center text-xs text-charcoal/50">
+                    @if (str_starts_with($asset->mime ?? '', 'image/'))
+                        <img src="{{ asset('storage/'.$asset->path) }}" alt="{{ e($asset->alt ?? '') }}" class="h-full w-full object-cover">
+                    @else
+                        {{ $asset->mime }}
+                    @endif
+                </div>
+                <div class="space-y-1 p-4 text-sm">
+                    <p class="truncate font-semibold text-charcoal" title="{{ $asset->filename }}">{{ $asset->filename }}</p>
+                    <p class="text-xs text-charcoal/50">{{ $asset->mime }} · {{ number_format($asset->size / 1024, 1) }} KB</p>
+                    <p class="text-xs text-charcoal/50">Folder: {{ $asset->folder ?? '—' }}</p>
+                </div>
+            </div>
+
+            @can('media.delete')
+                <form method="POST" action="{{ route('admin.media.destroy', $asset) }}" onsubmit="return confirm('Delete this media asset?')">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="admin-btn-danger w-full">Delete asset</button>
+                </form>
+            @endcan
+        </aside>
+    </div>
 @endsection

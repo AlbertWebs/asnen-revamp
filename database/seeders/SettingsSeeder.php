@@ -21,8 +21,8 @@ class SettingsSeeder extends Seeder
             // Contact
             ['key' => 'contact.city', 'group' => 'contact', 'value' => ['value' => 'Nairobi, Kenya'], 'is_public' => true],
             ['key' => 'contact.email', 'group' => 'contact', 'value' => ['value' => 'info@asnenafrica.org'], 'is_public' => true],
-            ['key' => 'contact.phone_primary', 'group' => 'contact', 'value' => ['value' => '+254 703 906 990'], 'is_public' => true],
-            ['key' => 'contact.phone_secondary', 'group' => 'contact', 'value' => ['value' => '+254 712 652 621'], 'is_public' => true],
+            ['key' => 'contact.phone_primary', 'group' => 'contact', 'value' => ['value' => '+254 712 652 621'], 'is_public' => true],
+            ['key' => 'contact.phone_secondary', 'group' => 'contact', 'value' => ['value' => '+254 703 906 990'], 'is_public' => true],
             ['key' => 'contact.verification_status', 'group' => 'contact', 'value' => ['value' => 'needs_verification'], 'is_public' => false],
 
             // Social (from asnenafrica.org / known public profiles)

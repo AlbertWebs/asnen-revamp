@@ -64,13 +64,52 @@ class PageController extends Controller
 
         $page->load('blocks');
 
-        $blocks = $page->blocks->map(fn ($block) => [
-            'type' => $block->type,
-            'is_visible' => $block->is_visible,
-            'content' => $block->content ?? [],
-            'settings' => $block->settings ?? [],
-            'anchor_id' => $block->anchor_id,
-        ])->values()->all();
+        $blocks = $page->blocks->map(function ($block) {
+            $content = $block->content ?? [];
+            if (! is_array($content)) {
+                $content = [];
+            }
+
+            // Ensure nested CTA objects exist so Alpine x-model bindings work.
+            if (($block->type ?? '') === 'hero') {
+                $content['headline'] = $content['headline'] ?? ($content['heading'] ?? '');
+                $content['supporting_text'] = $content['supporting_text'] ?? ($content['body'] ?? '');
+                $content['image_id'] = $content['image_id'] ?? null;
+                $content['image_alt'] = $content['image_alt'] ?? null;
+                $imageIds = collect($content['image_ids'] ?? [])
+                    ->filter(fn ($id) => filled($id))
+                    ->map(fn ($id) => (int) $id)
+                    ->unique()
+                    ->values()
+                    ->all();
+                if ($imageIds === [] && ! empty($content['image_id'])) {
+                    $imageIds = [(int) $content['image_id']];
+                }
+                $content['image_ids'] = $imageIds;
+                $content['primary_cta'] = array_merge(
+                    ['label' => '', 'url' => ''],
+                    is_array($content['primary_cta'] ?? null) ? $content['primary_cta'] : []
+                );
+                $content['secondary_cta'] = array_merge(
+                    ['label' => '', 'url' => ''],
+                    is_array($content['secondary_cta'] ?? null) ? $content['secondary_cta'] : []
+                );
+            } else {
+                $content['heading'] = $content['heading'] ?? '';
+                $content['body'] = $content['body'] ?? '';
+                if (array_key_exists('image_id', $content) || in_array($block->type, ['who_we_are', 'image_text'], true)) {
+                    $content['image_id'] = $content['image_id'] ?? null;
+                }
+            }
+
+            return [
+                'type' => $block->type,
+                'is_visible' => (bool) $block->is_visible,
+                'content' => $content,
+                'settings' => $block->settings ?? [],
+                'anchor_id' => $block->anchor_id,
+            ];
+        })->values()->all();
 
         return view('admin.pages.edit', [
             'page' => $page,

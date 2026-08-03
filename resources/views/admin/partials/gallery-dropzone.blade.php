@@ -21,7 +21,7 @@
 @endphp
 
 <div
-    class="gallery-dropzone mt-6 max-w-4xl rounded-lg border border-charcoal-200 bg-white p-4 shadow-sm"
+    class="gallery-dropzone admin-form admin-form--wide mt-6"
     x-data="galleryDropzone({
         items: @js($initialItems),
         uploadUrl: @js(route('admin.galleries.upload', $gallery)),
@@ -30,68 +30,69 @@
         csrf: @js(csrf_token()),
     })"
 >
-    <div class="mb-4">
-        <h2 class="text-base font-semibold text-charcoal-800">{{ $heading }}</h2>
-        <p class="mt-1 text-sm text-charcoal-500">{{ $help }}</p>
-    </div>
-
-    <div
-        class="relative rounded-lg border-2 border-dashed px-4 py-10 text-center transition"
-        :class="dragging ? 'border-forest-500 bg-forest-50' : 'border-charcoal-300 bg-charcoal-50/60'"
-        @dragenter.prevent="dragging = true"
-        @dragover.prevent="dragging = true"
-        @dragleave.prevent="dragging = false"
-        @drop.prevent="dragging = false; handleFiles($event.dataTransfer.files)"
-    >
-        <input
-            type="file"
-            class="absolute inset-0 h-full w-full cursor-pointer opacity-0"
-            accept="image/*"
-            multiple
-            :disabled="uploading"
-            @change="handleFiles($event.target.files); $event.target.value = ''"
-            aria-label="Upload gallery images"
-        >
-        <div class="pointer-events-none space-y-2">
-            <p class="text-sm font-medium text-charcoal-800" x-text="uploading ? 'Uploading…' : 'Drop images here or click to upload'"></p>
-            <p class="text-xs text-charcoal-500">JPG, PNG, WebP, or GIF · up to 10MB each · multiple files allowed</p>
+    <div class="admin-form__body">
+        <div class="admin-form__header">
+            <h2 class="admin-form__title">{{ $heading }}</h2>
+            <p class="admin-form__intro">{{ $help }}</p>
         </div>
-    </div>
 
-    <p x-show="error" x-cloak class="mt-3 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800" x-text="error"></p>
-    <p x-show="message" x-cloak class="mt-3 rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-800" x-text="message"></p>
+        <div
+            class="admin-file"
+            :class="dragging ? 'border-brand ring-2 ring-brand/25' : ''"
+            @dragenter.prevent="dragging = true"
+            @dragover.prevent="dragging = true"
+            @dragleave.prevent="dragging = false"
+            @drop.prevent="dragging = false; handleFiles($event.dataTransfer.files)"
+        >
+            <input
+                type="file"
+                accept="image/*"
+                multiple
+                :disabled="uploading"
+                @change="handleFiles($event.target.files); $event.target.value = ''"
+                aria-label="Upload gallery images"
+            >
+            <div class="pointer-events-none">
+                <p class="admin-file__title" x-text="uploading ? 'Uploading…' : 'Drop images here or click to upload'"></p>
+                <p class="admin-file__hint">JPG, PNG, WebP, or GIF · up to 10MB each · multiple files allowed</p>
+            </div>
+        </div>
 
-    <div class="mt-3 h-1.5 overflow-hidden rounded-full bg-charcoal-100" x-show="uploading" x-cloak>
-        <div class="h-full bg-forest-600 transition-all" :style="'width:' + progress + '%'"></div>
-    </div>
+        <p x-show="error" x-cloak class="admin-error" x-text="error"></p>
+        <p x-show="message" x-cloak class="admin-callout" x-text="message"></p>
 
-    <p x-show="items.length === 0 && !uploading" class="mt-4 rounded-md border border-dashed border-charcoal-200 bg-charcoal-50 px-4 py-6 text-center text-sm text-charcoal-500">
-        No images yet. Drop photos above to build this gallery.
-    </p>
+        <div class="h-1.5 overflow-hidden rounded-full bg-sand" x-show="uploading" x-cloak>
+            <div class="h-full bg-brand transition-all" :style="'width:' + progress + '%'"></div>
+        </div>
 
-    <div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" x-show="items.length">
-        <template x-for="(item, index) in items" :key="item.id">
-            <div class="overflow-hidden rounded-lg border border-charcoal-200 bg-white">
-                <div class="aspect-[4/3] bg-charcoal-100">
-                    <img :src="item.url" :alt="item.alt || ''" class="h-full w-full object-cover">
-                </div>
-                <div class="space-y-2 p-3">
-                    <label class="block text-xs font-medium uppercase tracking-wide text-charcoal-500">Caption</label>
-                    <input
-                        type="text"
-                        class="block w-full rounded-md border-charcoal-300 text-sm shadow-sm focus:border-forest-500 focus:ring-forest-500"
-                        x-model="item.caption"
-                        maxlength="1000"
-                        placeholder="Optional caption"
-                        @change="saveCaption(item)"
-                        @keydown.enter.prevent="saveCaption(item)"
-                    >
-                    <div class="flex items-center justify-between gap-2 pt-1">
-                        <span class="font-mono text-[0.65rem] uppercase tracking-wide text-charcoal-400" x-text="'#' + (index + 1)"></span>
-                        <button type="button" class="text-sm font-medium text-red-700 hover:underline" @click="removeItem(item, index)">Remove</button>
+        <p x-show="items.length === 0 && !uploading" class="admin-callout text-center">
+            No images yet. Drop photos above to build this gallery.
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" x-show="items.length">
+            <template x-for="(item, index) in items" :key="item.id">
+                <div class="overflow-hidden rounded-xl border border-charcoal/10 bg-white">
+                    <div class="aspect-[4/3] bg-sand">
+                        <img :src="item.url" :alt="item.alt || ''" class="h-full w-full object-cover">
+                    </div>
+                    <div class="space-y-2 p-3">
+                        <label class="admin-label">Caption</label>
+                        <input
+                            type="text"
+                            class="admin-input"
+                            x-model="item.caption"
+                            maxlength="1000"
+                            placeholder="Optional caption"
+                            @change="saveCaption(item)"
+                            @keydown.enter.prevent="saveCaption(item)"
+                        >
+                        <div class="flex items-center justify-between gap-2 pt-1">
+                            <span class="font-mono text-[0.65rem] uppercase tracking-wide text-charcoal/40" x-text="'#' + (index + 1)"></span>
+                            <button type="button" class="text-sm font-medium text-red-700 hover:underline" @click="removeItem(item, index)">Remove</button>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </template>
+            </template>
+        </div>
     </div>
 </div>

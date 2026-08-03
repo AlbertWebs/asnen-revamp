@@ -4,89 +4,96 @@
 @section('heading', 'Settings: '.ucfirst($group))
 
 @section('content')
-    <div class="mb-4 flex flex-wrap gap-2">
+    <div class="mb-5 flex flex-wrap gap-2">
         @foreach (['brand', 'contact', 'social', 'features', 'seo', 'website'] as $tab)
             <a
                 href="{{ route('admin.settings.edit', $tab) }}"
-                class="rounded-md px-3 py-1.5 text-sm font-medium {{ $group === $tab ? 'bg-forest-700 text-white' : 'border border-charcoal-300 bg-white text-charcoal-700 hover:bg-charcoal-50' }}"
+                class="{{ $group === $tab ? 'admin-btn-primary' : 'admin-btn-secondary' }}"
             >
                 {{ ucfirst($tab) }}
             </a>
         @endforeach
     </div>
 
-    <form method="POST" action="{{ route('admin.settings.update', $group) }}" class="max-w-3xl rounded-lg border border-charcoal-200 bg-white p-4 shadow-sm">
+    <form method="POST" action="{{ route('admin.settings.update', $group) }}" class="admin-form admin-form--wide">
         @csrf
         @method('PUT')
 
-        @if ($group === 'features')
-            <p class="mb-4 text-sm text-charcoal-600">
-                Site feature switches. Turn these on when you are ready for them to appear on the public website.
-            </p>
-        @endif
-
-        @forelse ($settings as $index => $setting)
-            @php
-                $raw = is_array($setting->value) ? ($setting->value['value'] ?? '') : $setting->value;
-                $isBool = str_ends_with($setting->key, '_enabled') || in_array((string) $raw, ['0', '1', 'true', 'false'], true);
-                $boolOn = filter_var($raw, FILTER_VALIDATE_BOOLEAN);
-                $labels = [
-                    'features.easy_read_enabled' => 'Show Easy Read floating button',
-                    'contact.city' => 'City / location',
-                    'contact.email' => 'Primary email',
-                    'contact.phone_primary' => 'Primary phone',
-                    'contact.phone_secondary' => 'Secondary phone',
-                ];
-                $label = $labels[$setting->key] ?? $setting->key;
-                $help = [
-                    'features.easy_read_enabled' => 'When enabled, visitors see the Easy Read button on the home page and accessibility page.',
-                    'contact.email' => 'Shown on the public contact page and used for inquiries.',
-                    'contact.phone_primary' => 'Shown as the primary call line on the contact page.',
-                    'contact.phone_secondary' => 'Optional second phone line on the contact page.',
-                ][$setting->key] ?? null;
-            @endphp
-
-            <input type="hidden" name="settings[{{ $index }}][key]" value="{{ $setting->key }}">
-            <input type="hidden" name="settings[{{ $index }}][is_public]" value="1">
-
-            @if ($isBool)
-                <div class="{{ $index > 0 ? 'mt-6' : '' }} rounded-lg border border-charcoal-200 bg-sand/40 p-4">
-                    <label class="flex items-start gap-3">
-                        <input type="hidden" name="settings[{{ $index }}][value]" value="0">
-                        <input
-                            type="checkbox"
-                            name="settings[{{ $index }}][value]"
-                            value="1"
-                            @checked(old('settings.'.$index.'.value', $boolOn))
-                            class="mt-1 rounded border-charcoal-300 text-forest-600 focus:ring-forest-500"
-                        >
-                        <span>
-                            <span class="block text-sm font-semibold text-charcoal-900">{{ $label }}</span>
-                            @if($help)
-                                <span class="mt-1 block text-sm text-charcoal-600">{{ $help }}</span>
-                            @endif
-                        </span>
-                    </label>
-                </div>
-            @else
-                <label for="setting_{{ $index }}" class="{{ $index > 0 ? 'mt-4' : '' }} block text-sm font-medium text-charcoal-700">{{ $label }}</label>
-                @if($help)
-                    <p class="mt-1 text-xs text-charcoal-500">{{ $help }}</p>
+        <div class="admin-form__body">
+            <div class="admin-form__section">
+                @if ($group === 'features')
+                    <p class="admin-hint">
+                        Site feature switches. Turn these on when you are ready for them to appear on the public website.
+                    </p>
                 @endif
-                <input
-                    type="text"
-                    name="settings[{{ $index }}][value]"
-                    id="setting_{{ $index }}"
-                    value="{{ old('settings.'.$index.'.value', $raw) }}"
-                    class="mt-1 block w-full rounded-md border-charcoal-300 shadow-sm focus:border-forest-500 focus:ring-forest-500"
-                >
-            @endif
-        @empty
-            <p class="text-sm text-charcoal-500">No settings in this group yet.</p>
-        @endforelse
 
-        @if ($settings->isNotEmpty())
-            <button type="submit" class="mt-6 rounded-md bg-forest-700 px-4 py-2 text-sm font-medium text-white hover:bg-forest-800">Save settings</button>
-        @endif
+                @forelse ($settings as $index => $setting)
+                    @php
+                        $raw = is_array($setting->value) ? ($setting->value['value'] ?? '') : $setting->value;
+                        $isBool = str_ends_with($setting->key, '_enabled') || in_array((string) $raw, ['0', '1', 'true', 'false'], true);
+                        $boolOn = filter_var($raw, FILTER_VALIDATE_BOOLEAN);
+                        $labels = [
+                            'features.easy_read_enabled' => 'Show Easy Read floating button',
+                            'contact.city' => 'City / location',
+                            'contact.email' => 'Primary email',
+                            'contact.phone_primary' => 'Primary phone',
+                            'contact.phone_secondary' => 'Secondary phone',
+                        ];
+                        $label = $labels[$setting->key] ?? $setting->key;
+                        $help = [
+                            'features.easy_read_enabled' => 'When enabled, visitors see the Easy Read button on the home page and accessibility page.',
+                            'contact.email' => 'Shown on the public contact page and used for inquiries.',
+                            'contact.phone_primary' => 'Shown as the primary call line on the contact page.',
+                            'contact.phone_secondary' => 'Optional second phone line on the contact page.',
+                        ][$setting->key] ?? null;
+                    @endphp
+
+                    <input type="hidden" name="settings[{{ $index }}][key]" value="{{ $setting->key }}">
+                    <input type="hidden" name="settings[{{ $index }}][is_public]" value="1">
+
+                    @if ($isBool)
+                        <div class="admin-callout">
+                            <label class="admin-check">
+                                <input type="hidden" name="settings[{{ $index }}][value]" value="0">
+                                <input
+                                    type="checkbox"
+                                    name="settings[{{ $index }}][value]"
+                                    value="1"
+                                    @checked(old('settings.'.$index.'.value', $boolOn))
+                                >
+                                <span>
+                                    <span class="block font-semibold text-charcoal">{{ $label }}</span>
+                                    @if($help)
+                                        <span class="admin-hint mt-1 block">{{ $help }}</span>
+                                    @endif
+                                </span>
+                            </label>
+                        </div>
+                    @else
+                        <div class="admin-field">
+                            <label for="setting_{{ $index }}" class="admin-label">{{ $label }}</label>
+                            @if($help)
+                                <p class="admin-hint">{{ $help }}</p>
+                            @endif
+                            <input
+                                type="text"
+                                name="settings[{{ $index }}][value]"
+                                id="setting_{{ $index }}"
+                                value="{{ old('settings.'.$index.'.value', $raw) }}"
+                                class="admin-input"
+                            >
+                        </div>
+                    @endif
+                @empty
+                    <p class="admin-hint">No settings in this group yet.</p>
+                @endforelse
+            </div>
+
+            @if ($settings->isNotEmpty())
+                <div class="admin-form__actions">
+                    <button type="submit" class="admin-btn-primary">Save settings</button>
+                </div>
+            @endif
+        </div>
     </form>
 @endsection

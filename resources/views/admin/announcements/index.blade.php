@@ -4,37 +4,59 @@
 @section('heading', 'Announcements')
 
 @section('content')
-    <div class="mb-4 flex items-center justify-between">
-        @can('announcements.create')
-            <a href="{{ route('admin.announcements.create') }}" class="rounded-md bg-forest-700 px-4 py-2 text-sm font-medium text-white hover:bg-forest-800">New</a>
-        @endcan
+    <div class="admin-toolbar">
+        <p class="admin-toolbar__copy">
+            Manage site announcements and their publish status.
+        </p>
+        <div class="admin-toolbar__actions">
+            @can('announcements.create')
+                <a href="{{ route('admin.announcements.create') }}" class="admin-btn-primary">New</a>
+            @endcan
+        </div>
     </div>
 
-    <div class="overflow-hidden rounded-lg border border-charcoal-200 bg-white shadow-sm">
-        <table class="min-w-full divide-y divide-charcoal-200">
-            <thead class="bg-charcoal-50">
-                <tr>
-                    <th class="px-4 py-3 text-left text-xs font-semibold uppercase text-charcoal-600">Name</th>
-                    <th class="px-4 py-3 text-left text-xs font-semibold uppercase text-charcoal-600">Status</th>
-                    <th class="px-4 py-3 text-right text-xs font-semibold uppercase text-charcoal-600">Actions</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-charcoal-100">
-                @forelse ($announcements as $item)
+    <div class="admin-table-card">
+        <div class="admin-table-wrap">
+            <table class="admin-table">
+                <thead>
                     <tr>
-                        <td class="px-4 py-3 text-sm font-medium text-charcoal-900">{{ $item->question }}</td>
-                        <td class="px-4 py-3 text-sm text-charcoal-600">{{ $item->status?->value ?? $item->status ?? ($item->is_active ?? false ? 'active' : 'inactive') }}</td>
-                        <td class="px-4 py-3 text-right text-sm">
-                            @can('announcements.update')
-                                <a href="{{ route('admin.announcements.edit', $item) }}" class="text-forest-700 hover:underline">Edit</a>
-                            @endcan
-                        </td>
+                        <th scope="col">Name</th>
+                        <th scope="col">Status</th>
+                        <th scope="col" class="text-right">Actions</th>
                     </tr>
-                @empty
-                    <tr><td colspan="3" class="px-4 py-8 text-center text-sm text-charcoal-500">No records yet.</td></tr>
-                @endforelse
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @forelse ($announcements as $item)
+                        @php
+                            $status = $item->status?->value ?? $item->status ?? ($item->is_active ?? false ? 'active' : 'inactive');
+                        @endphp
+                        <tr>
+                            <td class="admin-table__primary">{{ $item->question }}</td>
+                            <td>
+                                <span class="admin-badge admin-badge--{{ $status }}">{{ str_replace('_', ' ', $status) }}</span>
+                            </td>
+                            <td class="text-right">
+                                <div class="admin-table__actions">
+                                    @can('announcements.update')
+                                        <a href="{{ route('admin.announcements.edit', $item) }}" class="admin-table__link">Edit</a>
+                                    @endcan
+                                    @include('admin.partials.table-delete', [
+                                        'action' => route('admin.announcements.destroy', $item),
+                                        'permission' => 'announcements.delete',
+                                        'label' => \Illuminate\Support\Str::limit((string) ($item->message ?? $item->question ?? 'this announcement'), 60),
+                                    ])
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="3" class="admin-table__empty">No records yet.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
     </div>
-    <div class="mt-4">{{ $announcements->links() }}</div>
+
+    <div class="admin-pagination">{{ $announcements->links() }}</div>
 @endsection

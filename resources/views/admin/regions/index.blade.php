@@ -4,55 +4,74 @@
 @section('heading', 'Impact Regions')
 
 @section('content')
-    <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <p class="max-w-2xl text-sm text-charcoal-600">
+    <div class="admin-toolbar">
+        <p class="admin-toolbar__copy">
             Manage map pins for the public Impact by Region page. Set a name, description, and map coordinates for each place ASNEN has worked.
         </p>
-        @can('regions.create')
-            <a href="{{ route('admin.regions.create') }}" class="rounded-md bg-forest-700 px-4 py-2 text-sm font-medium text-white hover:bg-forest-800">New region</a>
-        @endcan
+        <div class="admin-toolbar__actions">
+            @can('regions.create')
+                <a href="{{ route('admin.regions.create') }}" class="admin-btn-primary">New region</a>
+            @endcan
+        </div>
     </div>
 
-    <div class="overflow-hidden rounded-lg border border-charcoal-200 bg-white shadow-sm">
-        <table class="min-w-full divide-y divide-charcoal-200">
-            <thead class="bg-charcoal-50">
-                <tr>
-                    <th class="px-4 py-3 text-left text-xs font-semibold uppercase text-charcoal-600">Name</th>
-                    <th class="px-4 py-3 text-left text-xs font-semibold uppercase text-charcoal-600">Coordinates</th>
-                    <th class="px-4 py-3 text-left text-xs font-semibold uppercase text-charcoal-600">Featured</th>
-                    <th class="px-4 py-3 text-left text-xs font-semibold uppercase text-charcoal-600">Status</th>
-                    <th class="px-4 py-3 text-right text-xs font-semibold uppercase text-charcoal-600">Actions</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-charcoal-100">
-                @forelse ($regions as $item)
+    <div class="admin-table-card">
+        <div class="admin-table-wrap">
+            <table class="admin-table">
+                <thead>
                     <tr>
-                        <td class="px-4 py-3 text-sm font-medium text-charcoal-900">
-                            {{ $item->name }}
-                            @if($item->country)
-                                <span class="mt-0.5 block text-xs font-normal text-charcoal-500">{{ $item->country }}</span>
-                            @endif
-                        </td>
-                        <td class="px-4 py-3 font-mono text-xs text-charcoal-600">
-                            @if($item->hasCoordinates())
-                                {{ number_format($item->latitude, 4) }}, {{ number_format($item->longitude, 4) }}
-                            @else
-                                <span class="text-charcoal-400">Not set</span>
-                            @endif
-                        </td>
-                        <td class="px-4 py-3 text-sm text-charcoal-600">{{ $item->is_featured ? 'Yes' : '—' }}</td>
-                        <td class="px-4 py-3 text-sm text-charcoal-600">{{ $item->status?->value ?? $item->status }}</td>
-                        <td class="px-4 py-3 text-right text-sm">
-                            @can('regions.update')
-                                <a href="{{ route('admin.regions.edit', $item) }}" class="text-forest-700 hover:underline">Edit</a>
-                            @endcan
-                        </td>
+                        <th scope="col">Name</th>
+                        <th scope="col">Coordinates</th>
+                        <th scope="col">Featured</th>
+                        <th scope="col">Status</th>
+                        <th scope="col" class="text-right">Actions</th>
                     </tr>
-                @empty
-                    <tr><td colspan="5" class="px-4 py-8 text-center text-sm text-charcoal-500">No regions yet. Add the first map pin.</td></tr>
-                @endforelse
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @forelse ($regions as $item)
+                        @php
+                            $status = $item->status?->value ?? $item->status;
+                        @endphp
+                        <tr>
+                            <td class="admin-table__primary">
+                                {{ $item->name }}
+                                @if($item->country)
+                                    <span class="admin-table__meta">{{ $item->country }}</span>
+                                @endif
+                            </td>
+                            <td class="font-mono text-xs">
+                                @if($item->hasCoordinates())
+                                    {{ number_format($item->latitude, 4) }}, {{ number_format($item->longitude, 4) }}
+                                @else
+                                    <span class="text-charcoal/40">Not set</span>
+                                @endif
+                            </td>
+                            <td>{{ $item->is_featured ? 'Yes' : '—' }}</td>
+                            <td>
+                                <span class="admin-badge admin-badge--{{ $status }}">{{ str_replace('_', ' ', $status) }}</span>
+                            </td>
+                            <td class="text-right">
+                                <div class="admin-table__actions">
+                                    @can('regions.update')
+                                        <a href="{{ route('admin.regions.edit', $item) }}" class="admin-table__link">Edit</a>
+                                    @endcan
+                                    @include('admin.partials.table-delete', [
+                                        'action' => route('admin.regions.destroy', $item),
+                                        'permission' => 'regions.delete',
+                                        'label' => $item->name,
+                                    ])
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="5" class="admin-table__empty">No regions yet. Add the first map pin.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
     </div>
-    <div class="mt-4">{{ $regions->links() }}</div>
+
+    <div class="admin-pagination">{{ $regions->links() }}</div>
 @endsection

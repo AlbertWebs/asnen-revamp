@@ -9,8 +9,8 @@
 ])
 
 @php
-    $phonePrimary = $contactPhone ?: '+254 703 906 990';
-    $phoneSecondary = $contactPhoneSecondary ?: '+254 712 652 621';
+    $phonePrimary = $contactPhone ?: '+254 712 652 621';
+    $phoneSecondary = $contactPhoneSecondary ?: '+254 703 906 990';
     $email = $contactEmail ?: 'info@asnenafrica.org';
     $city = $contactCity ?: 'Nairobi, Kenya';
 

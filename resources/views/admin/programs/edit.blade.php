@@ -10,34 +10,54 @@
         </div>
     @endif
 
-    <form method="POST" action="{{ $program->exists ? route('admin.programs.update', $program) : route('admin.programs.store') }}">
+    <form method="POST" action="{{ $program->exists ? route('admin.programs.update', $program) : route('admin.programs.store') }}" class="admin-form admin-form--wide">
         @csrf
         @if ($program->exists) @method('PUT') @endif
 
-        <div class="mb-4 flex justify-end">
-            <button type="submit" class="rounded-md bg-forest-700 px-4 py-2 text-sm font-medium text-white hover:bg-forest-800">Save</button>
-        </div>
+        <div class="admin-form__body">
+            <header class="admin-form__header">
+                <p class="admin-form__eyebrow">Programs</p>
+                <h2 class="admin-form__title">{{ $program->exists ? 'Edit program' : 'New program' }}</h2>
+            </header>
 
-        <div class="max-w-3xl rounded-lg border border-charcoal-200 bg-white p-4 shadow-sm">
-            <label for="title" class="mt-4 block text-sm font-medium text-charcoal-700">Title</label>
-            <input type="text" name="title" id="title" value="{{ old('title', $program->title) }}" class="mt-1 block w-full rounded-md border-charcoal-300 shadow-sm focus:border-forest-500 focus:ring-forest-500">
-            <label for="slug" class="mt-4 block text-sm font-medium text-charcoal-700">Slug</label>
-            <input type="text" name="slug" id="slug" value="{{ old('slug', $program->slug) }}" class="mt-1 block w-full rounded-md border-charcoal-300 shadow-sm focus:border-forest-500 focus:ring-forest-500">
-            <label for="summary" class="mt-4 block text-sm font-medium text-charcoal-700">Summary</label>
-            <textarea name="summary" id="summary" rows="4" class="mt-1 block w-full rounded-md border-charcoal-300 shadow-sm focus:border-forest-500 focus:ring-forest-500">{{ old('summary', $program->summary) }}</textarea>
-            <label for="body" class="mt-4 block text-sm font-medium text-charcoal-700">Body</label>
-            <textarea name="body" id="body" rows="4" class="mt-1 block w-full rounded-md border-charcoal-300 shadow-sm focus:border-forest-500 focus:ring-forest-500">{{ old('body', $program->body) }}</textarea>
-            <label for="icon" class="mt-4 block text-sm font-medium text-charcoal-700">Icon</label>
-            <input type="text" name="icon" id="icon" value="{{ old('icon', $program->icon) }}" class="mt-1 block w-full rounded-md border-charcoal-300 shadow-sm focus:border-forest-500 focus:ring-forest-500">
-            <label for="sort_order" class="mt-4 block text-sm font-medium text-charcoal-700">Sort Order</label>
-            <input type="number" name="sort_order" id="sort_order" value="{{ old('sort_order', $program->sort_order) }}" class="mt-1 block w-full rounded-md border-charcoal-300 shadow-sm focus:border-forest-500 focus:ring-forest-500">
+            <div class="admin-form__section">
+                <div class="admin-field">
+                    <label for="title" class="admin-label">Title</label>
+                    <input type="text" name="title" id="title" value="{{ old('title', $program->title) }}" class="admin-input">
+                </div>
+                <div class="admin-field">
+                    <label for="slug" class="admin-label">Slug</label>
+                    <input type="text" name="slug" id="slug" value="{{ old('slug', $program->slug) }}" class="admin-input">
+                </div>
+                <div class="admin-field">
+                    <label for="summary" class="admin-label">Summary</label>
+                    <textarea name="summary" id="summary" rows="4" class="admin-textarea">{{ old('summary', $program->summary) }}</textarea>
+                </div>
+                <div class="admin-field">
+                    <label for="body" class="admin-label">Body</label>
+                    <textarea name="body" id="body" rows="4" class="admin-textarea">{{ old('body', $program->body) }}</textarea>
+                </div>
+                <div class="admin-field">
+                    <label for="icon" class="admin-label">Icon</label>
+                    <input type="text" name="icon" id="icon" value="{{ old('icon', $program->icon) }}" class="admin-input">
+                </div>
+                <div class="admin-field">
+                    <label for="sort_order" class="admin-label">Sort order</label>
+                    <input type="number" name="sort_order" id="sort_order" value="{{ old('sort_order', $program->sort_order) }}" class="admin-input">
+                </div>
 
-            @include('admin.partials.media-picker', [
-                'name' => 'featured_image_id',
-                'value' => $program->featured_image_id,
-                'label' => 'Program image',
-                'help' => 'Shown on the homepage programs list and program pages.',
-            ])
+                @include('admin.partials.media-picker', [
+                    'name' => 'featured_image_id',
+                    'value' => $program->featured_image_id,
+                    'label' => 'Program image',
+                    'folder' => 'programs',
+                    'help' => 'Upload here or pick an existing image. Shown on the homepage programs list and program pages.',
+                ])
+            </div>
+
+            <div class="admin-form__actions">
+                <button type="submit" class="admin-btn-primary">Save</button>
+            </div>
         </div>
     </form>
 @endsection

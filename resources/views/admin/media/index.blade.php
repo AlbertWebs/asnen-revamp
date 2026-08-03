@@ -4,37 +4,46 @@
 @section('heading', 'Media Library')
 
 @section('content')
-    <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <p class="max-w-2xl text-sm text-charcoal-600">
+    <div class="admin-toolbar">
+        <p class="admin-toolbar__copy">
             Upload images here, then attach them on Programs, Stories, Events, Partners, Team, Publications, or Home page blocks.
         </p>
-        @can('media.upload')
-            <a href="{{ route('admin.media.create') }}" class="rounded-md bg-forest-700 px-4 py-2 text-sm font-medium text-white hover:bg-forest-800">Upload</a>
-        @endcan
+        <div class="admin-toolbar__actions">
+            @can('media.upload')
+                <a href="{{ route('admin.media.create') }}" class="admin-btn-primary">Upload</a>
+            @endcan
+        </div>
     </div>
 
-    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <div class="admin-card-grid">
         @forelse ($assets as $asset)
-            <div class="overflow-hidden rounded-lg border border-charcoal-200 bg-white shadow-sm">
-                <div class="aspect-video bg-charcoal-100 flex items-center justify-center text-xs text-charcoal-500">
+            <div class="admin-card">
+                <div class="admin-card__media">
                     @if (str_starts_with($asset->mime ?? '', 'image/'))
                         <img src="{{ asset('storage/'.$asset->path) }}" alt="{{ e($asset->alt ?? '') }}" class="h-full w-full object-cover">
                     @else
                         {{ $asset->mime }}
                     @endif
                 </div>
-                <div class="p-3">
-                    <p class="truncate text-sm font-medium text-charcoal-900">{{ $asset->filename }}</p>
-                    <p class="text-xs text-charcoal-500">{{ $asset->consent_status?->value ?? $asset->consent_status }}</p>
-                    @can('media.update')
-                        <a href="{{ route('admin.media.edit', $asset) }}" class="mt-2 inline-block text-sm text-forest-700 hover:underline">Edit</a>
-                    @endcan
+                <div class="admin-card__body">
+                    <p class="admin-card__title">{{ $asset->filename }}</p>
+                    <p class="admin-card__meta">{{ $asset->consent_status?->value ?? $asset->consent_status }}</p>
+                    <div class="flex items-center gap-3">
+                        @can('media.update')
+                            <a href="{{ route('admin.media.edit', $asset) }}" class="admin-table__link">Edit</a>
+                        @endcan
+                        @include('admin.partials.table-delete', [
+                            'action' => route('admin.media.destroy', $asset),
+                            'permission' => 'media.delete',
+                            'label' => $asset->filename,
+                        ])
+                    </div>
                 </div>
             </div>
         @empty
-            <p class="col-span-full py-8 text-center text-sm text-charcoal-500">No media uploaded yet.</p>
+            <p class="col-span-full py-8 text-center text-sm text-charcoal/50">No media uploaded yet.</p>
         @endforelse
     </div>
 
-    <div class="mt-4">{{ $assets->links() }}</div>
+    <div class="admin-pagination">{{ $assets->links() }}</div>
 @endsection
