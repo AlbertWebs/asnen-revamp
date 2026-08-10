@@ -3,7 +3,7 @@
     'breadcrumbUrl' => null,
     'currentLabel' => null,
     'eyebrow' => null,
-    'brand' => 'ASNEN',
+    'brand' => null,
     'title',
     'titleMax' => '14ch',
     'tagline' => null,

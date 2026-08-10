@@ -12,6 +12,8 @@
         :excerpt="$page->excerpt"
         :primary-cta="['label' => 'Partner with us', 'url' => route('site.get-involved.partner')]"
         :secondary-cta="['label' => 'Become a member', 'url' => route('site.get-involved.membership')]"
+        :images="$bannerImages ?? []"
+        :show-visual="true"
     />
 
     <x-public.about-subnav current="partners" />

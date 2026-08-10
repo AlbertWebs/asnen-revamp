@@ -33,6 +33,17 @@
                 'body' => 'Advance African approaches rooted in Ubuntu, reciprocity, and local wisdom.',
             ],
         ];
+        $heroImages = collect($bannerImages ?? []);
+        if ($heroImages->isEmpty()) {
+            $heroImages = collect([
+                ['url' => asset('storage/galleries/community-moments/01.jpg'), 'alt' => 'ASNEN community gathering'],
+                ['url' => asset('storage/galleries/baringo-2023/02.jpg'), 'alt' => 'Children and caregivers in Baringo'],
+                ['url' => asset('storage/galleries/community-moments/03.jpg'), 'alt' => 'ASNEN partners at a community event'],
+                ['url' => asset('storage/galleries/community-moments/05.jpg'), 'alt' => 'Families and advocates together'],
+                ['url' => asset('storage/galleries/baringo-2023/04.jpg'), 'alt' => 'Community outreach in Baringo'],
+                ['url' => asset('storage/galleries/community-moments/07.jpg'), 'alt' => 'ASNEN programme moment'],
+            ]);
+        }
     @endphp
 
     <x-public.about-hero
@@ -44,14 +55,7 @@
         :excerpt="$page->excerpt"
         :primary-cta="['label' => 'Vision, mission & values', 'url' => route('site.about.mission')]"
         :secondary-cta="['label' => 'Meet the team', 'url' => route('site.about.leadership')]"
-        :images="[
-            ['url' => asset('storage/galleries/community-moments/01.jpg'), 'alt' => 'ASNEN community gathering'],
-            ['url' => asset('storage/galleries/baringo-2023/02.jpg'), 'alt' => 'Children and caregivers in Baringo'],
-            ['url' => asset('storage/galleries/community-moments/03.jpg'), 'alt' => 'ASNEN partners at a community event'],
-            ['url' => asset('storage/galleries/community-moments/05.jpg'), 'alt' => 'Families and advocates together'],
-            ['url' => asset('storage/galleries/baringo-2023/04.jpg'), 'alt' => 'Community outreach in Baringo'],
-            ['url' => asset('storage/galleries/community-moments/07.jpg'), 'alt' => 'ASNEN programme moment'],
-        ]"
+        :images="$heroImages"
     />
 
     <x-public.about-subnav current="who-we-are" />

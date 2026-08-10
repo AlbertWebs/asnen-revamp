@@ -9,7 +9,7 @@
 
         <div
             class="impact-stats__grid"
-            style="--stat-cols: {{ min(4, max(1, $metrics->count())) }}"
+            style="--stat-cols: {{ min(5, max(1, $metrics->count())) }}"
             x-data="impactCounters()"
             x-init="observe($el)"
         >

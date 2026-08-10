@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,500;0,8..60,600;0,8..60,700;1,8..60,500;1,8..60,600&family=Work+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
 
-    <link rel="icon" href="{{ asset('brand/logo.png') }}" type="image/png">
+    <link rel="icon" href="{{ $siteLogoUrl ?? asset('brand/logo.png') }}" type="image/png">
     <title>@yield('title', $defaultSeoTitle ?? $siteName)</title>
     <meta name="description" content="@yield('meta_description', $defaultSeoDescription ?? $siteTagline)">
     <meta name="color-scheme" content="light dark">
@@ -61,7 +61,7 @@
     <script>
         (function () {
             function syncSiteChrome() {
-                var ann = document.querySelector('[aria-label="Site announcement"]');
+                var ann = document.querySelector('[aria-label="Site contact bar"], [aria-label="Site announcement"]');
                 var header = document.getElementById('site-header');
                 var h = (ann ? ann.offsetHeight : 0) + (header ? header.offsetHeight : 0);
                 if (h) document.documentElement.style.setProperty('--site-chrome', h + 'px');
@@ -99,23 +99,17 @@
 >
     <x-public.a11y-skip-links />
 
-    @if($globalAnnouncement ?? null)
-        <div class="bg-brand text-sm text-white" role="region" aria-label="Site announcement">
-            <div class="mx-auto flex max-w-editorial flex-wrap items-center justify-center gap-2 px-6 py-2 text-center lg:px-7">
-                <span>{{ $globalAnnouncement->message }}</span>
-                @if($globalAnnouncement->link_url)
-                    <a href="{{ $globalAnnouncement->link_url }}" class="font-semibold text-white underline underline-offset-2 hover:text-gold">
-                        {{ $globalAnnouncement->link_label ?? 'Learn more' }}
-                    </a>
-                @endif
-            </div>
-        </div>
-    @endif
+    <x-public.top-bar
+        :contact-phone="$contactPhone ?? null"
+        :contact-phone-secondary="$contactPhoneSecondary ?? null"
+        :contact-email="$contactEmail ?? null"
+        :social-links="$socialLinks ?? []"
+    />
 
     <header id="site-header" class="sticky top-0 z-40 border-b border-charcoal/10 bg-ivory/95 backdrop-blur-[6px]" x-data="{ mobileOpen: false, openSection: null }">
         <div class="mx-auto flex max-w-editorial items-center justify-between gap-4 px-6 py-3 lg:px-7">
             <a href="{{ route('site.home') }}" class="relative z-10 -my-5 flex min-w-0 shrink-0 items-center sm:-my-6">
-                <img src="{{ asset('brand/logo.png') }}" alt="Africa Special Needs Education Network" class="h-[4.75rem] w-auto sm:h-[5.5rem]" width="206" height="138">
+                <img src="{{ $siteLogoUrl ?? asset('brand/logo.png') }}" alt="{{ $siteFullName ?? 'Africa Special Needs Education Network' }}" class="h-[4.75rem] w-auto sm:h-[5.5rem]" width="206" height="138">
             </a>
 
             <nav class="primary-nav hidden lg:flex" aria-label="Primary">

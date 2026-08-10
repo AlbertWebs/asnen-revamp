@@ -32,6 +32,8 @@
         :excerpt="$page->excerpt"
         :primary-cta="['label' => 'See our impact', 'url' => route('site.impact.overview')]"
         :secondary-cta="['label' => 'Meet the team', 'url' => route('site.about.leadership')]"
+        :images="$bannerImages ?? []"
+        :show-visual="true"
     />
 
     <x-public.about-subnav current="story" />

@@ -55,38 +55,45 @@ class PageController extends Controller
             'about-who-we-are' => view('public.about.who-we-are', [
                 'page' => $page,
                 'sanitizer' => $this->sanitizer,
+                'bannerImages' => $page->bannerImages(),
             ]),
             'about-mission-vision-values', 'vision-mission-values' => view('public.about.mission', [
                 'page' => $page,
                 'sanitizer' => $this->sanitizer,
                 'introHtml' => $introHtml,
                 'sections' => $this->parseHeadingSections($introHtml ?? ''),
+                'bannerImages' => $page->bannerImages(),
             ]),
             'about-our-story' => view('public.about.story', [
                 'page' => $page,
                 'sanitizer' => $this->sanitizer,
                 'introHtml' => $introHtml,
+                'bannerImages' => $page->bannerImages(),
             ]),
             'about-leadership' => view('public.about.leadership', [
                 'page' => $page,
                 'sanitizer' => $this->sanitizer,
                 'introHtml' => $introHtml,
                 'teamMembers' => $this->publishedTeamMembers()->with('photo')->get(),
+                'bannerImages' => $page->bannerImages(),
             ]),
             'about-governance' => view('public.about.governance', [
                 'page' => $page,
                 'sanitizer' => $this->sanitizer,
                 'introHtml' => $introHtml,
+                'bannerImages' => $page->bannerImages(),
             ]),
             'about-partners' => view('public.about.partners', [
                 'page' => $page,
                 'sanitizer' => $this->sanitizer,
                 'introHtml' => $introHtml,
                 'partners' => $this->verifiedPublishedPartners()->with('logo')->get(),
+                'bannerImages' => $page->bannerImages(),
             ]),
             default => view('public.page', [
                 'page' => $page,
                 'sanitizer' => $this->sanitizer,
+                'bannerImages' => $page->bannerImages(),
             ]),
         };
     }

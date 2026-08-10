@@ -21,7 +21,6 @@
         <div class="home-about__grid">
             <div class="home-about__copy reveal">
                 <p class="home-about__eyebrow">About ASNEN</p>
-                <p class="home-about__brand">ASNEN</p>
                 <h2 id="home-about-heading" class="home-about__title">{{ $c['heading'] ?? 'Who We Are' }}</h2>
 
                 <div class="home-about__body">

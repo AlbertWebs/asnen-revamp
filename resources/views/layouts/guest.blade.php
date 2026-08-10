@@ -7,7 +7,7 @@
 
         <title>{{ $title ?? 'Admin Login' }} | {{ config('app.name', 'ASNEN') }}</title>
 
-        <link rel="icon" href="{{ asset('brand/logo.png') }}" type="image/png">
+        <link rel="icon" href="{{ $siteLogoUrl ?? asset('brand/logo.png') }}" type="image/png">
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=work-sans:400,500,600,700,800&display=swap" rel="stylesheet" />
         <script>

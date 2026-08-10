@@ -650,6 +650,13 @@ class ContentSeeder extends Seeder
                 'public_label' => '15',
                 'source_label' => 'asnenafrica.org',
             ],
+            [
+                'label' => 'Disability registrations / medical camp',
+                'value' => '4',
+                'numeric_value' => 4,
+                'public_label' => '4',
+                'source_label' => 'asnenafrica.org',
+            ],
         ];
 
         $ids = [];
@@ -1029,6 +1036,7 @@ HTML,
             [
                 'type' => 'hero',
                 'content' => [
+                    'brand' => 'Demystifying Disability',
                     'headline' => 'Inclusion for all, in all. No child left behind.',
                     'supporting_text' => 'ASNEN is a coalition of families, educators and advocates across Africa, building a model of inclusion rooted in Ubuntu, carried by the people who live it, not delivered to them.',
                     'primary_cta' => ['label' => 'Explore Our Programs', 'url' => '/what-we-do'],
@@ -1052,7 +1060,7 @@ HTML,
             [
                 'type' => 'program_grid',
                 'content' => [
-                    'heading' => 'What We Do',
+                    'heading' => 'Our Programs',
                     'program_slugs' => array_keys($programs),
                 ],
             ],
@@ -1078,7 +1086,7 @@ HTML,
             [
                 'type' => 'team',
                 'content' => [
-                    'heading' => 'Meet Our Team',
+                    'heading' => 'Leadership & Team',
                     'limit' => 5,
                 ],
             ],

@@ -33,6 +33,8 @@
         :excerpt="$page->excerpt"
         :primary-cta="['label' => 'Meet leadership', 'url' => route('site.about.leadership')]"
         :secondary-cta="['label' => 'Contact ASNEN', 'url' => route('site.contact')]"
+        :images="$bannerImages ?? []"
+        :show-visual="true"
     />
 
     <x-public.about-subnav current="governance" />

@@ -22,6 +22,7 @@ class PublicLayoutComposer
             'siteName' => $this->settings->get('brand.short_name', 'ASNEN'),
             'siteFullName' => $this->settings->get('brand.name', 'Africa Special Needs Education Network'),
             'siteTagline' => $this->settings->get('brand.tagline', 'Inclusion for all, in all.'),
+            'siteLogoUrl' => $this->settings->logoUrl(),
             'defaultSeoTitle' => $this->settings->get('seo.default_title'),
             'defaultSeoDescription' => $this->settings->get('seo.default_description'),
             'contactEmail' => $this->settings->get('contact.email'),

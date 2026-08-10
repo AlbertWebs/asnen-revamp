@@ -106,6 +106,34 @@
                             </div>
 
                             <div class="admin-field">
+                                <span class="admin-label">Banner images</span>
+                                <p class="admin-hint mb-2">Shown in the page banner (about / interior heroes). Select one or more images; order follows selection list below.</p>
+                                @php
+                                    $selectedBannerIds = collect(old('banner_image_ids', $page->banner_image_ids ?? []))->map(fn ($id) => (int) $id)->all();
+                                @endphp
+                                <div class="max-h-56 space-y-2 overflow-y-auto rounded-lg border border-charcoal/10 bg-sand/40 p-3">
+                                    @forelse (($mediaOptions ?? []) as $opt)
+                                        @continue(empty($opt['id']))
+                                        <label class="flex cursor-pointer items-start gap-2 text-sm text-charcoal">
+                                            <input
+                                                type="checkbox"
+                                                name="banner_image_ids[]"
+                                                value="{{ $opt['id'] }}"
+                                                class="mt-0.5"
+                                                @checked(in_array((int) $opt['id'], $selectedBannerIds, true))
+                                            >
+                                            <span>{{ $opt['label'] }}</span>
+                                        </label>
+                                    @empty
+                                        <p class="text-sm text-charcoal/60">No images in the media library yet. Upload some first.</p>
+                                    @endforelse
+                                </div>
+                                <p class="admin-hint mt-2">
+                                    <a href="{{ route('admin.media.create', ['folder' => 'hero', 'return' => url()->current()]) }}" class="font-semibold text-brand underline">Upload banner images</a>
+                                </p>
+                            </div>
+
+                            <div class="admin-field">
                                 <label for="template" class="admin-label">Template</label>
                                 <input type="text" name="template" id="template" value="{{ old('template', $page->template ?? 'default') }}" class="admin-input">
                             </div>

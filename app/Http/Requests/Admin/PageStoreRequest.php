@@ -18,6 +18,8 @@ class PageStoreRequest extends FormRequest
             'slug' => ['nullable', 'string', 'max:255', 'unique:pages,slug'],
             'template' => ['nullable', 'string', 'max:100'],
             'excerpt' => ['nullable', 'string'],
+            'banner_image_ids' => ['nullable', 'array'],
+            'banner_image_ids.*' => ['integer', 'exists:media_assets,id'],
             'status' => ['nullable', 'string'],
             'editor_notes' => ['nullable', 'string'],
             'requires_safeguarding' => ['nullable', 'boolean'],
@@ -37,5 +39,16 @@ class PageStoreRequest extends FormRequest
                 'blocks' => json_decode($this->blocks, true) ?? [],
             ]);
         }
+
+        $bannerIds = collect($this->input('banner_image_ids', []))
+            ->filter(fn ($id) => filled($id) && $id !== 'null')
+            ->map(fn ($id) => (int) $id)
+            ->unique()
+            ->values()
+            ->all();
+
+        $this->merge([
+            'banner_image_ids' => $bannerIds,
+        ]);
     }
 }

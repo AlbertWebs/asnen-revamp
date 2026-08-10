@@ -30,6 +30,7 @@ class Page extends Model
         'slug',
         'template',
         'excerpt',
+        'banner_image_ids',
         'status',
         'published_at',
         'scheduled_at',
@@ -47,6 +48,7 @@ class Page extends Model
         return [
             'unpublished_at' => 'datetime',
             'verification_status' => VerificationStatus::class,
+            'banner_image_ids' => 'array',
         ];
     }
 
@@ -65,5 +67,33 @@ class Page extends Model
     public function blocks(): HasMany
     {
         return $this->hasMany(PageBlock::class)->orderBy('sort_order');
+    }
+
+    /**
+     * Ordered banner images for about / interior heroes.
+     *
+     * @return \Illuminate\Support\Collection<int, MediaAsset>
+     */
+    public function bannerImages()
+    {
+        $ids = collect($this->banner_image_ids ?? [])
+            ->filter(fn ($id) => filled($id) && $id !== 'null')
+            ->map(fn ($id) => (int) $id)
+            ->unique()
+            ->values();
+
+        if ($ids->isEmpty()) {
+            return collect();
+        }
+
+        $byId = MediaAsset::query()
+            ->whereIn('id', $ids->all())
+            ->get()
+            ->keyBy('id');
+
+        return $ids
+            ->map(fn (int $id) => $byId->get($id))
+            ->filter()
+            ->values();
     }
 }

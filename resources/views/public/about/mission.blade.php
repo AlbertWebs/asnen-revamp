@@ -55,6 +55,7 @@
         :excerpt="$page->excerpt"
         :primary-cta="['label' => 'Who we are', 'url' => route('site.about.who-we-are')]"
         :secondary-cta="['label' => 'Our story', 'url' => route('site.about.story')]"
+        :images="$bannerImages ?? []"
         :show-visual="true"
     />
 

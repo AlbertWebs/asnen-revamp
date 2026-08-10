@@ -82,7 +82,7 @@
     <div class="flex h-16 shrink-0 items-center gap-3 border-b border-white/10 px-4">
         <a href="{{ route('admin.dashboard') }}" class="flex min-w-0 items-center gap-3 rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand">
             <span class="inline-flex shrink-0 items-center justify-center rounded-lg bg-white p-1 shadow-sm">
-                <img src="{{ asset('brand/logo.png') }}" alt="" class="h-7 w-auto" aria-hidden="true">
+                <img src="{{ $siteLogoUrl ?? asset('brand/logo.png') }}" alt="" class="h-7 w-auto" aria-hidden="true">
             </span>
             <span class="min-w-0">
                 <span class="block truncate text-sm font-bold tracking-tight text-white">{{ config('app.name', 'ASNEN') }}</span>

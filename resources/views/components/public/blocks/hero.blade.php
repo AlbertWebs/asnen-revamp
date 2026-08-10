@@ -26,6 +26,7 @@
     }
 @endphp
 <x-public.hero
+    :brand="$c['brand'] ?? 'Demystifying Disability'"
     :eyebrow="$c['eyebrow'] ?? 'A HOMEGROWN AFRICAN MODEL OF INCLUSION'"
     :headline="$c['headline'] ?? ''"
     :supporting-text="$c['supporting_text'] ?? null"

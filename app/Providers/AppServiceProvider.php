@@ -33,5 +33,9 @@ class AppServiceProvider extends ServiceProvider
         });
 
         View::composer(['layouts.public', 'public.*'], PublicLayoutComposer::class);
+
+        View::composer(['layouts.admin', 'layouts.guest', 'admin.partials.sidebar', 'components.application-logo'], function ($view) {
+            $view->with('siteLogoUrl', app(Settings::class)->logoUrl());
+        });
     }
 }

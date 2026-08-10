@@ -1,5 +1,5 @@
 @props([
-    'brand' => 'ASNEN',
+    'brand' => 'Demystifying Disability',
     'eyebrow' => 'A homegrown African model of inclusion',
     'headline' => '',
     'supportingText' => null,

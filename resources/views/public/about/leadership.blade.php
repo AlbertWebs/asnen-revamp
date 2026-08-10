@@ -17,6 +17,8 @@
         :excerpt="$page->excerpt"
         :primary-cta="['label' => 'Who we are', 'url' => route('site.about.who-we-are')]"
         :secondary-cta="['label' => 'Get involved', 'url' => route('site.get-involved.index')]"
+        :images="$bannerImages ?? []"
+        :show-visual="true"
     />
 
     <x-public.about-subnav current="leadership" />

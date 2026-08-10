@@ -14,6 +14,7 @@ class SettingsSeeder extends Seeder
             ['key' => 'brand.name', 'group' => 'brand', 'value' => ['value' => 'Africa Special Needs Education Network'], 'is_public' => true],
             ['key' => 'brand.short_name', 'group' => 'brand', 'value' => ['value' => 'ASNEN'], 'is_public' => true],
             ['key' => 'brand.tagline', 'group' => 'brand', 'value' => ['value' => 'Inclusion for all, in all.'], 'is_public' => true],
+            ['key' => 'brand.logo_id', 'group' => 'brand', 'value' => ['value' => ''], 'is_public' => true],
 
             // Website
             ['key' => 'website.timezone', 'group' => 'website', 'value' => ['value' => 'Africa/Nairobi'], 'is_public' => true],

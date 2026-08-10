@@ -24,7 +24,7 @@ Alpine.data('cascadeCarousel', cascadeCarousel);
 Alpine.start();
 
 function syncSiteChromeHeight() {
-    const announcement = document.querySelector('[aria-label="Site announcement"]');
+    const announcement = document.querySelector('[aria-label="Site contact bar"], [aria-label="Site announcement"]');
     const header = document.getElementById('site-header');
     if (!header && !announcement) return;
 

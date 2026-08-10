@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\MediaAsset;
 use App\Models\Setting;
 use Illuminate\Support\Facades\Cache;
 
@@ -26,6 +27,20 @@ class Settings
         }
 
         return $value ?? $default;
+    }
+
+    public function logoUrl(): string
+    {
+        $default = asset('brand/logo.png');
+        $logoId = $this->get('brand.logo_id');
+
+        if (! filled($logoId)) {
+            return $default;
+        }
+
+        $asset = MediaAsset::query()->find((int) $logoId);
+
+        return $asset?->publicUrl() ?: $default;
     }
 
     public function all(): array
