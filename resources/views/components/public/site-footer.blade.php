@@ -49,10 +49,10 @@
             'links' => [
                 ['Home', '/'],
                 ['About ASNEN', '/about/who-we-are'],
-                ['Mission, Vision & Values', '/about/mission-vision-values'],
+                ['Vision, Mission & Values', '/about/mission-vision-values'],
                 ['Our Story', '/about/our-story'],
                 ['Leadership & Team', '/about/leadership'],
-                ['Partners', '/about/partners'],
+                ['Collaborators', '/about/partners'],
                 ['Contact', '/contact'],
             ],
         ],
@@ -114,6 +114,7 @@
                     <div>
                         <span class="block text-[11px] font-semibold uppercase tracking-[0.22em] text-white/50">Africa Special Needs Education Network</span>
                         <span class="mt-1 block text-lg font-semibold text-white/90">Registered CBO · Kenya</span>
+                        <span class="mt-1 block font-mono text-[0.72rem] tracking-wide text-white/60">CBO No. DAG/CBO/5/4/2022/216</span>
                     </div>
 
                     <div class="pt-2">

@@ -28,13 +28,7 @@
                 @foreach($publications as $publication)
                     <article class="report-card">
                         <div class="report-card__cover">
-                            <x-public.media-frame
-                                :asset="$publication->cover"
-                                :alt="$publication->cover?->alt ?? $publication->title"
-                                ratio="3/4"
-                                rounded="rounded-none"
-                                label="Publication cover"
-                            />
+                            <x-public.publication-thumb :publication="$publication" />
                         </div>
                         <div class="report-card__body">
                             <div class="report-card__meta">
@@ -58,8 +52,8 @@
                                         @endif
                                     </a>
                                 @endif
-                                <a href="{{ route('site.resources.publications.show', $publication->slug) }}" class="report-card__details">
-                                    View details
+                                <a href="{{ route('site.resources.publications.show', $publication->slug) }}{{ ! $publication->file ? '#request-file' : '' }}" class="report-card__details">
+                                    {{ ! $publication->file ? 'Request file' : 'View details' }}
                                     <span aria-hidden="true">→</span>
                                 </a>
                             </div>

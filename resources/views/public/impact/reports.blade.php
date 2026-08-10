@@ -48,11 +48,8 @@
                         @foreach($reports as $report)
                             <article class="report-card">
                                 <div class="report-card__cover">
-                                    <x-public.media-frame
-                                        :asset="$report->cover"
-                                        :alt="$report->cover?->alt ?? $report->title"
-                                        ratio="3/4"
-                                        rounded="rounded-none"
+                                    <x-public.publication-thumb
+                                        :publication="$report"
                                         label="Report cover"
                                     />
                                 </div>

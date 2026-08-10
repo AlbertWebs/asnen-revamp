@@ -17,7 +17,7 @@ $hero = PageBlock::where('page_id', $page->id)->where('type', 'hero')->first();
 if ($hero) {
     $content = $hero->content;
     $content['headline'] = 'Inclusion for all, in all. No child left behind.';
-    $content['supporting_text'] = 'ASNEN is a coalition of families, educators and advocates across Africa, building a model of inclusion rooted in Ubuntu - carried by the people who live it, not delivered to them.';
+    $content['supporting_text'] = 'ASNEN is a coalition of families, educators and advocates across Africa, building a model of inclusion rooted in Ubuntu, carried by the people who live it, not delivered to them.';
     $content['primary_cta'] = ['label' => 'Become a member', 'url' => '/get-involved/membership'];
     $content['secondary_cta'] = ['label' => 'Explore our programs', 'url' => '/what-we-do'];
     $hero->update(['content' => $content]);

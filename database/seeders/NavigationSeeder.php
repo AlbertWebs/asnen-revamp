@@ -36,11 +36,11 @@ class NavigationSeeder extends Seeder
         $about = $this->item($menu, null, 'About', '/about', ++$order);
         $aboutChildren = [
             ['Who We Are', '/about/who-we-are'],
-            ['Mission, Vision & Values', '/about/mission-vision-values'],
+            ['Vision, Mission & Values', '/about/mission-vision-values'],
             ['Our Story', '/about/our-story'],
             ['Leadership & Team', '/about/leadership'],
             ['Governance', '/about/governance'],
-            ['Partners', '/about/partners'],
+            ['Collaborators', '/about/partners'],
         ];
         $childOrder = 0;
         foreach ($aboutChildren as [$label, $url]) {

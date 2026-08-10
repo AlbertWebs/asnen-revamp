@@ -5,7 +5,7 @@
         ->orderBy('sort_order')
         ->with('logo')
         ->get();
-    $heading = $c['heading'] ?? 'Our Partners';
+    $heading = $c['heading'] ?? 'Our Collaborators';
 @endphp
 <section class="section-editorial bg-ivory">
     <div class="mx-auto max-w-editorial px-6 lg:px-7">

@@ -109,8 +109,6 @@
                         <div class="webinar-feature__actions">
                             @if($featured->recording_url)
                                 <a href="{{ $featured->recording_url }}" class="btn-primary" target="_blank" rel="noopener noreferrer">Watch recording</a>
-                            @else
-                                <span class="webinar-card__link webinar-card__link--muted">Recording coming soon</span>
                             @endif
                             @if($featured->participant_count)
                                 <span class="webinar-card__stat">{{ number_format($featured->participant_count) }} participants</span>
@@ -173,8 +171,6 @@
                                         Watch recording
                                         <span aria-hidden="true">→</span>
                                     </a>
-                                @else
-                                    <span class="webinar-card__link webinar-card__link--muted">Recording coming soon</span>
                                 @endif
                             </div>
                         </article>

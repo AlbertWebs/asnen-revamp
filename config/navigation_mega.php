@@ -13,7 +13,7 @@ return [
                 'title' => 'The organisation',
                 'items' => [
                     ['url' => '/about/who-we-are', 'desc' => 'Who we are and what ASNEN stands for.'],
-                    ['url' => '/about/mission-vision-values', 'desc' => 'Mission, vision, and Ubuntu values.'],
+                    ['url' => '/about/mission-vision-values', 'label' => 'Vision, Mission & Values', 'desc' => 'Vision, mission, and Ubuntu values.'],
                     ['url' => '/about/our-story', 'desc' => 'How the network grew across Africa.'],
                 ],
             ],
@@ -27,7 +27,7 @@ return [
             [
                 'title' => 'Network',
                 'items' => [
-                    ['url' => '/about/partners', 'desc' => 'Organisations we walk with.'],
+                    ['url' => '/about/partners', 'label' => 'Collaborators', 'desc' => 'Organisations we walk with.'],
                 ],
             ],
         ],

@@ -37,13 +37,21 @@
 
     <x-public.about-hero
         current-label="Who we are"
+        brand="Demystifying Disability"
         title="Who we are"
         title-max="11ch"
         tagline="Inclusion for all, in all."
         :excerpt="$page->excerpt"
-        :primary-cta="['label' => 'Mission & values', 'url' => route('site.about.mission')]"
+        :primary-cta="['label' => 'Vision, mission & values', 'url' => route('site.about.mission')]"
         :secondary-cta="['label' => 'Meet the team', 'url' => route('site.about.leadership')]"
-        :show-visual="true"
+        :images="[
+            ['url' => asset('storage/galleries/community-moments/01.jpg'), 'alt' => 'ASNEN community gathering'],
+            ['url' => asset('storage/galleries/baringo-2023/02.jpg'), 'alt' => 'Children and caregivers in Baringo'],
+            ['url' => asset('storage/galleries/community-moments/03.jpg'), 'alt' => 'ASNEN partners at a community event'],
+            ['url' => asset('storage/galleries/community-moments/05.jpg'), 'alt' => 'Families and advocates together'],
+            ['url' => asset('storage/galleries/baringo-2023/04.jpg'), 'alt' => 'Community outreach in Baringo'],
+            ['url' => asset('storage/galleries/community-moments/07.jpg'), 'alt' => 'ASNEN programme moment'],
+        ]"
     />
 
     <x-public.about-subnav current="who-we-are" />

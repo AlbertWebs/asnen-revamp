@@ -5,9 +5,9 @@
 
 @section('content')
     <x-public.about-hero
-        current-label="Partners"
-        title="Partners"
-        title-max="10ch"
+        current-label="Collaborators"
+        title="Collaborators"
+        title-max="14ch"
         tagline="Stronger together."
         :excerpt="$page->excerpt"
         :primary-cta="['label' => 'Partner with us', 'url' => route('site.get-involved.partner')]"
@@ -30,7 +30,7 @@
                 </div>
 
                 <aside class="who-identity__aside">
-                    <p class="who-identity__aside-label">Who partners with us</p>
+                    <p class="who-identity__aside-label">Who collaborates with us</p>
                     <p class="who-identity__aside-quote">Schools, NGOs, health institutions, and community organisations.</p>
                     <ul class="who-identity__aside-list">
                         <li>Shared commitment to dignity</li>
@@ -50,8 +50,8 @@
         <div class="mx-auto max-w-editorial px-6 lg:px-7">
             <div class="section-head-row reveal">
                 <div class="section-head">
-                    <span class="eyebrow mb-3 block">Partner directory</span>
-                    <h2>Recognised partners</h2>
+                    <span class="eyebrow mb-3 block">Collaborator directory</span>
+                    <h2>Collaborators</h2>
                     <p class="section-head-row__intro">Logos and names appear here after verification by ASNEN administrators.</p>
                 </div>
                 <a href="{{ route('site.get-involved.partner') }}" class="btn-secondary section-head-row__cta">Partner with us</a>

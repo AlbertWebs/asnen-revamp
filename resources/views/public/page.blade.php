@@ -45,7 +45,7 @@
     <x-public.blocks :blocks="$page->blocks" :sanitizer="$sanitizer" />
 
     @if(($page->slug ?? '') === 'about-partners' && isset($partners))
-        <x-public.section heading="Our Partners">
+        <x-public.section heading="Our Collaborators">
             <x-public.partner-logos :partners="$partners" />
         </x-public.section>
     @endif

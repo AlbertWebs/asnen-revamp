@@ -93,6 +93,31 @@
                     @elseif($event->online_url)
                         <a href="{{ $event->online_url }}" class="btn-secondary mt-5 inline-flex w-full justify-center" target="_blank" rel="noopener noreferrer">Open event link</a>
                     @endif
+
+                    @if($relatedPublication?->file)
+                        <div class="mt-6 rounded-xl border border-charcoal/10 bg-white p-4">
+                            <p class="who-identity__aside-label">Materials</p>
+                            <p class="mt-2 text-sm font-semibold text-charcoal">{{ $relatedPublication->title }}</p>
+                            @if($relatedPublication->abstract)
+                                <p class="mt-1 text-sm leading-relaxed text-charcoal/65">{{ $relatedPublication->abstract }}</p>
+                            @endif
+                            <a
+                                href="{{ route('site.resources.publications.download', $relatedPublication->slug) }}"
+                                class="btn-primary mt-4 inline-flex w-full justify-center"
+                            >
+                                Download presentation
+                                @if($relatedPublication->fileSizeLabel())
+                                    <span class="ml-2 opacity-80">({{ $relatedPublication->fileSizeLabel() }})</span>
+                                @endif
+                            </a>
+                            <a
+                                href="{{ route('site.resources.publications.show', $relatedPublication->slug) }}"
+                                class="mt-2 inline-flex w-full justify-center text-sm font-semibold text-brand hover:underline"
+                            >
+                                View in publications
+                            </a>
+                        </div>
+                    @endif
                 </aside>
             </div>
         </div>

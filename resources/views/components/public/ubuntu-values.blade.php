@@ -1,17 +1,42 @@
 @props([
-    'eyebrow' => 'Our values',
-    'heading' => 'Written as behaviours, not aspirations - so members and partners can hold us to them.',
+    'eyebrow' => 'Core Values',
+    'heading' => 'Drawn from Ubuntu',
+    'intro' => 'Our values are drawn from Ubuntu, the understanding that our humanity is bound to one another. They are written as behaviours rather than aspirations, so that members, partners and funders may hold us to them.',
     'values' => null,
 ])
 
 @php
     $values = $values ?? [
-        ['term' => 'Utu', 'gloss' => 'Dignity first', 'body' => 'We begin from the dignity of the child, not the diagnosis.'],
-        ['term' => 'Belonging', 'gloss' => 'I am because we are', 'body' => 'We build circles, not services - caregiver to caregiver, family to community.'],
-        ['term' => 'Harambee', 'gloss' => 'Pulling together', 'body' => 'Inclusion is shared work - families, schools, health workers, government, neighbours.'],
-        ['term' => 'Knowledge', 'gloss' => 'Shared, not held', 'body' => 'We move expertise outward - into homes and classrooms, in the languages people use.'],
-        ['term' => 'Lived experience', 'gloss' => 'Those who carry it, shape it', 'body' => 'Caregivers and persons with disabilities lead as facilitators and decision-makers.'],
-        ['term' => 'Uwazi', 'gloss' => 'Honest accounting', 'body' => 'We report accurately and account transparently to members, partners and funders.'],
+        [
+            'term' => 'Utu',
+            'gloss' => 'Dignity first',
+            'body' => 'Utu is the Swahili expression of Ubuntu: humanness. We begin from the dignity of the child, not from the diagnosis. Disability describes a circumstance a person lives with. It never describes their worth, their capacity, or their claim on our respect.',
+        ],
+        [
+            'term' => 'Belonging',
+            'gloss' => 'I am because we are',
+            'body' => 'Ubuntu holds that a person is a person through other people. We build circles rather than services, caregivers connected to caregivers, teachers to teachers, families to communities. Where a person has been isolated, our first act is to end the isolation.',
+        ],
+        [
+            'term' => 'Harambee',
+            'gloss' => 'Pulling together',
+            'body' => 'Inclusion is not the specialist’s task, delegated and forgotten. It is the shared responsibility of families, schools, health workers, government and neighbours. We convene rather than compete, and we credit generously.',
+        ],
+        [
+            'term' => 'Knowledge',
+            'gloss' => 'Shared, not held',
+            'body' => 'Expertise in disability has too often been guarded, held in clinics, in English, behind fees. We move knowledge in the opposite direction: outward, into homes and classrooms, in the languages people actually use. Demystification is an act of solidarity.',
+        ],
+        [
+            'term' => 'Lived experience',
+            'gloss' => 'Those who carry the work shape it',
+            'body' => 'The mother who has raised a child with cerebral palsy for twelve years holds knowledge no training produces. We build leadership from lived experience, caregivers and persons with disabilities as facilitators, advocates and decision-makers, not as beneficiaries or case studies.',
+        ],
+        [
+            'term' => 'Uwazi',
+            'gloss' => 'Honest accounting',
+            'body' => 'Ubuntu binds us to one another, and that binding requires truthfulness. We report accurately, claim only what we have done, correct ourselves publicly when we are wrong, and account transparently to members, partners and funders.',
+        ],
     ];
 @endphp
 
@@ -20,22 +45,27 @@
         <div class="section-head reveal">
             <span class="eyebrow mb-3 block">{{ $eyebrow }}</span>
             <h2>{{ $heading }}</h2>
+            @if($intro)
+                <p class="section-head-row__intro">{{ $intro }}</p>
+            @endif
         </div>
 
+        @php
+            $accents = ['#0C77BC', '#8CC63F', '#FFF200', '#4A4C70', '#0C77BC', '#8CC63F'];
+        @endphp
         <div class="chain reveal relative">
             <div class="chain-line hidden lg:block" aria-hidden="true"></div>
-            <ol class="relative z-10 m-0 grid list-none grid-cols-1 gap-8 p-0 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 xl:gap-4">
+            <ol class="chain-list relative z-10 m-0 grid list-none grid-cols-1 gap-8 p-0 sm:grid-cols-2 lg:grid-cols-3">
                 @foreach($values as $i => $value)
-                    <li>
-                        <div
-                            class="mb-4 flex h-16 w-16 items-center justify-center rounded-full border-[2.5px] bg-white"
-                            style="border-color: {{ ['#0C77BC','#8CC63F','#FFF200','#4A4C70','#0C77BC','#8CC63F'][$i % 6] }}"
-                        >
-                            <span class="font-mono text-[0.68rem] font-medium">{{ str_pad((string) ($i + 1), 2, '0', STR_PAD_LEFT) }}</span>
+                    @php $accent = $accents[$i % 6]; @endphp
+                    <li class="chain-item{{ $accent === '#FFF200' ? ' chain-item--light' : '' }}" style="--chain-accent: {{ $accent }};">
+                        <div class="chain-item__num" aria-hidden="true">
+                            <span class="chain-item__num-ring"></span>
+                            <span class="chain-item__num-label">{{ str_pad((string) ($i + 1), 2, '0', STR_PAD_LEFT) }}</span>
                         </div>
-                        <p class="font-mono text-[0.72rem] uppercase tracking-wide text-brand">{{ $value['term'] }}</p>
-                        <p class="mt-1 font-display text-lg font-medium italic text-charcoal">{{ $value['gloss'] }}</p>
-                        <p class="mt-2 text-sm text-charcoal-500">{{ $value['body'] }}</p>
+                        <p class="chain-item__term font-mono text-[0.72rem] uppercase tracking-wide text-brand">{{ $value['term'] }}</p>
+                        <p class="chain-item__gloss mt-1 font-display text-lg font-medium italic text-charcoal">{{ $value['gloss'] }}</p>
+                        <p class="chain-item__body mt-2 text-sm leading-relaxed text-charcoal-500">{{ $value['body'] }}</p>
                     </li>
                 @endforeach
             </ol>

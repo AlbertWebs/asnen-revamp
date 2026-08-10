@@ -58,21 +58,42 @@
         </div>
     </div>
 @else
-    <div class="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+    <ul class="partner-logo-grid" aria-label="Collaborator logos">
         @foreach($partners as $partner)
             @php $partner->loadMissing('logo'); @endphp
-            <div class="flex flex-col items-center gap-3 text-center">
-                <x-public.media-frame
-                    :asset="$partner->logo"
-                    :alt="($partner->logo?->alt ?? $partner->name).' logo'"
-                    ratio="1/1"
-                    rounded="rounded-xl"
-                    fit="contain"
-                    label="Logo"
-                    class="w-full max-w-[8rem] bg-white p-2"
-                />
-                <span class="text-sm font-semibold text-charcoal/80">{{ $partner->name }}</span>
-            </div>
+            <li class="partner-logo-grid__item">
+                @if($partner->url)
+                    <a href="{{ $partner->url }}" class="partner-logo-card" target="_blank" rel="noopener noreferrer">
+                        <span class="partner-logo-card__media">
+                            <x-public.media-frame
+                                :asset="$partner->logo"
+                                :alt="($partner->logo?->alt ?? $partner->name).' logo'"
+                                ratio="1/1"
+                                rounded="rounded-none"
+                                fit="contain"
+                                label="Logo"
+                                class="partner-logo-card__frame"
+                            />
+                        </span>
+                        <span class="partner-logo-card__name">{{ $partner->name }}</span>
+                    </a>
+                @else
+                    <div class="partner-logo-card">
+                        <span class="partner-logo-card__media">
+                            <x-public.media-frame
+                                :asset="$partner->logo"
+                                :alt="($partner->logo?->alt ?? $partner->name).' logo'"
+                                ratio="1/1"
+                                rounded="rounded-none"
+                                fit="contain"
+                                label="Logo"
+                                class="partner-logo-card__frame"
+                            />
+                        </span>
+                        <span class="partner-logo-card__name">{{ $partner->name }}</span>
+                    </div>
+                @endif
+            </li>
         @endforeach
-    </div>
+    </ul>
 @endif

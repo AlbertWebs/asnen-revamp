@@ -9,6 +9,7 @@ import { initSiteForms } from './site-forms';
 
 import { impactCounters } from './impact-counters';
 import { heroCarousel } from './hero-carousel';
+import { cascadeCarousel } from './cascade-carousel';
 import { initAdminRichEditors } from './admin-rich-editor';
 
 window.Alpine = Alpine;
@@ -19,6 +20,7 @@ Alpine.data('impactRegionsMap', impactRegionsMap);
 Alpine.data('regionMapPicker', regionMapPicker);
 Alpine.data('impactCounters', impactCounters);
 Alpine.data('heroCarousel', heroCarousel);
+Alpine.data('cascadeCarousel', cascadeCarousel);
 Alpine.start();
 
 function syncSiteChromeHeight() {

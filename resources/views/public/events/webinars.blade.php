@@ -68,8 +68,6 @@
                                         Watch recording
                                         <span aria-hidden="true">→</span>
                                     </a>
-                                @else
-                                    <span class="webinar-card__link webinar-card__link--muted">Recording coming soon</span>
                                 @endif
                             </div>
                         </article>

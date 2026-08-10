@@ -30,7 +30,7 @@ class PageController extends Controller
             'sanitizer' => $this->sanitizer,
         ];
 
-        if (Str::startsWith($page->slug, 'about-')) {
+        if (Str::startsWith($page->slug, 'about-') || $page->slug === 'vision-mission-values') {
             return $this->showAboutPage($page);
         }
 
@@ -56,7 +56,7 @@ class PageController extends Controller
                 'page' => $page,
                 'sanitizer' => $this->sanitizer,
             ]),
-            'about-mission-vision-values' => view('public.about.mission', [
+            'about-mission-vision-values', 'vision-mission-values' => view('public.about.mission', [
                 'page' => $page,
                 'sanitizer' => $this->sanitizer,
                 'introHtml' => $introHtml,

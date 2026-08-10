@@ -167,20 +167,37 @@ class ContentSeeder extends Seeder
                 ? $this->ensurePublicMedia($definition['logo'], $definition['name'].' logo', 'partners')?->id
                 : null;
 
-            $partners[$definition['slug']] = Partner::updateOrCreate(
-                ['slug' => $definition['slug']],
-                [
-                    'name' => $definition['name'],
-                    'description' => $definition['description'],
-                    'logo_id' => $logoId,
-                    'sort_order' => $index + 1,
-                    'status' => $definition['publish'] ? PublishStatus::Published : PublishStatus::Draft,
-                    'published_at' => $definition['publish'] ? now() : null,
-                    'verification_status' => $definition['publish']
-                        ? VerificationStatus::Verified
-                        : VerificationStatus::NeedsVerification,
-                ]
-            );
+            // Prefer matching an existing partner by name so slug renames do not create duplicates.
+            $partner = Partner::withTrashed()
+                ->where(function ($query) use ($definition) {
+                    $query->where('slug', $definition['slug'])
+                        ->orWhereRaw('lower(name) = ?', [mb_strtolower($definition['name'])]);
+                })
+                ->first();
+
+            $payload = [
+                'name' => $definition['name'],
+                'slug' => $definition['slug'],
+                'description' => $definition['description'],
+                'logo_id' => $logoId,
+                'sort_order' => $index + 1,
+                'status' => $definition['publish'] ? PublishStatus::Published : PublishStatus::Draft,
+                'published_at' => $definition['publish'] ? now() : null,
+                'verification_status' => $definition['publish']
+                    ? VerificationStatus::Verified
+                    : VerificationStatus::NeedsVerification,
+            ];
+
+            if ($partner) {
+                if ($partner->trashed()) {
+                    $partner->restore();
+                }
+                $partner->update($payload);
+            } else {
+                $partner = Partner::create($payload);
+            }
+
+            $partners[$definition['slug']] = $partner;
         }
 
         return $partners;
@@ -907,9 +924,9 @@ HTML,
                 'slug' => 'caregiver-support-toolkit',
                 'category' => 'toolkit',
                 'year' => 2024,
-                'abstract' => 'Simple tools and conversation prompts for parents and guardians supporting children and young adults with disabilities.',
+                'abstract' => 'Training manual and facilitator’s guide for caregivers of children with disability - practical tools, conversation prompts, and session outlines for homes and community settings.',
                 'file' => null,
-                'cover' => 'events/improving-support-system.jpg',
+                'cover' => 'resources/caregiver-support-toolkit.jpg',
                 'version' => '1.0',
             ],
             [
@@ -921,6 +938,15 @@ HTML,
                 'file' => null,
                 'cover' => 'events/ubuntu-conference-1.jpg',
                 'version' => '1.0',
+            ],
+            [
+                'title' => 'SAACS ASNEN: Alternative and Augmentative Communication (AAC)',
+                'slug' => 'saacs-asnen-aac',
+                'category' => 'report',
+                'year' => 2026,
+                'abstract' => 'Presentation materials from the ASNEN webinar on Alternative and Augmentative Communication (AAC).',
+                'file' => 'resources/saacs-asnen.pdf',
+                'cover' => 'events/aac-communication.jpg',
             ],
         ];
 
@@ -937,7 +963,9 @@ HTML,
                 ? $this->ensurePublicMedia(
                     $definition['cover'],
                     $definition['title'].' cover',
-                    'events'
+                    str_contains($definition['cover'], '/')
+                        ? explode('/', $definition['cover'])[0]
+                        : 'events'
                 )?->id
                 : null;
 
@@ -1002,7 +1030,7 @@ HTML,
                 'type' => 'hero',
                 'content' => [
                     'headline' => 'Inclusion for all, in all. No child left behind.',
-                    'supporting_text' => 'ASNEN is a coalition of families, educators and advocates across Africa, building a model of inclusion rooted in Ubuntu — carried by the people who live it, not delivered to them.',
+                    'supporting_text' => 'ASNEN is a coalition of families, educators and advocates across Africa, building a model of inclusion rooted in Ubuntu, carried by the people who live it, not delivered to them.',
                     'primary_cta' => ['label' => 'Explore Our Programs', 'url' => '/what-we-do'],
                     'secondary_cta' => ['label' => 'See Our Impact', 'url' => '/impact'],
                 ],
@@ -1039,10 +1067,12 @@ HTML,
             [
                 'type' => 'featured_events',
                 'content' => [
-                    'heading' => 'Past Events',
+                    'heading' => 'Upcoming events',
+                    'intro' => 'Conferences, webinars, and gatherings coming up across the ASNEN network.',
                     'limit' => 3,
-                    'show_upcoming_only' => false,
-                    'show_past_only' => true,
+                    'show_upcoming_only' => true,
+                    'show_past_only' => false,
+                    'fallback_to_past' => true,
                 ],
             ],
             [
@@ -1063,7 +1093,7 @@ HTML,
             [
                 'type' => 'partners',
                 'content' => [
-                    'heading' => 'Our Partners',
+                    'heading' => 'Our Collaborators',
                     'display' => 'verified_only',
                 ],
             ],
@@ -1115,6 +1145,12 @@ HTML,
             ]
         );
 
+        // Keep the canonical slug even when the title changes (HasSlug would otherwise rewrite it).
+        if ($page->slug !== $slug) {
+            $page->slug = $slug;
+            $page->saveQuietly();
+        }
+
         PageBlock::updateOrCreate(
             ['page_id' => $page->id, 'type' => 'rich_text'],
             [
@@ -1138,9 +1174,9 @@ HTML,
             ],
             [
                 'slug' => 'about-mission-vision-values',
-                'title' => 'Mission, Vision & Values',
-                'excerpt' => 'Our mission, vision, and UBUNTU-grounded values guide everything we do.',
-                'body' => '<h2>Mission</h2><p>Develop and advance African, homegrown models that provide knowledge, information, capacity building, advocacy, collaboration, and support for inclusion.</p><h2>Vision</h2><p>An Africa where inclusion is embedded in society and where compassion, reciprocity, and dignity-grounded in UBUNTU-shape education, support systems, and community life.</p><h2>Values</h2><ul><li><strong>Inclusion for all, in all.</strong> No child left behind.</li><li><strong>Dignity and person-centred practice.</strong> Nothing about us without us.</li><li><strong>Compassion and reciprocity.</strong> Embrace differences. Champion inclusion.</li><li><strong>Evidence and accountability.</strong> We publish verified impact with clear sources.</li><li><strong>Safeguarding.</strong> We protect the privacy and dignity of children and persons with disabilities in all our storytelling.</li></ul>',
+                'title' => 'Vision, Mission & Values',
+                'excerpt' => 'Our vision, mission, and UBUNTU-grounded values guide everything we do.',
+                'body' => '<h2>Vision</h2><p>An Africa where inclusion is woven into the fabric of society, where every person’s potential is recognised, and no one is left behind.</p><p>ASNEN envisions an Africa in which inclusion is not an exception granted to some, but a condition of belonging shared by all. Guided by Ubuntu, we see a continent where compassion, reciprocity and dignity form the foundation of education and support, and where the shared experience and expertise of African families, educators and advocates come together in a model of inclusion that is truly our own.</p><h2>Mission</h2><p>To build a homegrown African model of inclusion, through knowledge, capacity building, advocacy and support, so that children, young people and adults with disabilities are included in education and in every stage of life.</p><p>ASNEN is a coalition of advocates, families, educators and allies committed to the full inclusion of children, young people and adults with disabilities and special needs. We create and share knowledge, build the capacity of those who teach and care, advocate for the realization of rights, and stand alongside families as they navigate the systems around them.</p><h2>Core Values</h2><p>Our values are drawn from Ubuntu, the understanding that our humanity is bound to one another. They are written as behaviours rather than aspirations, so that members, partners and funders may hold us to them.</p><h2>Philosophy</h2><p>Ubuntu “I am because we are”, is not a tagline at ASNEN. It is the reason the work takes the shape it does. It is why we convene rather than compete, why we build peer circles rather than waiting lists, why caregivers become facilitators, and why we hold that inclusion belongs to everyone rather than to specialists alone. A person is a person through other people. The child who has been hidden is one of us. The mother who has carried this alone is one of us. We are because they are.</p>',
             ],
             [
                 'slug' => 'about-our-story',
@@ -1162,9 +1198,9 @@ HTML,
             ],
             [
                 'slug' => 'about-partners',
-                'title' => 'Partners',
+                'title' => 'Collaborators',
                 'excerpt' => 'Organisations collaborating with ASNEN to advance inclusion across Africa.',
-                'body' => '<p>ASNEN\'s impact is strengthened through partnerships with schools, NGOs, health institutions, and community organisations. Partner profiles are listed here once names, descriptions, logos, and URLs have been verified by administrators.</p>',
+                'body' => '<p>ASNEN\'s impact is strengthened through collaboration with schools, NGOs, health institutions, and community organisations. Collaborator profiles are listed here once names, descriptions, logos, and URLs have been verified by administrators.</p>',
             ],
         ];
 
@@ -1495,6 +1531,25 @@ HTML,
                     ['name' => 'consent', 'type' => 'checkbox', 'label' => 'I consent to receive ASNEN updates', 'required' => true],
                 ],
                 'success_message' => 'You have been subscribed to ASNEN updates.',
+                'notify_emails' => ['info@asnenafrica.org'],
+            ],
+            [
+                'name' => 'Toolkit Request',
+                'slug' => 'toolkit-request',
+                'type' => 'toolkit_request',
+                'fields' => [
+                    ['name' => 'name', 'type' => 'text', 'label' => 'Full Name', 'required' => true],
+                    ['name' => 'email', 'type' => 'email', 'label' => 'Email Address', 'required' => true],
+                    ['name' => 'phone', 'type' => 'tel', 'label' => 'Phone Number', 'required' => false],
+                    ['name' => 'organisation', 'type' => 'text', 'label' => 'Organisation / school', 'required' => false],
+                    ['name' => 'role', 'type' => 'select', 'label' => 'Your role', 'required' => true, 'options' => ['caregiver', 'teacher', 'facilitator', 'organisation', 'health_worker', 'other']],
+                    ['name' => 'location', 'type' => 'text', 'label' => 'Location', 'required' => false],
+                    ['name' => 'quantity', 'type' => 'number', 'label' => 'Copies needed', 'required' => false],
+                    ['name' => 'message', 'type' => 'textarea', 'label' => 'How you plan to use the toolkit', 'required' => false],
+                    ['name' => 'publication_title', 'type' => 'text', 'label' => 'Toolkit', 'required' => true],
+                    ['name' => 'publication_slug', 'type' => 'text', 'label' => 'Toolkit slug', 'required' => true],
+                ],
+                'success_message' => 'Thank you. Your toolkit request has been received. ASNEN will follow up by email with next steps.',
                 'notify_emails' => ['info@asnenafrica.org'],
             ],
         ];

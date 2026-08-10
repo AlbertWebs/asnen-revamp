@@ -7,6 +7,7 @@ use App\Http\Controllers\PublicSite\Concerns\RespondsToAjaxForms;
 use App\Http\Requests\PublicSite\EventRegistrationFormRequest;
 use App\Models\Event;
 use App\Models\EventRegistration;
+use App\Models\Publication;
 use App\Models\Webinar;
 use App\Services\HtmlSanitizer;
 use Illuminate\Support\Str;
@@ -83,8 +84,18 @@ class EventController extends Controller
             ->where('slug', $slug)
             ->firstOrFail();
 
+        $relatedPublication = Publication::published()
+            ->with(['file', 'cover'])
+            ->where(function ($query) use ($slug) {
+                $query->where('slug', $slug)
+                    ->orWhere('slug', $slug.'-materials')
+                    ->orWhere('slug', 'saacs-asnen-aac');
+            })
+            ->first();
+
         return view('public.events.show', [
             'event' => $event,
+            'relatedPublication' => $relatedPublication,
             'sanitizer' => $this->sanitizer,
         ]);
     }

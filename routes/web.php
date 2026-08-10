@@ -89,6 +89,9 @@ Route::name('site.')->group(function () {
         Route::get('/publications', [ResourceController::class, 'publications'])->name('publications');
         Route::get('/publications/{slug}', [ResourceController::class, 'showPublication'])->name('publications.show');
         Route::get('/publications/{slug}/download', [ResourceController::class, 'downloadPublication'])->name('publications.download');
+        Route::post('/publications/{slug}/request', [ResourceController::class, 'requestToolkit'])
+            ->middleware('throttle:5,1')
+            ->name('publications.request');
         Route::get('/toolkits', [ResourceController::class, 'toolkits'])->name('toolkits');
         Route::get('/webinars', [ResourceController::class, 'webinarLibrary'])->name('webinars');
         Route::get('/news', [ResourceController::class, 'news'])->name('news');

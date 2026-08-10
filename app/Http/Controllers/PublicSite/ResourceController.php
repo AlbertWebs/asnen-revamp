@@ -3,14 +3,23 @@
 namespace App\Http\Controllers\PublicSite;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\PublicSite\Concerns\RespondsToAjaxForms;
+use App\Http\Requests\PublicSite\ToolkitRequestFormRequest;
 use App\Models\Article;
+use App\Models\FormDefinition;
 use App\Models\Publication;
 use App\Models\Webinar;
+use App\Services\FormSubmissionService;
 use App\Services\HtmlSanitizer;
 
 class ResourceController extends Controller
 {
-    public function __construct(private HtmlSanitizer $sanitizer) {}
+    use RespondsToAjaxForms;
+
+    public function __construct(
+        private HtmlSanitizer $sanitizer,
+        private FormSubmissionService $forms,
+    ) {}
 
     public function index()
     {
@@ -30,8 +39,32 @@ class ResourceController extends Controller
     public function showPublication(string $slug)
     {
         $publication = Publication::published()->where('slug', $slug)->with(['cover', 'file'])->firstOrFail();
+        $canRequestFile = ! $publication->file;
 
-        return view('public.resources.publication-show', array_merge(compact('publication'), ['sanitizer' => $this->sanitizer]));
+        return view('public.resources.publication-show', array_merge(compact('publication', 'canRequestFile'), [
+            'sanitizer' => $this->sanitizer,
+        ]));
+    }
+
+    public function requestToolkit(ToolkitRequestFormRequest $request, string $slug)
+    {
+        $publication = Publication::published()->where('slug', $slug)->firstOrFail();
+
+        abort_unless(! $publication->file, 404);
+
+        $data = $request->formData();
+        $data['publication_slug'] = $publication->slug;
+        $data['publication_title'] = $publication->title;
+
+        $form = FormDefinition::where('slug', 'toolkit-request')->where('is_active', true)->firstOrFail();
+        $submission = $this->forms->store($form, $data, $request);
+
+        return $this->formSuccessResponse(
+            $request,
+            $submission->confirmation_token,
+            'toolkit-request',
+            $form->success_message
+        );
     }
 
     public function downloadPublication(string $slug)
