@@ -19,6 +19,13 @@ echo "== Composer =="
 composer install --no-dev --optimize-autoloader --no-interaction
 
 echo "== Storage link =="
+# A real directory at public/storage breaks new uploads (files land in
+# storage/app/public but the web root never sees them). Merge then relink.
+if [ -d public/storage ] && [ ! -L public/storage ]; then
+  echo "Merging public/storage directory into storage/app/public..."
+  rsync -a public/storage/ storage/app/public/
+  rm -rf public/storage
+fi
 php artisan storage:link --force 2>/dev/null || true
 
 echo "== Migrate =="
