@@ -106,67 +106,101 @@
         :social-links="$socialLinks ?? []"
     />
 
-    <header id="site-header" class="sticky top-0 z-40 border-b border-charcoal/10 bg-ivory/95 backdrop-blur-[6px]" x-data="{ mobileOpen: false, openSection: null }">
-        <div class="mx-auto flex max-w-editorial items-center justify-between gap-4 px-6 py-3 lg:px-7">
-            <a href="{{ route('site.home') }}" class="relative z-10 -my-5 flex min-w-0 shrink-0 items-center sm:-my-6">
-                <img src="{{ $siteLogoUrl ?? asset('brand/logo.png') }}" alt="{{ $siteFullName ?? 'Africa Special Needs Education Network' }}" class="h-[4.75rem] w-auto sm:h-[5.5rem]" width="206" height="138">
-            </a>
+    <header
+        id="site-header"
+        class="site-header sticky top-0 z-40"
+        x-data="{ mobileOpen: false, openSection: null, scrolled: window.scrollY > 12 }"
+        :class="{ 'is-scrolled': scrolled, 'is-mobile-open': mobileOpen }"
+        @scroll.window.throttle.50ms="scrolled = window.scrollY > 12"
+        @keydown.escape.window="mobileOpen = false"
+    >
+        <div class="site-header__bar">
+            <div class="site-header__inner">
+                <a href="{{ route('site.home') }}" class="site-header__brand">
+                    <img
+                        src="{{ $siteLogoUrl ?? asset('brand/logo.png') }}"
+                        alt="{{ $siteFullName ?? 'Africa Special Needs Education Network' }}"
+                        class="site-header__logo"
+                        width="206"
+                        height="138"
+                    >
+                </a>
 
-            <nav class="primary-nav hidden lg:flex" aria-label="Primary">
-                @foreach($primaryNav as $item)
-                    @if($item->children->isNotEmpty())
-                        <x-public.mega-nav-item :item="$item" />
-                    @else
-                        @php $isActive = $item->isActive(); @endphp
-                        <div class="nav-item relative flex items-center">
-                            <a
-                                href="{{ $item->url }}"
-                                class="nav-link-editorial {{ $isActive ? 'is-active' : '' }}"
-                                @if($isActive) aria-current="page" @endif
-                            >
-                                <span>{{ $item->label }}</span>
-                            </a>
-                        </div>
-                    @endif
-                @endforeach
-            </nav>
+                <nav class="primary-nav hidden lg:flex" aria-label="Primary">
+                    @foreach($primaryNav as $item)
+                        @if($item->children->isNotEmpty())
+                            <x-public.mega-nav-item :item="$item" />
+                        @else
+                            @php $isActive = $item->isActive(); @endphp
+                            <div class="nav-item relative flex items-center">
+                                <a
+                                    href="{{ $item->url }}"
+                                    class="nav-link-editorial {{ $isActive ? 'is-active' : '' }}"
+                                    @if($isActive) aria-current="page" @endif
+                                >
+                                    <span>{{ $item->label }}</span>
+                                </a>
+                            </div>
+                        @endif
+                    @endforeach
+                </nav>
 
-            <div class="flex items-center gap-2">
-                <a href="{{ url('/get-involved/membership') }}" class="btn-gold hidden sm:inline-flex">Become a member</a>
-                <button type="button" class="rounded-sm p-2 lg:hidden" @click="mobileOpen = !mobileOpen" :aria-expanded="mobileOpen.toString()" aria-controls="mobile-menu" aria-label="Toggle menu">
-                    <span class="flex w-[22px] flex-col gap-[5px]" aria-hidden="true">
-                        <span class="block h-0.5 w-full bg-charcoal"></span>
-                        <span class="block h-0.5 w-full bg-charcoal"></span>
-                        <span class="block h-0.5 w-full bg-charcoal"></span>
-                    </span>
-                </button>
+                <div class="site-header__actions">
+                    <a href="{{ route('site.get-involved.membership') }}" class="btn-gold site-header__cta hidden sm:inline-flex">Become a member</a>
+                    <button
+                        type="button"
+                        class="site-header__menu-btn lg:hidden"
+                        @click="mobileOpen = !mobileOpen"
+                        :aria-expanded="mobileOpen.toString()"
+                        aria-controls="mobile-menu"
+                        :aria-label="mobileOpen ? 'Close menu' : 'Open menu'"
+                    >
+                        <span class="site-header__burger" aria-hidden="true" :class="{ 'is-open': mobileOpen }">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </span>
+                    </button>
+                </div>
             </div>
         </div>
 
-        <div id="mobile-menu" class="border-t border-charcoal/10 bg-sand lg:hidden" x-show="mobileOpen" x-cloak @click.outside="mobileOpen = false">
-            <nav class="mx-auto max-w-editorial space-y-1 px-6 py-4" aria-label="Mobile primary">
+        <div
+            id="mobile-menu"
+            class="site-header__mobile lg:hidden"
+            x-show="mobileOpen"
+            x-cloak
+            x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0 -translate-y-1"
+            x-transition:enter-end="opacity-100 translate-y-0"
+            x-transition:leave="transition ease-in duration-150"
+            x-transition:leave-start="opacity-100 translate-y-0"
+            x-transition:leave-end="opacity-0 -translate-y-1"
+            @click.outside="mobileOpen = false"
+        >
+            <nav class="site-header__mobile-nav" aria-label="Mobile primary">
                 @foreach($primaryNav as $item)
                     @if($item->children->isNotEmpty())
                         @php $sectionActive = $item->isActive(); @endphp
-                        <div class="border-b border-charcoal/10 py-1">
+                        <div class="site-header__mobile-section">
                             <button
                                 type="button"
-                                class="flex w-full items-center justify-between py-2 text-left font-mono text-xs font-semibold uppercase tracking-wide {{ $sectionActive ? 'text-brand' : '' }}"
+                                class="site-header__mobile-toggle {{ $sectionActive ? 'is-active' : '' }}"
                                 @click="openSection = openSection === {{ $item->id }} ? null : {{ $item->id }}"
                                 :aria-expanded="(openSection === {{ $item->id }}).toString()"
                             >
                                 <span>{{ $item->label }}</span>
-                                <svg class="h-4 w-4 transition" :class="openSection === {{ $item->id }} && 'rotate-180'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <svg class="h-4 w-4 transition-transform duration-200" :class="openSection === {{ $item->id }} && 'rotate-180'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
                                 </svg>
                             </button>
-                            <div class="space-y-1 pb-2 pl-3" x-show="openSection === {{ $item->id }}" x-cloak>
-                                <a href="{{ $item->url }}" class="block py-1.5 text-sm font-medium {{ $item->childIsActive($item->url) ? 'text-brand font-semibold' : 'text-brand' }}">Overview</a>
+                            <div class="site-header__mobile-children" x-show="openSection === {{ $item->id }}" x-cloak>
+                                <a href="{{ $item->url }}" class="site-header__mobile-child site-header__mobile-child--overview">Overview</a>
                                 @foreach($item->children as $child)
                                     @php $childActive = $item->childIsActive($child->url); @endphp
                                     <a
                                         href="{{ $child->url }}"
-                                        class="block py-1.5 text-sm {{ $childActive ? 'font-semibold text-brand' : 'text-charcoal-500' }}"
+                                        class="site-header__mobile-child {{ $childActive ? 'is-active' : '' }}"
                                         @if($childActive) aria-current="page" @endif
                                     >{{ $child->label }}</a>
                                 @endforeach
@@ -176,12 +210,14 @@
                         @php $isActive = $item->isActive(); @endphp
                         <a
                             href="{{ $item->url }}"
-                            class="block border-b border-charcoal/10 py-3 font-mono text-xs font-semibold uppercase tracking-wide {{ $isActive ? 'text-brand' : '' }}"
+                            class="site-header__mobile-link {{ $isActive ? 'is-active' : '' }}"
                             @if($isActive) aria-current="page" @endif
                         >{{ $item->label }}</a>
                     @endif
                 @endforeach
-                <a href="{{ url('/get-involved/membership') }}" class="btn-gold mt-3 inline-flex">Become a member</a>
+                <div class="site-header__mobile-ctas">
+                    <a href="{{ route('site.get-involved.membership') }}" class="btn-gold inline-flex w-full justify-center">Become a member</a>
+                </div>
             </nav>
         </div>
     </header>

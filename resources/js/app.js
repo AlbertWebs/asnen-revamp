@@ -32,6 +32,28 @@ function syncSiteChromeHeight() {
     document.documentElement.style.setProperty('--site-chrome', `${height}px`);
 }
 
+function initSiteHeaderChrome() {
+    const header = document.getElementById('site-header');
+    if (!header) return;
+
+    let ticking = false;
+    const onScroll = () => {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(() => {
+            ticking = false;
+            syncSiteChromeHeight();
+        });
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    if (typeof ResizeObserver !== 'undefined') {
+        const ro = new ResizeObserver(() => syncSiteChromeHeight());
+        ro.observe(header);
+    }
+}
+
 function initReveal() {
     const nodes = document.querySelectorAll('.reveal');
     if (!nodes.length) return;
@@ -57,6 +79,7 @@ function initReveal() {
 
 document.addEventListener('DOMContentLoaded', () => {
     syncSiteChromeHeight();
+    initSiteHeaderChrome();
     window.addEventListener('resize', syncSiteChromeHeight);
     initReveal();
     initSiteForms();
