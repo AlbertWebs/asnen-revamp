@@ -989,6 +989,85 @@
         @apply border-amber-200 bg-amber-50 text-amber-900;
     }
 
+    .admin-media-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(7.5rem, 1fr));
+        gap: 0.65rem;
+    }
+    .admin-media-thumb {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        cursor: pointer;
+        overflow: hidden;
+        border-radius: 0.65rem;
+        border: 2px solid rgba(32, 33, 43, 0.1);
+        background: #fff;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+    }
+    .admin-media-thumb:hover {
+        border-color: rgba(12, 119, 188, 0.45);
+        box-shadow: 0 4px 14px rgba(12, 119, 188, 0.12);
+    }
+    .admin-media-thumb.is-selected {
+        border-color: theme('colors.brand.DEFAULT');
+        box-shadow: 0 0 0 2px rgba(12, 119, 188, 0.2);
+    }
+    .admin-media-thumb__img {
+        display: block;
+        width: 100%;
+        aspect-ratio: 4 / 3;
+        object-fit: cover;
+        background: #e8eef5;
+    }
+    .admin-media-thumb__fallback {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        aspect-ratio: 4 / 3;
+        background: #e8eef5;
+        color: rgba(32, 33, 43, 0.45);
+        font-size: 0.7rem;
+        font-weight: 600;
+    }
+    .admin-media-thumb__caption {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        padding: 0.4rem 0.45rem 0.5rem;
+        font-size: 0.65rem;
+        line-height: 1.25;
+        color: theme('colors.charcoal.500');
+        word-break: break-word;
+    }
+    .admin-media-thumb.is-selected .admin-media-thumb__caption {
+        color: theme('colors.brand.DEFAULT');
+        font-weight: 600;
+    }
+    .admin-media-thumb__check {
+        position: absolute;
+        top: 0.4rem;
+        right: 0.4rem;
+        display: none;
+        width: 1.35rem;
+        height: 1.35rem;
+        align-items: center;
+        justify-content: center;
+        border-radius: 999px;
+        background: theme('colors.brand.DEFAULT');
+        color: #fff;
+        box-shadow: 0 2px 6px rgba(12, 119, 188, 0.35);
+    }
+    .admin-media-thumb__check svg {
+        width: 0.85rem;
+        height: 0.85rem;
+    }
+    .admin-media-thumb.is-selected .admin-media-thumb__check {
+        display: inline-flex;
+    }
+
     /* ── Admin tables ────────────────────────────────────────────── */
     .admin-toolbar {
         @apply mb-5 flex flex-wrap items-end justify-between gap-3;

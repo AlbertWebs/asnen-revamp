@@ -107,25 +107,34 @@
 
                             <div class="admin-field">
                                 <span class="admin-label">Banner images</span>
-                                <p class="admin-hint mb-2">Shown in the page banner (about / interior heroes). Select one or more images; order follows selection list below.</p>
+                                <p class="admin-hint mb-2">Shown in the page banner (about / interior heroes). Click images to select; order follows the list below.</p>
                                 @php
                                     $selectedBannerIds = collect(old('banner_image_ids', $page->banner_image_ids ?? []))->map(fn ($id) => (int) $id)->all();
                                 @endphp
-                                <div class="max-h-56 space-y-2 overflow-y-auto rounded-lg border border-charcoal/10 bg-sand/40 p-3">
+                                <div class="admin-media-grid max-h-80 overflow-y-auto rounded-lg border border-charcoal/10 bg-sand/40 p-3">
                                     @forelse (($mediaOptions ?? []) as $opt)
                                         @continue(empty($opt['id']))
-                                        <label class="flex cursor-pointer items-start gap-2 text-sm text-charcoal">
+                                        <label class="admin-media-thumb {{ in_array((int) $opt['id'], $selectedBannerIds, true) ? 'is-selected' : '' }}">
                                             <input
                                                 type="checkbox"
                                                 name="banner_image_ids[]"
                                                 value="{{ $opt['id'] }}"
-                                                class="mt-0.5"
+                                                class="sr-only"
                                                 @checked(in_array((int) $opt['id'], $selectedBannerIds, true))
+                                                onchange="this.closest('label').classList.toggle('is-selected', this.checked)"
                                             >
-                                            <span>{{ $opt['label'] }}</span>
+                                            @if(! empty($opt['url']))
+                                                <img src="{{ $opt['url'] }}" alt="{{ $opt['label'] }}" loading="lazy" class="admin-media-thumb__img">
+                                            @else
+                                                <span class="admin-media-thumb__fallback" aria-hidden="true">No preview</span>
+                                            @endif
+                                            <span class="admin-media-thumb__caption">{{ $opt['label'] }}</span>
+                                            <span class="admin-media-thumb__check" aria-hidden="true">
+                                                <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                                            </span>
                                         </label>
                                     @empty
-                                        <p class="text-sm text-charcoal/60">No images in the media library yet. Upload some first.</p>
+                                        <p class="col-span-full text-sm text-charcoal/60">No images in the media library yet. Upload some first.</p>
                                     @endforelse
                                 </div>
                                 <p class="admin-hint mt-2">
@@ -257,17 +266,30 @@
                                         <div class="admin-callout">
                                             <label class="admin-label">Hero carousel images</label>
                                             <p class="admin-hint mt-1 mb-2">
-                                                Select two or more images for the rotating background. Order follows selection order in the list below.
+                                                Select two or more images for the rotating background. Click thumbnails to select.
                                             </p>
-                                            <div class="max-h-56 space-y-2 overflow-y-auto rounded-lg border border-charcoal/10 bg-white p-3">
+                                            <div class="admin-media-grid max-h-80 overflow-y-auto rounded-lg border border-charcoal/10 bg-white p-3">
                                                 <template x-for="opt in mediaOptions" :key="'hero-' + opt.id">
-                                                    <label class="admin-check">
+                                                    <label
+                                                        class="admin-media-thumb"
+                                                        :class="{ 'is-selected': isHeroSlideSelected(block, opt.id) }"
+                                                    >
                                                         <input
                                                             type="checkbox"
+                                                            class="sr-only"
                                                             :checked="isHeroSlideSelected(block, opt.id)"
                                                             @change="toggleHeroSlide(block, opt.id)"
                                                         >
-                                                        <span x-text="opt.label"></span>
+                                                        <template x-if="opt.url">
+                                                            <img :src="opt.url" :alt="opt.label" loading="lazy" class="admin-media-thumb__img">
+                                                        </template>
+                                                        <template x-if="!opt.url">
+                                                            <span class="admin-media-thumb__fallback" aria-hidden="true">No preview</span>
+                                                        </template>
+                                                        <span class="admin-media-thumb__caption" x-text="opt.label"></span>
+                                                        <span class="admin-media-thumb__check" aria-hidden="true">
+                                                            <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                                                        </span>
                                                     </label>
                                                 </template>
                                             </div>

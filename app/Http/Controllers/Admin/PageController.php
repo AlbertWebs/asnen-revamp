@@ -165,7 +165,7 @@ class PageController extends Controller
     }
 
     /**
-     * @return array<int, array{id: int|null, label: string}>
+     * @return array<int, array{id: int|null, label: string, url: string|null}>
      */
     private function mediaOptions(): array
     {
@@ -177,6 +177,7 @@ class PageController extends Controller
             ->map(fn (MediaAsset $asset) => [
                 'id' => $asset->id,
                 'label' => ($asset->alt ?: $asset->filename).' (#'.$asset->id.')',
+                'url' => $asset->publicUrl(),
             ])
             ->values()
             ->all();
