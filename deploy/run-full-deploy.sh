@@ -29,11 +29,11 @@ fi
 php artisan storage:link --force 2>/dev/null || true
 
 echo "== Storage permissions =="
-mkdir -p storage/app/public/{uploads,hero,brand,programs,stories,events,partners,team,resources,gallery}
-chown -R ubuntu:www-data storage bootstrap/cache || true
-find storage -type d -exec chmod 2775 {} \;
-find storage -type f -exec chmod 664 {} \;
-chmod -R g+w storage/app/public
+sudo mkdir -p storage/app/public/{uploads,hero,brand,programs,stories,events,partners,team,resources,gallery}
+sudo chown -R ubuntu:www-data storage bootstrap/cache || true
+sudo find storage -type d -exec chmod 2775 {} \;
+sudo find storage -type f -exec chmod 664 {} \;
+sudo chmod -R g+w storage/app/public
 
 echo "== Remove broken media rows (path 0) =="
 php -r '
