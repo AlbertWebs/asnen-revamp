@@ -29,6 +29,7 @@ class ContactController extends Controller
         return view('public.contact', [
             'page' => $page,
             'sanitizer' => $this->sanitizer,
+            'bannerImages' => $page?->bannerImages() ?? collect(),
             'contactEmail' => $this->settings->get('contact.email'),
             'contactPhone' => $this->settings->get('contact.phone_primary'),
             'contactPhoneSecondary' => $this->settings->get('contact.phone_secondary'),

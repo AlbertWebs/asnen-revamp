@@ -33,7 +33,11 @@ class GetInvolvedController extends Controller
         $page = $this->pages->findBySlug('get-involved');
         abort_unless($page, 404);
 
-        return view('public.page', ['page' => $page, 'sanitizer' => $this->sanitizer]);
+        return view('public.get-involved.index', [
+            'page' => $page,
+            'sanitizer' => $this->sanitizer,
+            'bannerImages' => $page->bannerImages(),
+        ]);
     }
 
     public function membership()
@@ -43,7 +47,12 @@ class GetInvolvedController extends Controller
 
         $plans = MembershipPlan::published()->orderBy('sort_order')->get();
 
-        return view('public.get-involved.membership', array_merge(compact('page', 'plans'), ['sanitizer' => $this->sanitizer]));
+        return view('public.get-involved.membership', [
+            'page' => $page,
+            'plans' => $plans,
+            'sanitizer' => $this->sanitizer,
+            'bannerImages' => $page->bannerImages(),
+        ]);
     }
 
     public function storeMembership(MembershipFormRequest $request)
@@ -59,6 +68,7 @@ class GetInvolvedController extends Controller
         return view('public.get-involved.volunteer', [
             'page' => $page,
             'sanitizer' => $this->sanitizer,
+            'bannerImages' => $page->bannerImages(),
         ]);
     }
 
@@ -75,6 +85,7 @@ class GetInvolvedController extends Controller
         return view('public.get-involved.partner', [
             'page' => $page,
             'sanitizer' => $this->sanitizer,
+            'bannerImages' => $page->bannerImages(),
         ]);
     }
 
@@ -91,7 +102,13 @@ class GetInvolvedController extends Controller
         $campaign = DonationCampaign::published()->first();
         $programs = Program::published()->orderBy('sort_order')->get();
 
-        return view('public.get-involved.donate', array_merge(compact('page', 'campaign', 'programs'), ['sanitizer' => $this->sanitizer]));
+        return view('public.get-involved.donate', [
+            'page' => $page,
+            'campaign' => $campaign,
+            'programs' => $programs,
+            'sanitizer' => $this->sanitizer,
+            'bannerImages' => $page->bannerImages(),
+        ]);
     }
 
     public function storeDonate(DonateFormRequest $request)

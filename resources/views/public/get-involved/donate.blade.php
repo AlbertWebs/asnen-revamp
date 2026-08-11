@@ -16,30 +16,19 @@
         $featuredPrograms = $programs->take(4);
     @endphp
 
-    <section class="impact-hero">
-        <div class="mx-auto max-w-editorial px-6 lg:px-7">
-            <div class="impact-hero__inner reveal">
-                <x-public.breadcrumbs :items="[
-                    ['label' => 'Get Involved', 'url' => route('site.get-involved.index')],
-                    ['label' => 'Donate'],
-                ]" />
-                <span class="eyebrow mt-6 block">Support the work</span>
-                <h1 class="impact-hero__title" style="max-width: 16ch;">{{ $page->title ?? 'Donate / Support a Program' }}</h1>
-                @if($page?->excerpt)
-                    <p class="impact-hero__excerpt">{{ $page->excerpt }}</p>
-                @endif
-                @if($introHtml)
-                    <div class="impact-hero__body">
-                        <x-public.prose :html="$sanitizer->clean($introHtml)" />
-                    </div>
-                @endif
-                <div class="impact-hero__actions">
-                    <a href="#donate-inquiry" class="btn-primary">Express interest in giving</a>
-                    <a href="{{ route('site.impact.overview') }}" class="btn-secondary">See our impact</a>
-                </div>
-            </div>
-        </div>
-    </section>
+    <x-public.media-hero
+        :title="$page->title ?? 'Donate / Support a Program'"
+        title-max="16ch"
+        heading-id="donate-hero-heading"
+        current-label="Donate"
+        eyebrow="Support the work"
+        :excerpt="$page?->excerpt"
+        :body-html="$introHtml ? $sanitizer->clean($introHtml) : null"
+        :images="$bannerImages ?? []"
+        fallback-image="storage/galleries/community-moments/08.jpg"
+        :primary-cta="['label' => 'Express interest in giving', 'url' => '#donate-inquiry']"
+        :secondary-cta="['label' => 'See our impact', 'url' => route('site.impact.overview')]"
+    />
 
     @if($campaign)
         <section class="section-editorial">

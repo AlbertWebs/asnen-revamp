@@ -14,30 +14,19 @@
         ];
     @endphp
 
-    <section class="impact-hero">
-        <div class="mx-auto max-w-editorial px-6 lg:px-7">
-            <div class="impact-hero__inner reveal">
-                <x-public.breadcrumbs :items="[
-                    ['label' => 'Get Involved', 'url' => route('site.get-involved.index')],
-                    ['label' => 'Partner'],
-                ]" />
-                <span class="eyebrow mt-6 block">Collaborate with ASNEN</span>
-                <h1 class="impact-hero__title" style="max-width: 14ch;">{{ $page->title ?? 'Partner With Us' }}</h1>
-                @if($page?->excerpt)
-                    <p class="impact-hero__excerpt">{{ $page->excerpt }}</p>
-                @endif
-                @if($introHtml)
-                    <div class="impact-hero__body">
-                        <x-public.prose :html="$sanitizer->clean($introHtml)" />
-                    </div>
-                @endif
-                <div class="impact-hero__actions">
-                    <a href="#partner-inquiry" class="btn-primary">Start a partnership inquiry</a>
-                    <a href="{{ route('site.about.partners') }}" class="btn-secondary">See current partners</a>
-                </div>
-            </div>
-        </div>
-    </section>
+    <x-public.media-hero
+        :title="$page->title ?? 'Partner With Us'"
+        title-max="14ch"
+        heading-id="partner-hero-heading"
+        current-label="Partner"
+        eyebrow="Collaborate with ASNEN"
+        :excerpt="$page?->excerpt"
+        :body-html="$introHtml ? $sanitizer->clean($introHtml) : null"
+        :images="$bannerImages ?? []"
+        fallback-image="storage/galleries/baringo-2023/02.jpg"
+        :primary-cta="['label' => 'Start a partnership inquiry', 'url' => '#partner-inquiry']"
+        :secondary-cta="['label' => 'See current partners', 'url' => route('site.about.partners')]"
+    />
 
     <section class="section-editorial">
         <div class="mx-auto max-w-editorial px-6 lg:px-7">

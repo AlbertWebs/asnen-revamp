@@ -16,26 +16,17 @@
             : 'Complete the form below and our team will follow up.';
     @endphp
 
-    <section class="impact-hero">
-        <div class="mx-auto max-w-editorial px-6 lg:px-7">
-            <div class="impact-hero__inner reveal">
-                <x-public.breadcrumbs :items="[
-                    ['label' => 'Get Involved', 'url' => route('site.get-involved.index')],
-                    ['label' => $page->title],
-                ]" />
-                <span class="eyebrow mt-6 block">{{ $eyebrow }}</span>
-                <h1 class="impact-hero__title" style="max-width: 16ch;">{{ $page->title }}</h1>
-                @if($page?->excerpt)
-                    <p class="impact-hero__excerpt">{{ $page->excerpt }}</p>
-                @endif
-                @if($introHtml)
-                    <div class="impact-hero__body">
-                        <x-public.prose :html="$sanitizer->clean($introHtml)" />
-                    </div>
-                @endif
-            </div>
-        </div>
-    </section>
+    <x-public.media-hero
+        :title="$page->title"
+        title-max="16ch"
+        heading-id="get-involved-form-hero-heading"
+        :current-label="$page->title"
+        :eyebrow="$eyebrow"
+        :excerpt="$page?->excerpt"
+        :body-html="$introHtml ? $sanitizer->clean($introHtml) : null"
+        :images="$bannerImages ?? []"
+        fallback-image="storage/galleries/community-moments/05.jpg"
+    />
 
     <section class="section-editorial volunteer-section">
         <div class="mx-auto max-w-editorial px-6 lg:px-7">
