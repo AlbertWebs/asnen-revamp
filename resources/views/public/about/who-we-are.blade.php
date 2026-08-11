@@ -46,9 +46,11 @@
         }
     @endphp
 
-    <x-public.about-hero
+    <x-public.media-hero
+        parent-label="About"
+        :parent-url="route('site.about.who-we-are')"
         current-label="Who we are"
-        brand="Demystifying Disability"
+        eyebrow="Demystifying Disability"
         title="Who we are"
         title-max="11ch"
         tagline="Inclusion for all, in all."
@@ -56,6 +58,7 @@
         :primary-cta="['label' => 'Vision, mission & values', 'url' => route('site.about.mission')]"
         :secondary-cta="['label' => 'Meet the team', 'url' => route('site.about.leadership')]"
         :images="$heroImages"
+        fallback-image="storage/galleries/community-moments/01.jpg"
     />
 
     <x-public.about-subnav current="who-we-are" />

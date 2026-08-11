@@ -4,13 +4,15 @@
 @section('meta_description', $page->seoMeta?->description ?? $page->excerpt)
 
 @section('content')
-    <div class="mx-auto max-w-editorial px-4 py-12 sm:px-6 lg:px-8">
-        <x-public.breadcrumbs :items="[['label' => $page->title]]" />
-        <h1 class="font-display text-4xl font-bold text-forest">{{ $page->title }}</h1>
-        @if($page->excerpt)
-            <p class="mt-4 max-w-3xl text-lg text-charcoal/80">{{ $page->excerpt }}</p>
-        @endif
-    </div>
+    <x-public.media-hero
+        :show-parent="false"
+        :parent-label="$page->title"
+        eyebrow="ASNEN"
+        :title="$page->title"
+        title-max="18ch"
+        :excerpt="$page->excerpt"
+        :images="$bannerImages ?? []"
+    />
 
     @if(($page->slug ?? '') === 'accessibility' && ($easyReadEnabled ?? false))
         <x-public.easy-read

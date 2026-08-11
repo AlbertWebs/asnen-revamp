@@ -4,16 +4,18 @@
 @section('meta_description', 'Register for upcoming ASNEN conferences, workshops, and learning events.')
 
 @section('content')
-    <x-public.about-hero
-        breadcrumb="Events & learning"
-        :breadcrumb-url="route('site.events.index')"
+    <x-public.media-hero
+        parent-label="Events & learning"
+        :parent-url="route('site.events.index')"
         current-label="Upcoming"
+        eyebrow="Schedule"
         title="Upcoming events"
         title-max="14ch"
         tagline="Save the date. Join the circle."
-        excerpt="Upcoming conferences, workshops, and online sessions advancing inclusive education."
+        :excerpt="$page?->excerpt ?? 'Upcoming conferences, workshops, and online sessions advancing inclusive education.'"
         :primary-cta="['label' => 'Past events', 'url' => route('site.events.past')]"
         :secondary-cta="['label' => 'Webinars', 'url' => route('site.events.webinars')]"
+        :images="$bannerImages ?? []"
     />
 
     <x-public.events-subnav current="upcoming" />

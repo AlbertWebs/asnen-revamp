@@ -9,17 +9,18 @@
         $series = $ubuntuEvents ?? collect();
     @endphp
 
-    <x-public.about-hero
-        breadcrumb="Events & learning"
-        :breadcrumb-url="route('site.events.index')"
+    <x-public.media-hero
+        parent-label="Events & learning"
+        :parent-url="route('site.events.index')"
         current-label="Ubuntu Conference"
+        eyebrow="Flagship gathering"
         title="Ubuntu Conference"
         title-max="14ch"
         tagline="I am because we are."
-        excerpt="ASNEN's flagship gathering for inclusive education - rooted in Ubuntu, African wisdom, and shared practice."
+        :excerpt="$page?->excerpt ?? 'ASNEN\'s flagship gathering for inclusive education - rooted in Ubuntu, African wisdom, and shared practice.'"
         :primary-cta="$featured ? ['label' => 'Latest conference', 'url' => route('site.events.show', $featured->slug)] : ['label' => 'Past events', 'url' => route('site.events.past')]"
         :secondary-cta="['label' => 'Impact reports', 'url' => route('site.impact.reports')]"
-        :show-visual="true"
+        :images="$bannerImages ?? []"
     />
 
     <x-public.events-subnav current="ubuntu" />

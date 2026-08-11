@@ -3,22 +3,18 @@
 @section('title', 'Reports & Publications | '.$siteName)
 
 @section('content')
-    <section class="impact-hero">
-        <div class="mx-auto max-w-editorial px-6 lg:px-7">
-            <div class="impact-hero__inner reveal">
-                <x-public.breadcrumbs :items="[
-                    ['label' => 'Resources', 'url' => route('site.resources.index')],
-                    ['label' => 'Publications'],
-                ]" />
-                <span class="eyebrow mt-6 block">Resources</span>
-                <h1 class="impact-hero__title">Reports &amp; Publications</h1>
-                <p class="impact-hero__excerpt">Download ASNEN reports, toolkits, and publications. Impact reports are also listed under Impact.</p>
-                <div class="impact-hero__actions">
-                    <a href="{{ route('site.impact.reports') }}" class="btn-primary">Impact reports</a>
-                </div>
-            </div>
-        </div>
-    </section>
+    <x-public.media-hero
+        parent-label="Resources"
+        :parent-url="route('site.resources.index')"
+        current-label="Publications"
+        eyebrow="Resources"
+        title="Reports & Publications"
+        title-max="16ch"
+        :excerpt="$page?->excerpt ?? 'Download ASNEN reports, toolkits, and publications. Impact reports are also listed under Impact.'"
+        :primary-cta="['label' => 'Impact reports', 'url' => route('site.impact.reports')]"
+        :secondary-cta="['label' => 'Toolkits & guides', 'url' => route('site.resources.toolkits')]"
+        :images="$bannerImages ?? []"
+    />
 
     <x-public.section>
         @if($publications->isEmpty())

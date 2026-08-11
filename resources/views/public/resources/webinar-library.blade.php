@@ -28,16 +28,18 @@
             ?? $webinars->getCollection()->first();
     @endphp
 
-    <x-public.about-hero
-        breadcrumb="Resources"
-        :breadcrumb-url="route('site.resources.index')"
+    <x-public.media-hero
+        parent-label="Resources"
+        :parent-url="route('site.resources.index')"
         current-label="Webinar library"
+        eyebrow="Recorded learning"
         title="Webinar library"
         title-max="14ch"
         tagline="Learning you can return to."
-        excerpt="Recorded ASNEN sessions for educators, caregivers, and advocates building inclusive education across Africa."
+        :excerpt="$page?->excerpt ?? 'Recorded ASNEN sessions for educators, caregivers, and advocates building inclusive education across Africa.'"
         :primary-cta="['label' => 'Upcoming events', 'url' => route('site.events.upcoming')]"
         :secondary-cta="['label' => 'Toolkits & guides', 'url' => route('site.resources.toolkits')]"
+        :images="$bannerImages ?? []"
     />
 
     <x-public.resources-subnav current="webinars" />

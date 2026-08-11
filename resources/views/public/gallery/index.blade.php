@@ -11,16 +11,18 @@
             : $galleries->getCollection();
     @endphp
 
-    <x-public.about-hero
-        breadcrumb="Resources"
-        :breadcrumb-url="route('site.resources.index')"
+    <x-public.media-hero
+        parent-label="Resources"
+        :parent-url="route('site.resources.index')"
         current-label="Gallery"
+        eyebrow="Visual stories"
         :title="$page?->title ?? 'Gallery'"
         title-max="12ch"
         tagline="Moments from the work."
         :excerpt="$page?->excerpt ?? 'Photo albums from ASNEN programmes, conferences, and community outreach across Kenya and beyond.'"
         :primary-cta="['label' => 'Impact stories', 'url' => route('site.impact.stories')]"
         :secondary-cta="['label' => 'Events & learning', 'url' => route('site.events.index')]"
+        :images="$bannerImages ?? []"
     />
 
     <x-public.resources-subnav current="gallery" />

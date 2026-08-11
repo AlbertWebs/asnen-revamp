@@ -28,6 +28,7 @@ class PageController extends Controller
         $viewData = [
             'page' => $page,
             'sanitizer' => $this->sanitizer,
+            'bannerImages' => $page->bannerImages(),
         ];
 
         if (Str::startsWith($page->slug, 'about-') || $page->slug === 'vision-mission-values') {

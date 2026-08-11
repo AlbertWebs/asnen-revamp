@@ -26,16 +26,18 @@
         };
     @endphp
 
-    <x-public.about-hero
-        breadcrumb="Impact"
-        :breadcrumb-url="route('site.impact.overview')"
+    <x-public.media-hero
+        parent-label="Impact"
+        :parent-url="route('site.impact.overview')"
         current-label="Stories"
+        eyebrow="From the field"
         :title="$heading"
         title-max="14ch"
-        tagline="From the field."
+        tagline="Evidence from programmes and communities."
         :excerpt="$excerpt"
         :primary-cta="$featuredHref ? ['label' => 'Read featured story', 'url' => $featuredHref] : ['label' => 'Impact overview', 'url' => route('site.impact.overview')]"
         :secondary-cta="['label' => 'View reports', 'url' => route('site.impact.reports')]"
+        :images="$bannerImages ?? []"
     />
 
     <x-public.impact-subnav current="stories" />

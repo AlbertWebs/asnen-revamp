@@ -12,16 +12,18 @@
         ])->filter()->implode(' · ');
     @endphp
 
-    <x-public.about-hero
-        breadcrumb="News"
-        :breadcrumb-url="route('site.resources.news')"
+    <x-public.media-hero
+        parent-label="News"
+        :parent-url="route('site.resources.news')"
         current-label="Article"
+        eyebrow="News & insights"
         :title="$article->title"
         title-max="18ch"
         :tagline="$meta"
         :excerpt="$article->excerpt"
         :primary-cta="['label' => 'All news', 'url' => route('site.resources.news')]"
         :secondary-cta="['label' => 'Impact stories', 'url' => route('site.impact.stories')]"
+        :images="$bannerImages ?? []"
     />
 
     <x-public.resources-subnav current="news" />

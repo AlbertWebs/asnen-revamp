@@ -9,8 +9,11 @@
         $team = $teamMembers->slice(2)->values();
     @endphp
 
-    <x-public.about-hero
+    <x-public.media-hero
+        parent-label="About"
+        :parent-url="route('site.about.who-we-are')"
         current-label="Leadership"
+        eyebrow="Our people"
         title="Leadership & team"
         title-max="14ch"
         tagline="People behind the work."
@@ -18,7 +21,6 @@
         :primary-cta="['label' => 'Who we are', 'url' => route('site.about.who-we-are')]"
         :secondary-cta="['label' => 'Get involved', 'url' => route('site.get-involved.index')]"
         :images="$bannerImages ?? []"
-        :show-visual="true"
     />
 
     <x-public.about-subnav current="leadership" />

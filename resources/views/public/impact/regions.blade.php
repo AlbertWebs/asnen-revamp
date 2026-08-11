@@ -13,16 +13,18 @@
         $introHtml = $page?->blocks?->firstWhere('type', 'rich_text')?->content['body'] ?? null;
     @endphp
 
-    <x-public.about-hero
-        breadcrumb="Impact"
-        :breadcrumb-url="route('site.impact.overview')"
+    <x-public.media-hero
+        parent-label="Impact"
+        :parent-url="route('site.impact.overview')"
         current-label="Regions"
+        eyebrow="Reach"
         :title="$page?->title ?? 'Impact by region'"
         title-max="14ch"
         tagline="Where belonging takes root."
         :excerpt="$page?->excerpt ?? 'Explore the places ASNEN has walked with families, schools, and partners.'"
         :primary-cta="['label' => 'Browse stories', 'url' => route('site.impact.stories')]"
         :secondary-cta="['label' => 'View reports', 'url' => route('site.impact.reports')]"
+        :images="$bannerImages ?? []"
     />
 
     <x-public.impact-subnav current="regions" />

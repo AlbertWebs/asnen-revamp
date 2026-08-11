@@ -22,16 +22,18 @@
         ])->filter()->implode(' · ');
     @endphp
 
-    <x-public.about-hero
-        breadcrumb="Gallery"
-        :breadcrumb-url="route('site.resources.gallery.index')"
+    <x-public.media-hero
+        parent-label="Gallery"
+        :parent-url="route('site.resources.gallery.index')"
         current-label="Album"
+        eyebrow="Photo album"
         :title="$gallery->title"
         title-max="16ch"
         :tagline="$meta ?: 'ASNEN album'"
         :excerpt="$gallery->description"
         :primary-cta="['label' => 'All albums', 'url' => route('site.resources.gallery.index')]"
         :secondary-cta="['label' => 'Impact stories', 'url' => route('site.impact.stories')]"
+        :images="$bannerImages ?? []"
     />
 
     <x-public.resources-subnav current="gallery" />

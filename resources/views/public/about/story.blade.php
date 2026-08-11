@@ -24,8 +24,11 @@
         ];
     @endphp
 
-    <x-public.about-hero
+    <x-public.media-hero
+        parent-label="About"
+        :parent-url="route('site.about.who-we-are')"
         current-label="Our story"
+        eyebrow="Our journey"
         title="Our story"
         title-max="10ch"
         tagline="From shared need to shared work."
@@ -33,7 +36,6 @@
         :primary-cta="['label' => 'See our impact', 'url' => route('site.impact.overview')]"
         :secondary-cta="['label' => 'Meet the team', 'url' => route('site.about.leadership')]"
         :images="$bannerImages ?? []"
-        :show-visual="true"
     />
 
     <x-public.about-subnav current="story" />

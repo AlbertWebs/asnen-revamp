@@ -57,6 +57,9 @@ php deploy/backfill-media-hashes.php
 echo "== Brand logo setting =="
 php deploy/ensure-brand-logo-setting.php
 
+echo "== What We Do programme copy + SEO =="
+php deploy/update-programme-copy.php
+
 echo "== Caches =="
 php artisan view:clear
 php artisan cache:clear

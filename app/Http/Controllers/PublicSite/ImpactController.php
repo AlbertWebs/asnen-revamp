@@ -4,6 +4,7 @@ namespace App\Http\Controllers\PublicSite;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\PublicSite\Concerns\QueriesPublicContent;
+use App\Http\Controllers\PublicSite\Concerns\ResolvesPageBanners;
 use App\Models\ImpactStory;
 use App\Models\Publication;
 use App\Models\Region;
@@ -13,6 +14,7 @@ use App\Services\HtmlSanitizer;
 class ImpactController extends Controller
 {
     use QueriesPublicContent;
+    use ResolvesPageBanners;
 
     public function __construct(
         private PageRepository $pages,
@@ -50,7 +52,10 @@ class ImpactController extends Controller
 
         return view('public.impact.overview', array_merge(
             compact('page', 'introHtml', 'metrics', 'featuredStory', 'stories'),
-            ['sanitizer' => $this->sanitizer]
+            [
+                'sanitizer' => $this->sanitizer,
+                'bannerImages' => $this->resolveBannerImages($page, $featuredStory?->featuredImage),
+            ]
         ));
     }
 
@@ -61,9 +66,27 @@ class ImpactController extends Controller
             ->with(['outcomes', 'partners.logo', 'programs', 'gallery.items.mediaAsset', 'featuredImage'])
             ->firstOrFail();
 
-        $page = $this->pages->findBySlug('impact-komolion');
+        $page = $this->pages->findBySlug('impact-komolion')
+            ?? $this->pages->findBySlug('impact');
 
-        return view('public.impact.komolion', array_merge(compact('story', 'page'), ['sanitizer' => $this->sanitizer]));
+        $galleryImages = collect($story->gallery?->items ?? [])
+            ->map(fn ($item) => $item->mediaAsset)
+            ->filter()
+            ->values();
+
+        $bannerImages = $this->resolveBannerImages($page, $story->featuredImage);
+        if ($bannerImages->isEmpty() && $galleryImages->isNotEmpty()) {
+            $bannerImages = $galleryImages;
+        } elseif ($galleryImages->isNotEmpty() && $bannerImages->count() < 2) {
+            $bannerImages = $bannerImages->concat($galleryImages)->unique('id')->values();
+        }
+
+        return view('public.impact.komolion', [
+            'story' => $story,
+            'page' => $page,
+            'sanitizer' => $this->sanitizer,
+            'bannerImages' => $bannerImages,
+        ]);
     }
 
     public function stories()
@@ -92,6 +115,7 @@ class ImpactController extends Controller
             'stories' => $stories,
             'featuredStory' => $featuredStory,
             'sanitizer' => $this->sanitizer,
+            'bannerImages' => $this->resolveBannerImages($page, $featuredStory?->featuredImage),
         ]);
     }
 
@@ -99,10 +123,16 @@ class ImpactController extends Controller
     {
         $story = ImpactStory::published()
             ->where('slug', $slug)
-            ->with(['outcomes', 'partners.logo', 'programs'])
+            ->with(['outcomes', 'partners.logo', 'programs', 'featuredImage'])
             ->firstOrFail();
 
-        return view('public.impact.story-show', array_merge(compact('story'), ['sanitizer' => $this->sanitizer]));
+        $page = $this->pages->findBySlug('impact-stories');
+
+        return view('public.impact.story-show', [
+            'story' => $story,
+            'sanitizer' => $this->sanitizer,
+            'bannerImages' => $this->resolveBannerImages($page, $story->featuredImage),
+        ]);
     }
 
     public function reports()
@@ -127,6 +157,7 @@ class ImpactController extends Controller
             'introHtml' => $introHtml,
             'reports' => $reports,
             'sanitizer' => $this->sanitizer,
+            'bannerImages' => $this->resolveBannerImages($page),
         ]);
     }
 
@@ -145,6 +176,7 @@ class ImpactController extends Controller
             'page' => $page,
             'regions' => $regions,
             'sanitizer' => $this->sanitizer,
+            'bannerImages' => $this->resolveBannerImages($page),
         ]);
     }
 }

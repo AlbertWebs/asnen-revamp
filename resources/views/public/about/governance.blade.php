@@ -25,8 +25,11 @@
         ];
     @endphp
 
-    <x-public.about-hero
+    <x-public.media-hero
+        parent-label="About"
+        :parent-url="route('site.about.who-we-are')"
         current-label="Governance"
+        eyebrow="Accountability"
         title="Governance"
         title-max="12ch"
         tagline="Transparency with integrity."
@@ -34,7 +37,6 @@
         :primary-cta="['label' => 'Meet leadership', 'url' => route('site.about.leadership')]"
         :secondary-cta="['label' => 'Contact ASNEN', 'url' => route('site.contact')]"
         :images="$bannerImages ?? []"
-        :show-visual="true"
     />
 
     <x-public.about-subnav current="governance" />

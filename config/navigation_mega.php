@@ -39,24 +39,24 @@ return [
             [
                 'title' => 'Education & care',
                 'items' => [
-                    ['url' => '/what-we-do/inclusive-education', 'desc' => 'Welcoming children into mainstream classrooms.'],
-                    ['url' => '/what-we-do/caregiver-training', 'desc' => 'Skills and confidence for those closest to the child.'],
-                    ['url' => '/what-we-do/early-identification-intervention', 'desc' => 'Earlier support, stronger outcomes.'],
+                    ['url' => '/what-we-do/inclusive-education', 'desc' => 'Teacher training, classroom practice, and school–family partnership for every learner.'],
+                    ['url' => '/what-we-do/caregiver-training', 'desc' => 'Evidence-informed skills, peer support, and ongoing frameworks for caregivers.'],
+                    ['url' => '/what-we-do/early-identification-intervention', 'desc' => 'Faster pathways to assessment, referral, and early support.'],
                 ],
             ],
             [
                 'title' => 'Advocacy & community',
                 'items' => [
-                    ['url' => '/what-we-do/disability-awareness-advocacy', 'desc' => 'Shifting how communities see disability.'],
-                    ['url' => '/what-we-do/social-inclusion', 'desc' => 'Belonging beyond the classroom.'],
-                    ['url' => '/what-we-do/community-outreach-medical-camps', 'desc' => 'Outreach and registration days.'],
+                    ['url' => '/what-we-do/disability-awareness-advocacy', 'desc' => 'Awareness, coalitions, and lived experience at the centre of advocacy.'],
+                    ['url' => '/what-we-do/social-inclusion', 'desc' => 'Community spaces where children and young adults belong fully.'],
+                    ['url' => '/what-we-do/community-outreach-medical-camps', 'desc' => 'Medical camps, registration, and stigma reduction in the field.'],
                 ],
             ],
             [
                 'title' => 'Systems',
                 'items' => [
-                    ['url' => '/what-we-do/research-policy-partnerships', 'desc' => 'Evidence, policy, and partnerships.'],
-                    ['url' => '/what-we-do', 'desc' => 'See the full programme overview.', 'label' => 'All programmes'],
+                    ['url' => '/what-we-do/research-policy-partnerships', 'desc' => 'African evidence, policy dialogue, and lasting partnerships.'],
+                    ['url' => '/what-we-do', 'desc' => 'Seven interconnected programme areas for inclusion.', 'label' => 'All programmes'],
                 ],
             ],
         ],

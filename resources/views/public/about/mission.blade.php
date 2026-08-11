@@ -47,8 +47,11 @@
         $philosophyHtml = $philosophy['html'] ?? '<p>Ubuntu “I am because we are”, is not a tagline at ASNEN. It is the reason the work takes the shape it does. It is why we convene rather than compete, why we build peer circles rather than waiting lists, why caregivers become facilitators, and why we hold that inclusion belongs to everyone rather than to specialists alone. A person is a person through other people. The child who has been hidden is one of us. The mother who has carried this alone is one of us. We are because they are.</p>';
     @endphp
 
-    <x-public.about-hero
+    <x-public.media-hero
+        parent-label="About"
+        :parent-url="route('site.about.who-we-are')"
         current-label="Vision, mission & values"
+        eyebrow="Our compass"
         title="Vision, mission & values"
         title-max="16ch"
         tagline="Grounded in Ubuntu."
@@ -56,7 +59,6 @@
         :primary-cta="['label' => 'Who we are', 'url' => route('site.about.who-we-are')]"
         :secondary-cta="['label' => 'Our story', 'url' => route('site.about.story')]"
         :images="$bannerImages ?? []"
-        :show-visual="true"
     />
 
     <x-public.about-subnav current="mission" />

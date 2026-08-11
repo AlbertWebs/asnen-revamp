@@ -4,16 +4,18 @@
 @section('meta_description', 'ASNEN webinars connecting caregivers, educators, and advocates across Africa.')
 
 @section('content')
-    <x-public.about-hero
-        breadcrumb="Events & learning"
-        :breadcrumb-url="route('site.events.index')"
+    <x-public.media-hero
+        parent-label="Events & learning"
+        :parent-url="route('site.events.index')"
         current-label="Webinars"
+        eyebrow="Online learning"
         title="Webinars"
         title-max="10ch"
         tagline="Learning without borders."
-        excerpt="Online sessions that move knowledge into homes, classrooms, and community practice."
+        :excerpt="$page?->excerpt ?? 'Online sessions that move knowledge into homes, classrooms, and community practice.'"
         :primary-cta="['label' => 'Upcoming events', 'url' => route('site.events.upcoming')]"
         :secondary-cta="['label' => 'Resources library', 'url' => route('site.resources.webinars')]"
+        :images="$bannerImages ?? []"
     />
 
     <x-public.events-subnav current="webinars" />

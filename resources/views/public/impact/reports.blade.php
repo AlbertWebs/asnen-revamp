@@ -4,26 +4,19 @@
 @section('meta_description', $page->excerpt ?? 'Download ASNEN impact and conference reports.')
 
 @section('content')
-    <section class="impact-hero">
-        <div class="mx-auto max-w-editorial px-6 lg:px-7">
-            <div class="impact-hero__inner reveal">
-                <x-public.breadcrumbs :items="[
-                    ['label' => 'Impact', 'url' => route('site.impact.overview')],
-                    ['label' => 'Reports'],
-                ]" />
-                <span class="eyebrow mt-6 block">Evidence &amp; publications</span>
-                <h1 class="impact-hero__title">{{ $page->title ?? 'Impact Reports' }}</h1>
-                @if($page->excerpt)
-                    <p class="impact-hero__excerpt">{{ $page->excerpt }}</p>
-                @endif
-                @if(!empty($introHtml))
-                    <div class="impact-hero__body">
-                        <x-public.prose :html="$sanitizer->clean($introHtml)" />
-                    </div>
-                @endif
-            </div>
-        </div>
-    </section>
+    <x-public.media-hero
+        parent-label="Impact"
+        :parent-url="route('site.impact.overview')"
+        current-label="Reports"
+        eyebrow="Evidence & publications"
+        :title="$page->title ?? 'Impact Reports'"
+        title-max="14ch"
+        :excerpt="$page->excerpt"
+        :body-html="!empty($introHtml) ? $sanitizer->clean($introHtml) : null"
+        :primary-cta="['label' => 'All publications', 'url' => route('site.resources.publications')]"
+        :secondary-cta="['label' => 'Impact stories', 'url' => route('site.impact.stories')]"
+        :images="$bannerImages ?? []"
+    />
 
     <section class="section-editorial">
         <div class="mx-auto max-w-editorial px-6 lg:px-7">

@@ -15,27 +15,18 @@
         $featuredEyebrow = $isKomolion ? 'Komolion · Baringo County' : 'Featured impact story';
     @endphp
 
-    <section class="impact-hero">
-        <div class="mx-auto max-w-editorial px-6 lg:px-7">
-            <div class="impact-hero__inner reveal">
-                <x-public.breadcrumbs :items="[['label' => 'Impact']]" />
-                <span class="eyebrow mt-6 block">Evidence &amp; learning</span>
-                <h1 class="impact-hero__title">{{ $heading }}</h1>
-                <p class="impact-hero__excerpt">{{ $excerpt }}</p>
-                @if(!empty($introHtml))
-                    <div class="impact-hero__body">
-                        <x-public.prose :html="$sanitizer->clean($introHtml)" />
-                    </div>
-                @endif
-                <div class="impact-hero__actions">
-                    @if($featuredHref)
-                        <a href="{{ $featuredHref }}" class="btn-primary">Read featured case study</a>
-                    @endif
-                    <a href="{{ route('site.impact.stories') }}" class="btn-secondary">Browse stories</a>
-                </div>
-            </div>
-        </div>
-    </section>
+    <x-public.media-hero
+        :show-parent="false"
+        parent-label="Impact"
+        eyebrow="Evidence & learning"
+        :title="$heading"
+        title-max="12ch"
+        :excerpt="$excerpt"
+        :body-html="!empty($introHtml) ? $sanitizer->clean($introHtml) : null"
+        :primary-cta="$featuredHref ? ['label' => 'Read featured case study', 'url' => $featuredHref] : null"
+        :secondary-cta="['label' => 'Browse stories', 'url' => route('site.impact.stories')]"
+        :images="$bannerImages ?? []"
+    />
 
     @if($metrics->isNotEmpty())
         <x-public.stats :metrics="$metrics" :footnote="$metricFootnote" />

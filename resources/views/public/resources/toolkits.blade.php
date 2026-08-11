@@ -25,16 +25,18 @@
         ];
     @endphp
 
-    <x-public.about-hero
-        breadcrumb="Resources"
-        :breadcrumb-url="route('site.resources.index')"
+    <x-public.media-hero
+        parent-label="Resources"
+        :parent-url="route('site.resources.index')"
         current-label="Toolkits"
+        eyebrow="Practical guides"
         title="Toolkits & guides"
         title-max="14ch"
         tagline="Knowledge you can use today."
-        excerpt="Practical guides for educators, caregivers, and partners building inclusive education across Africa."
+        :excerpt="$page?->excerpt ?? 'Practical guides for educators, caregivers, and partners building inclusive education across Africa.'"
         :primary-cta="['label' => 'All publications', 'url' => route('site.resources.publications')]"
         :secondary-cta="['label' => 'Webinar library', 'url' => route('site.resources.webinars')]"
+        :images="$bannerImages ?? []"
     />
 
     <x-public.resources-subnav current="toolkits" />

@@ -1,16 +1,22 @@
 @extends('layouts.public')
 
 @section('title', $story->title.' | '.$siteName)
+@section('meta_description', $story->summary ?? $story->title)
 
 @section('content')
-    <div class="mx-auto max-w-editorial px-4 py-12 sm:px-6 lg:px-8">
-        <x-public.breadcrumbs :items="[
-            ['label' => 'Impact', 'url' => route('site.impact.overview')],
-            ['label' => 'Stories', 'url' => route('site.impact.stories')],
-            ['label' => $story->title],
-        ]" />
-        <h1 class="font-display text-4xl font-bold text-forest">{{ $story->title }}</h1>
-    </div>
+    <x-public.media-hero
+        parent-label="Impact"
+        :parent-url="route('site.impact.overview')"
+        current-label="Story"
+        eyebrow="Impact story"
+        :title="$story->title"
+        title-max="18ch"
+        :excerpt="$story->summary"
+        :primary-cta="['label' => 'All stories', 'url' => route('site.impact.stories')]"
+        :secondary-cta="['label' => 'Impact overview', 'url' => route('site.impact.overview')]"
+        :images="$bannerImages ?? []"
+    />
+
     <x-public.section>
         <x-public.prose :html="$sanitizer->clean($story->body)" />
     </x-public.section>

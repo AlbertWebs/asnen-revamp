@@ -9,16 +9,18 @@
         $rest = $articles->getCollection()->slice($articles->onFirstPage() && $featured ? 1 : 0)->values();
     @endphp
 
-    <x-public.about-hero
-        breadcrumb="Resources"
-        :breadcrumb-url="route('site.resources.index')"
+    <x-public.media-hero
+        parent-label="Resources"
+        :parent-url="route('site.resources.index')"
         current-label="News"
+        eyebrow="Updates"
         title="News & insights"
         title-max="14ch"
         tagline="Stories from the network."
-        excerpt="Updates, reflections, and learning from ASNEN programmes, partnerships, and community work."
+        :excerpt="$page?->excerpt ?? 'Updates, reflections, and learning from ASNEN programmes, partnerships, and community work.'"
         :primary-cta="['label' => 'Impact stories', 'url' => route('site.impact.stories')]"
         :secondary-cta="['label' => 'Webinar library', 'url' => route('site.resources.webinars')]"
+        :images="$bannerImages ?? []"
     />
 
     <x-public.resources-subnav current="news" />

@@ -37,69 +37,22 @@
                 'hint' => 'Serving communities across Kenya and beyond',
             ] : null,
         ])->filter()->values();
-
-        $heroImage = collect($bannerImages ?? [])->first();
-        $heroImageUrl = $heroImage
-            ? (is_object($heroImage) ? $heroImage->publicUrl() : ($heroImage['url'] ?? $heroImage['src'] ?? null))
-            : asset('storage/galleries/community-moments/01.jpg');
     @endphp
 
-    <section class="contact-hero contact-hero--media" aria-labelledby="contact-hero-heading">
-        <div class="contact-hero__media" aria-hidden="true">
-            <img
-                src="{{ $heroImageUrl }}"
-                alt=""
-                class="contact-hero__photo"
-                width="1600"
-                height="900"
-                loading="eager"
-                fetchpriority="high"
-                decoding="async"
-            >
-        </div>
-        <div class="contact-hero__veil" aria-hidden="true"></div>
-        <div class="contact-hero__atmosphere" aria-hidden="true">
-            <svg class="contact-hero__rings" viewBox="0 0 640 480" role="presentation">
-                <g class="contact-hero__orbit contact-hero__orbit--slow">
-                    <circle cx="470" cy="210" r="150" />
-                    <circle cx="470" cy="210" r="108" />
-                    <circle cx="470" cy="210" r="68" />
-                </g>
-                <g class="contact-hero__orbit contact-hero__orbit--fast">
-                    <circle cx="520" cy="120" r="42" />
-                    <circle cx="390" cy="300" r="28" />
-                    <circle cx="560" cy="280" r="18" />
-                </g>
-            </svg>
-            <span class="contact-hero__beam"></span>
-        </div>
-
-        <div class="mx-auto max-w-editorial px-6 lg:px-7">
-            <div class="contact-hero__inner reveal">
-                <div class="contact-hero__copy">
-                    <nav aria-label="Breadcrumb" class="contact-hero__crumbs">
-                        <ol>
-                            <li><a href="{{ route('site.home') }}">Home</a></li>
-                            <li aria-hidden="true">/</li>
-                            <li><span aria-current="page">Contact</span></li>
-                        </ol>
-                    </nav>
-
-                    <p class="contact-hero__brand">ASNEN</p>
-                    <h1 id="contact-hero-heading" class="contact-hero__title">{{ $page?->title ?? 'Contact' }}</h1>
-                    <p class="contact-hero__tagline">We read every message.</p>
-                    <p class="contact-hero__excerpt">
-                        {{ $page?->excerpt ?? 'Reach ASNEN about programmes, partnerships, events, membership, or how to walk with the network.' }}
-                    </p>
-
-                    <div class="contact-hero__actions">
-                        <a href="#contact-form" class="btn-gold">Write a message</a>
-                        <a href="{{ route('site.get-involved.index') }}" class="contact-hero__ghost">Get involved</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+    <x-public.media-hero
+        :show-parent="false"
+        parent-label="Contact"
+        heading-id="contact-hero-heading"
+        eyebrow="ASNEN"
+        :title="$page?->title ?? 'Contact'"
+        title-max="12ch"
+        tagline="We read every message."
+        :excerpt="$page?->excerpt ?? 'Reach ASNEN about programmes, partnerships, events, membership, or how to walk with the network.'"
+        :primary-cta="['label' => 'Write a message', 'url' => '#contact-form']"
+        :secondary-cta="['label' => 'Get involved', 'url' => route('site.get-involved.index')]"
+        :images="$bannerImages ?? []"
+        fallback-image="storage/galleries/community-moments/01.jpg"
+    />
 
     <section class="section-editorial">
         <div class="mx-auto max-w-editorial px-6 lg:px-7">

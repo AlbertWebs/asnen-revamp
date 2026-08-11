@@ -4,15 +4,17 @@
 @section('meta_description', 'Conferences, workshops, and webinars advancing inclusive education across Africa.')
 
 @section('content')
-    <x-public.about-hero
-        current-label="Events & learning"
+    <x-public.media-hero
+        :show-parent="false"
+        parent-label="Events & learning"
+        eyebrow="Gather · Learn · Belong"
         title="Events & learning"
         title-max="14ch"
         tagline="Gather. Learn. Carry inclusion forward."
-        excerpt="Conferences, workshops, and webinars that connect educators, caregivers, and advocates across Africa."
+        :excerpt="$page?->excerpt ?? 'Conferences, workshops, and webinars that connect educators, caregivers, and advocates across Africa.'"
         :primary-cta="['label' => 'Upcoming events', 'url' => route('site.events.upcoming')]"
         :secondary-cta="['label' => 'Ubuntu Conference', 'url' => route('site.events.ubuntu-conference')]"
-        :show-visual="true"
+        :images="$bannerImages ?? []"
     />
 
     <x-public.events-subnav current="index" />

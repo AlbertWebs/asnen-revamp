@@ -4,8 +4,11 @@
 @section('meta_description', $page->seoMeta?->description ?? $page->excerpt)
 
 @section('content')
-    <x-public.about-hero
+    <x-public.media-hero
+        parent-label="About"
+        :parent-url="route('site.about.who-we-are')"
         current-label="Collaborators"
+        eyebrow="Our network"
         title="Collaborators"
         title-max="14ch"
         tagline="Stronger together."
@@ -13,7 +16,6 @@
         :primary-cta="['label' => 'Partner with us', 'url' => route('site.get-involved.partner')]"
         :secondary-cta="['label' => 'Become a member', 'url' => route('site.get-involved.membership')]"
         :images="$bannerImages ?? []"
-        :show-visual="true"
     />
 
     <x-public.about-subnav current="partners" />

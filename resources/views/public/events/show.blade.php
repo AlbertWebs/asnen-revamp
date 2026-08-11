@@ -18,16 +18,17 @@
         $where = $event->is_online ? 'Online' : $event->venue;
     @endphp
 
-    <x-public.about-hero
-        breadcrumb="Events & learning"
-        :breadcrumb-url="route('site.events.index')"
-        :current-label="$event->title"
+    <x-public.media-hero
+        parent-label="Events & learning"
+        :parent-url="route('site.events.index')"
+        :current-label="$typeLabel"
+        :eyebrow="$typeLabel"
         :title="$event->title"
         title-max="18ch"
-        :tagline="$typeLabel"
         :excerpt="$event->summary"
         :primary-cta="$event->isUpcoming() ? ['label' => 'Register', 'url' => '#event-register'] : ['label' => 'All events', 'url' => route('site.events.index')]"
         :secondary-cta="['label' => $event->isUpcoming() ? 'Past events' : 'Upcoming events', 'url' => $event->isUpcoming() ? route('site.events.past') : route('site.events.upcoming')]"
+        :images="$bannerImages ?? []"
     />
 
     <x-public.events-subnav :current="$event->type === 'conference' && str_contains($event->slug, 'ubuntu') ? 'ubuntu' : ($event->isUpcoming() ? 'upcoming' : 'past')" />

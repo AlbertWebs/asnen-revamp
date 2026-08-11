@@ -18,29 +18,18 @@
         $story->loadMissing(['featuredImage', 'partners.logo', 'programs']);
     @endphp
 
-    <section class="impact-hero">
-        <div class="mx-auto max-w-editorial px-6 lg:px-7">
-            <div class="impact-hero__inner reveal">
-                <x-public.breadcrumbs :items="[
-                    ['label' => 'Impact', 'url' => route('site.impact.overview')],
-                    ['label' => 'Komolion Story'],
-                ]" />
-                <span class="eyebrow mt-6 block">Case study · Baringo County</span>
-                <h1 class="impact-hero__title" style="max-width: 20ch;">{{ $story->title }}</h1>
-                @if($story->summary)
-                    <p class="impact-hero__excerpt">{{ $story->summary }}</p>
-                @endif
-                @if($story->location || $story->story_date)
-                    <p class="case-study__meta">
-                        {{ collect([
-                            $story->location,
-                            $story->story_date?->format('F j, Y'),
-                        ])->filter()->implode(' · ') }}
-                    </p>
-                @endif
-            </div>
-        </div>
-    </section>
+    <x-public.media-hero
+        parent-label="Impact"
+        :parent-url="route('site.impact.overview')"
+        current-label="Komolion Story"
+        eyebrow="Case study · Baringo County"
+        :title="$story->title"
+        title-max="20ch"
+        :excerpt="$story->summary"
+        :primary-cta="['label' => 'All stories', 'url' => route('site.impact.stories')]"
+        :secondary-cta="['label' => 'Impact overview', 'url' => route('site.impact.overview')]"
+        :images="$bannerImages ?? []"
+    />
 
     @if($story->outcomes->isNotEmpty())
         <section class="case-outcomes" aria-label="Key outcomes">

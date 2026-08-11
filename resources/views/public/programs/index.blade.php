@@ -1,18 +1,20 @@
 @extends('layouts.public')
 
-@section('title', ($page?->seoMeta?->title ?? 'What We Do').' | '.$siteName)
-@section('meta_description', $page?->seoMeta?->description ?? $page?->excerpt ?? 'ASNEN programmes advancing inclusive education across Africa.')
+@section('title', ($page?->seoMeta?->title ?? 'What We Do | Inclusive Education Programmes').' | '.$siteName)
+@section('meta_description', $page?->seoMeta?->description ?? $page?->excerpt ?? 'ASNEN advances inclusion through seven interconnected programme areas, moving knowledge, capacity and care into homes, classrooms and communities.')
 
 @section('content')
-    <x-public.about-hero
-        current-label="What we do"
+    <x-public.media-hero
+        :show-parent="false"
+        parent-label="What we do"
+        eyebrow="Our programmes"
         title="What we do"
         title-max="11ch"
-        tagline="Programmes that make inclusion real."
-        :excerpt="$page?->excerpt ?? 'ASNEN advances inclusive education, caregiver support, advocacy, outreach, and partnerships across Africa.'"
+        tagline="Seven interconnected programme areas."
+        :excerpt="$page?->excerpt ?? 'ASNEN advances inclusion through seven interconnected programme areas, moving knowledge, capacity and care into homes, classrooms and communities.'"
         :primary-cta="['label' => 'Inclusive education', 'url' => route('site.programs.show', 'inclusive-education')]"
         :secondary-cta="['label' => 'Get involved', 'url' => route('site.get-involved.index')]"
-        :show-visual="true"
+        :images="$bannerImages ?? []"
     />
 
     <x-public.program-subnav :programs="$programs" />
@@ -21,8 +23,8 @@
         <div class="mx-auto max-w-editorial px-6 lg:px-7">
             <div class="section-head reveal">
                 <span class="eyebrow mb-3 block">Our programmes</span>
-                <h2>Homegrown models for belonging</h2>
-                <p class="section-head-row__intro">Each programme moves knowledge, capacity, and care into homes, classrooms, and communities.</p>
+                <h2>Seven interconnected programme areas</h2>
+                <p class="section-head-row__intro">ASNEN advances inclusion through seven interconnected programme areas, moving knowledge, capacity and care into homes, classrooms and communities.</p>
             </div>
 
             <div class="reveal mt-8">

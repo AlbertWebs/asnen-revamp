@@ -4,16 +4,18 @@
 @section('meta_description', 'Explore past ASNEN conferences, workshops, and learning gatherings.')
 
 @section('content')
-    <x-public.about-hero
-        breadcrumb="Events & learning"
-        :breadcrumb-url="route('site.events.index')"
+    <x-public.media-hero
+        parent-label="Events & learning"
+        :parent-url="route('site.events.index')"
         current-label="Past"
+        eyebrow="Archive"
         title="Past events"
         title-max="12ch"
         tagline="Learning we continue to carry."
-        excerpt="Recaps and details from conferences, workshops, and sessions that shaped ASNEN's work."
+        :excerpt="$page?->excerpt ?? 'Recaps and details from conferences, workshops, and sessions that shaped ASNEN\'s work.'"
         :primary-cta="['label' => 'Upcoming events', 'url' => route('site.events.upcoming')]"
         :secondary-cta="['label' => 'Ubuntu Conference', 'url' => route('site.events.ubuntu-conference')]"
+        :images="$bannerImages ?? []"
     />
 
     <x-public.events-subnav current="past" />

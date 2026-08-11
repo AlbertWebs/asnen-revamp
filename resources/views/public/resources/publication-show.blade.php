@@ -33,22 +33,18 @@
         $openRequestForm = $errors->any() || filled(old('name')) || filled(old('email'));
     @endphp
 
-    <section class="impact-hero">
-        <div class="mx-auto max-w-editorial px-6 lg:px-7">
-            <div class="impact-hero__inner reveal">
-                <x-public.breadcrumbs :items="[
-                    ['label' => 'Resources', 'url' => route('site.resources.index')],
-                    ['label' => 'Publications', 'url' => route('site.resources.publications')],
-                    ['label' => $publication->title],
-                ]" />
-                <span class="eyebrow mt-6 block">{{ $publication->categoryLabel() }}</span>
-                <h1 class="impact-hero__title" style="max-width: 20ch;">{{ $publication->title }}</h1>
-                @if($publication->year)
-                    <p class="impact-hero__excerpt">{{ $publication->year }}</p>
-                @endif
-            </div>
-        </div>
-    </section>
+    <x-public.media-hero
+        parent-label="Resources"
+        :parent-url="route('site.resources.index')"
+        current-label="Publication"
+        :eyebrow="$publication->categoryLabel()"
+        :title="$publication->title"
+        title-max="20ch"
+        :excerpt="$publication->year ? (string) $publication->year : ($publication->abstract ?? null)"
+        :primary-cta="['label' => $backLabel, 'url' => $backUrl]"
+        :secondary-cta="['label' => 'All resources', 'url' => route('site.resources.index')]"
+        :images="$bannerImages ?? []"
+    />
 
     <x-public.section>
         <div class="pub-show reveal">
