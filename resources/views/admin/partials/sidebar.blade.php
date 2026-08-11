@@ -54,6 +54,13 @@
             'label' => 'Media',
             'items' => [
                 ['label' => 'Media library', 'route' => 'admin.media.index', 'active' => request()->routeIs('admin.media.*'), 'can' => 'media.view', 'icon' => 'M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z'],
+                [
+                    'label' => 'Hero images',
+                    'route' => 'admin.hero-images.edit',
+                    'active' => request()->routeIs('admin.hero-images.*'),
+                    'can' => fn () => auth()->user()?->can('pages.update') || auth()->user()?->can('media.update'),
+                    'icon' => 'M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2zM15 5v4h4',
+                ],
                 ['label' => 'Galleries', 'route' => 'admin.galleries.index', 'active' => request()->routeIs('admin.galleries.*'), 'can' => 'galleries.view', 'icon' => 'M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z'],
             ],
         ],
@@ -78,7 +85,7 @@
     ];
 @endphp
 
-<div class="flex h-full flex-col">
+<div class="flex h-full min-h-0 flex-col">
     <div class="flex h-16 shrink-0 items-center gap-3 border-b border-white/10 px-4">
         <a href="{{ route('admin.dashboard') }}" class="flex min-w-0 items-center gap-3 rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand">
             <span class="inline-flex shrink-0 items-center justify-center rounded-lg bg-white p-1 shadow-sm">
@@ -91,47 +98,98 @@
         </a>
     </div>
 
-    <nav class="flex-1 overflow-y-auto px-2.5 py-3" aria-label="Admin modules">
-        <div class="space-y-1">
-            @foreach ($sections as $index => $section)
-                @php
-                    $visibleItems = collect($section['items'])->filter(function ($item) {
-                        return ($item['can'] === true) || auth()->user()?->can($item['can']);
-                    });
-                @endphp
+    <div
+        class="relative flex min-h-0 flex-1 flex-col"
+        x-data="{
+            canScrollDown: false,
+            check() {
+                const el = this.$refs.nav;
+                if (!el) return;
+                this.canScrollDown = el.scrollHeight - el.scrollTop - el.clientHeight > 6;
+            },
+            scrollMore() {
+                this.$refs.nav?.scrollBy({ top: 140, behavior: 'smooth' });
+            }
+        }"
+        x-init="
+            $nextTick(() => {
+                check();
+                if (window.ResizeObserver) {
+                    new ResizeObserver(() => check()).observe($refs.nav);
+                }
+                window.addEventListener('resize', () => check());
+            })
+        "
+    >
+        <nav
+            x-ref="nav"
+            @scroll.passive="check()"
+            class="admin-sidebar-nav min-h-0 flex-1 overflow-y-auto overscroll-contain px-2.5 py-3"
+            aria-label="Admin modules"
+        >
+            <div class="space-y-1">
+                @foreach ($sections as $index => $section)
+                    @php
+                        $visibleItems = collect($section['items'])->filter(function ($item) {
+                            $can = $item['can'] ?? true;
+                            if ($can === true) {
+                                return true;
+                            }
+                            if ($can instanceof \Closure) {
+                                return (bool) $can();
+                            }
 
-                @if ($visibleItems->isNotEmpty())
-                    <div @class([
-                        'pt-3' => $index > 0,
-                        'border-t border-white/10' => $index > 0,
-                    ])>
-                        @if (! empty($section['label']))
-                            <p class="mb-1.5 px-2.5 text-[0.62rem] font-bold uppercase tracking-[0.18em] text-brand-300/80">
-                                {{ $section['label'] }}
-                            </p>
-                        @endif
+                            return auth()->user()?->can($can);
+                        });
+                    @endphp
 
-                        <ul class="space-y-0.5" @if(! empty($section['label'])) aria-label="{{ $section['label'] }}" @endif>
-                            @foreach ($visibleItems as $item)
-                                <li>
-                                    <a
-                                        href="{{ route($item['route'], $item['params'] ?? []) }}"
-                                        class="{{ $navLink($item['active']) }}"
-                                        @if($item['active']) aria-current="page" @endif
-                                    >
-                                        <svg class="h-4 w-4 shrink-0 opacity-85" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="{{ $item['icon'] }}" />
-                                        </svg>
-                                        <span class="truncate">{{ $item['label'] }}</span>
-                                    </a>
-                                </li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
-            @endforeach
-        </div>
-    </nav>
+                    @if ($visibleItems->isNotEmpty())
+                        <div @class([
+                            'pt-3' => $index > 0,
+                            'border-t border-white/10' => $index > 0,
+                        ])>
+                            @if (! empty($section['label']))
+                                <p class="mb-1.5 px-2.5 text-[0.62rem] font-bold uppercase tracking-[0.18em] text-brand-300/80">
+                                    {{ $section['label'] }}
+                                </p>
+                            @endif
+
+                            <ul class="space-y-0.5" @if(! empty($section['label'])) aria-label="{{ $section['label'] }}" @endif>
+                                @foreach ($visibleItems as $item)
+                                    <li>
+                                        <a
+                                            href="{{ route($item['route'], $item['params'] ?? []) }}"
+                                            class="{{ $navLink($item['active']) }}"
+                                            @if($item['active']) aria-current="page" @endif
+                                        >
+                                            <svg class="h-4 w-4 shrink-0 opacity-85" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="{{ $item['icon'] }}" />
+                                            </svg>
+                                            <span class="truncate">{{ $item['label'] }}</span>
+                                        </a>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+                @endforeach
+            </div>
+        </nav>
+
+        <button
+            type="button"
+            x-show="canScrollDown"
+            x-transition.opacity.duration.200ms
+            @click="scrollMore()"
+            class="pointer-events-auto absolute bottom-1 left-1/2 z-10 flex h-7 w-7 -translate-x-1/2 items-center justify-center rounded-full bg-charcoal/90 text-brand-300 shadow-md ring-1 ring-white/15 transition hover:text-white"
+            aria-label="Scroll for more navigation"
+            x-cloak
+        >
+            <svg class="admin-sidebar-scroll-hint h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.4" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+            </svg>
+        </button>
+    </div>
 
     <div class="shrink-0 border-t border-white/10 p-2.5">
         <a

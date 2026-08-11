@@ -82,4 +82,55 @@ class MediaAsset extends Model
 
         return \Illuminate\Support\Facades\Storage::disk($this->disk)->url($this->path);
     }
+
+    public function isImage(): bool
+    {
+        return str_starts_with(strtolower((string) $this->mime), 'image/');
+    }
+
+    public function isPdf(): bool
+    {
+        $mime = strtolower((string) $this->mime);
+        $name = strtolower((string) ($this->filename ?: $this->path));
+
+        return str_contains($mime, 'pdf') || str_ends_with($name, '.pdf');
+    }
+
+    public function isWord(): bool
+    {
+        $mime = strtolower((string) $this->mime);
+        $name = strtolower((string) ($this->filename ?: $this->path));
+
+        return str_contains($mime, 'word')
+            || str_contains($mime, 'officedocument.wordprocessingml')
+            || str_ends_with($name, '.doc')
+            || str_ends_with($name, '.docx');
+    }
+
+    public function formatKind(): string
+    {
+        if ($this->isImage()) {
+            return 'image';
+        }
+
+        if ($this->isPdf()) {
+            return 'pdf';
+        }
+
+        if ($this->isWord()) {
+            return 'word';
+        }
+
+        return 'file';
+    }
+
+    public function formatLabel(): string
+    {
+        return match ($this->formatKind()) {
+            'pdf' => 'PDF',
+            'word' => 'Word',
+            'image' => 'Image',
+            default => 'File',
+        };
+    }
 }

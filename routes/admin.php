@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\EventController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\FormSubmissionController;
 use App\Http\Controllers\Admin\GalleryController;
+use App\Http\Controllers\Admin\HeroImageController;
 use App\Http\Controllers\Admin\ImpactMetricController;
 use App\Http\Controllers\Admin\ImpactStoryController;
 use App\Http\Controllers\Admin\MediaAssetController;
@@ -78,6 +79,9 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::post('team-members/{team_member}/unpublish', [TeamMemberController::class, 'unpublish'])->name('team-members.unpublish');
 
     Route::resource('media', MediaAssetController::class)->parameters(['media' => 'medium']);
+
+    Route::get('hero-images', [HeroImageController::class, 'edit'])->name('hero-images.edit');
+    Route::put('hero-images', [HeroImageController::class, 'update'])->name('hero-images.update');
 
     Route::get('form-submissions/export', [FormSubmissionController::class, 'export'])->name('form-submissions.export');
     Route::resource('form-submissions', FormSubmissionController::class)->only(['index', 'show', 'update']);

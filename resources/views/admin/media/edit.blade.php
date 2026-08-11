@@ -119,10 +119,10 @@
         <aside class="space-y-4">
             <div class="overflow-hidden rounded-2xl border border-charcoal/10 bg-white shadow-sm">
                 <div class="aspect-video bg-sand flex items-center justify-center text-xs text-charcoal/50">
-                    @if (str_starts_with($asset->mime ?? '', 'image/'))
+                    @if ($asset->isImage())
                         <img src="{{ asset('storage/'.$asset->path) }}" alt="{{ e($asset->alt ?? '') }}" class="h-full w-full object-cover">
                     @else
-                        {{ $asset->mime }}
+                        <x-admin.file-format-icon :kind="$asset->formatKind()" :label="$asset->formatLabel()" />
                     @endif
                 </div>
                 <div class="space-y-1 p-4 text-sm">

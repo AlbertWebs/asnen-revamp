@@ -87,4 +87,24 @@ class Publication extends Model
 
         return $bytes.' B';
     }
+
+    public function downloadLabel(): string
+    {
+        $mime = strtolower((string) ($this->file?->mime ?? ''));
+        $name = strtolower((string) ($this->file?->filename ?? $this->file?->path ?? ''));
+
+        if (str_contains($mime, 'word') || str_ends_with($name, '.docx') || str_ends_with($name, '.doc')) {
+            return 'Download Word';
+        }
+
+        if (str_contains($mime, 'presentation') || str_ends_with($name, '.pptx') || str_ends_with($name, '.ppt')) {
+            return 'Download presentation';
+        }
+
+        if (str_contains($mime, 'pdf') || str_ends_with($name, '.pdf')) {
+            return 'Download PDF';
+        }
+
+        return 'Download';
+    }
 }

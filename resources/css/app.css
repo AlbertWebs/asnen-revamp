@@ -17,6 +17,44 @@
         overflow-x: clip;
     }
 
+    /* Admin shell: lock document scroll so the fixed sidebar never moves with content */
+    html:has(body[data-admin-app]),
+    body[data-admin-app] {
+        height: 100%;
+        overflow: hidden;
+    }
+
+    .admin-sidebar-nav {
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+
+    .admin-sidebar-nav::-webkit-scrollbar {
+        display: none;
+        width: 0;
+        height: 0;
+    }
+
+    .admin-sidebar-scroll-hint {
+        animation: admin-sidebar-scroll-hint 1.4s ease-in-out infinite;
+    }
+
+    @keyframes admin-sidebar-scroll-hint {
+        0%,
+        100% {
+            transform: translateY(0);
+            opacity: 0.75;
+        }
+        50% {
+            transform: translateY(3px);
+            opacity: 1;
+        }
+    }
+
+    html.a11y-reduce-motion .admin-sidebar-scroll-hint {
+        animation: none;
+    }
+
     :focus-visible {
         outline: 2px solid theme('colors.brand.DEFAULT');
         outline-offset: 2px;
@@ -1222,7 +1260,156 @@
         @apply truncate text-sm font-semibold text-charcoal;
     }
     .admin-card__meta {
-        @apply text-xs text-charcoal/50;
+        @apply flex flex-wrap items-center gap-x-1.5 text-xs text-charcoal/50;
+    }
+    .admin-card__format {
+        @apply font-semibold tracking-wide text-charcoal/65;
+    }
+
+    .admin-file-icon {
+        display: inline-flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.55rem;
+        color: #4A4C70;
+    }
+    .admin-file-icon__doc {
+        width: 2.75rem;
+        height: auto;
+    }
+    .admin-file-icon__badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 3.25rem;
+        padding: 0.2rem 0.55rem;
+        border-radius: 9999px;
+        font-family: theme('fontFamily.mono');
+        font-size: 0.68rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #fff;
+        background: #4A4C70;
+    }
+    .admin-file-icon--pdf {
+        color: #B42318;
+    }
+    .admin-file-icon--pdf .admin-file-icon__badge {
+        background: #B42318;
+    }
+    .admin-file-icon--word {
+        color: #175CD3;
+    }
+    .admin-file-icon--word .admin-file-icon__badge {
+        background: #175CD3;
+    }
+    .admin-file-icon--file {
+        color: #475467;
+    }
+    .admin-file-icon--file .admin-file-icon__badge {
+        background: #475467;
+    }
+    .admin-media-thumb .admin-file-icon {
+        position: absolute;
+        inset: 0;
+        justify-content: center;
+        background: #F8FAFC;
+    }
+
+    .admin-hero-selected {
+        display: grid;
+        gap: 0.75rem;
+    }
+    .admin-hero-selected__item {
+        display: grid;
+        grid-template-columns: 4.5rem minmax(0, 1fr) auto;
+        gap: 0.85rem;
+        align-items: center;
+        padding: 0.65rem;
+        border-radius: 0.9rem;
+        border: 1px solid rgba(26, 32, 44, 0.1);
+        background: #fff;
+    }
+    .admin-hero-selected__img,
+    .admin-hero-selected__fallback {
+        width: 4.5rem;
+        height: 3.2rem;
+        border-radius: 0.55rem;
+        object-fit: cover;
+    }
+    .admin-hero-selected__fallback {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: #F3F6FF;
+        color: #4A4C70;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+    .admin-hero-selected__meta {
+        min-width: 0;
+    }
+    .admin-hero-selected__order {
+        display: block;
+        font-family: theme('fontFamily.mono');
+        font-size: 0.65rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #0C77BC;
+    }
+    .admin-hero-selected__label {
+        display: block;
+        margin-top: 0.15rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: theme('colors.charcoal.DEFAULT');
+    }
+    .admin-hero-selected__actions {
+        display: inline-flex;
+        gap: 0.3rem;
+    }
+    .admin-hero-selected__btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2rem;
+        height: 2rem;
+        border-radius: 0.5rem;
+        border: 1px solid rgba(26, 32, 44, 0.12);
+        background: #F8FAFC;
+        color: theme('colors.charcoal.DEFAULT');
+        font-size: 0.95rem;
+        line-height: 1;
+    }
+    .admin-hero-selected__btn:hover:not(:disabled),
+    .admin-hero-selected__btn:focus-visible:not(:disabled) {
+        border-color: rgba(12, 119, 188, 0.35);
+        color: #0C77BC;
+    }
+    .admin-hero-selected__btn:disabled {
+        opacity: 0.35;
+        cursor: not-allowed;
+    }
+    .admin-hero-selected__btn--remove:hover:not(:disabled),
+    .admin-hero-selected__btn--remove:focus-visible:not(:disabled) {
+        border-color: rgba(180, 35, 24, 0.35);
+        color: #B42318;
+    }
+    button.admin-media-thumb {
+        width: 100%;
+        text-align: left;
+        appearance: none;
+        background: transparent;
+        border: 0;
+        padding: 0;
+        font: inherit;
+        color: inherit;
+        cursor: pointer;
     }
 
     .reveal {

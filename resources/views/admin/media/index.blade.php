@@ -20,17 +20,21 @@
             <div class="admin-card">
                 <div class="admin-card__media">
                     @php $previewUrl = $asset->publicUrl(); @endphp
-                    @if ($previewUrl && str_starts_with($asset->mime ?? '', 'image/'))
+                    @if ($asset->isImage() && $previewUrl)
                         <img src="{{ $previewUrl }}" alt="{{ e($asset->alt ?? $asset->filename) }}" class="h-full w-full object-cover">
-                    @elseif (str_starts_with($asset->mime ?? '', 'image/'))
+                    @elseif ($asset->isImage())
                         <span class="text-xs text-charcoal/50">Broken file (re-upload)</span>
                     @else
-                        {{ $asset->mime }}
+                        <x-admin.file-format-icon :kind="$asset->formatKind()" :label="$asset->formatLabel()" />
                     @endif
                 </div>
                 <div class="admin-card__body">
-                    <p class="admin-card__title">{{ $asset->filename }}</p>
-                    <p class="admin-card__meta">{{ $asset->consent_status?->value ?? $asset->consent_status }}</p>
+                    <p class="admin-card__title" title="{{ $asset->filename }}">{{ $asset->filename }}</p>
+                    <p class="admin-card__meta">
+                        <span class="admin-card__format">{{ $asset->formatLabel() }}</span>
+                        <span aria-hidden="true">·</span>
+                        <span>{{ $asset->consent_status?->value ?? $asset->consent_status }}</span>
+                    </p>
                     <div class="flex items-center gap-3">
                         @can('media.update')
                             <a href="{{ route('admin.media.edit', $asset) }}" class="admin-table__link">Edit</a>

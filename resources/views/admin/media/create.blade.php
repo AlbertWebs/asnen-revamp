@@ -64,6 +64,24 @@
                 if (bytes < 1024) return bytes + ' B';
                 if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
                 return (bytes / 1048576).toFixed(1) + ' MB';
+            },
+            isPdf(item) {
+                const type = (item.type || '').toLowerCase();
+                const name = (item.name || '').toLowerCase();
+                return type.includes('pdf') || name.endsWith('.pdf');
+            },
+            isWord(item) {
+                const type = (item.type || '').toLowerCase();
+                const name = (item.name || '').toLowerCase();
+                return type.includes('word')
+                    || type.includes('officedocument.wordprocessingml')
+                    || name.endsWith('.doc')
+                    || name.endsWith('.docx');
+            },
+            formatLabel(item) {
+                if (this.isPdf(item)) return 'PDF';
+                if (this.isWord(item)) return 'Word';
+                return 'File';
             }
         }"
         @dragover.prevent="dragging = true"
@@ -80,7 +98,7 @@
                 <p class="admin-form__eyebrow">Media library</p>
                 <h2 class="admin-form__title">Upload media</h2>
                 <p class="admin-form__intro">
-                    Drop one or many photos, videos, or PDFs. After upload, attach them on each content edit screen.
+                    Drop one or many photos, videos, PDFs, or Word documents. After upload, attach them on each content edit screen.
                 </p>
             </header>
 
@@ -97,7 +115,7 @@
                             name="files[]"
                             id="files"
                             x-ref="fileInput"
-                            accept="image/*,video/*,application/pdf"
+                            accept="image/*,video/*,application/pdf,.doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                             multiple
                             required
                             @change="onFile($event)"
@@ -110,7 +128,7 @@
                                 </svg>
                             </span>
                             <p class="admin-file__title">Drop files here, or click to browse</p>
-                            <p id="file-hint" class="admin-file__hint">Select multiple images, video, or PDFs · max 40 files · 10&nbsp;MB each · duplicates are skipped automatically</p>
+                            <p id="file-hint" class="admin-file__hint">Select multiple images, video, PDFs, or Word files · max 40 files · 10&nbsp;MB each · duplicates are skipped automatically</p>
                             <p class="admin-file__name" x-show="files.length" x-cloak>
                                 <span x-text="files.length + (files.length === 1 ? ' file selected' : ' files selected')"></span>
                             </p>
@@ -134,7 +152,24 @@
                                 <img :src="item.url" :alt="item.name" class="admin-media-thumb__img">
                             </template>
                             <template x-if="!item.url">
-                                <span class="admin-media-thumb__fallback" x-text="item.type.includes('pdf') ? 'PDF' : 'File'"></span>
+                                <span
+                                    class="admin-file-icon"
+                                    :class="{
+                                        'admin-file-icon--pdf': isPdf(item),
+                                        'admin-file-icon--word': isWord(item),
+                                        'admin-file-icon--file': !isPdf(item) && !isWord(item),
+                                    }"
+                                    role="img"
+                                    :aria-label="formatLabel(item) + ' document'"
+                                >
+                                    <svg class="admin-file-icon__doc" viewBox="0 0 48 56" fill="none" aria-hidden="true">
+                                        <path d="M8 4h22l12 12v36a4 4 0 01-4 4H8a4 4 0 01-4-4V8a4 4 0 014-4z" fill="currentColor" opacity="0.12"/>
+                                        <path d="M8 4h22l12 12v36a4 4 0 01-4 4H8a4 4 0 01-4-4V8a4 4 0 014-4z" stroke="currentColor" stroke-width="2.25" stroke-linejoin="round"/>
+                                        <path d="M30 4v10a2 2 0 002 2h10" stroke="currentColor" stroke-width="2.25" stroke-linejoin="round"/>
+                                        <path d="M14 28h20M14 36h16M14 44h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                    </svg>
+                                    <span class="admin-file-icon__badge" x-text="formatLabel(item)"></span>
+                                </span>
                             </template>
                             <span class="admin-media-thumb__caption">
                                 <span x-text="item.name"></span>

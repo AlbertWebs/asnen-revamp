@@ -60,6 +60,9 @@ php deploy/ensure-brand-logo-setting.php
 echo "== What We Do programme copy + SEO =="
 php deploy/update-programme-copy.php
 
+echo "== ASNEN Annual Report 2024 =="
+php deploy/sync-annual-report-2024.php
+
 echo "== Caches =="
 php artisan view:clear
 php artisan cache:clear

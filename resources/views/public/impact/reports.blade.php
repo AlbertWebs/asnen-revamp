@@ -24,7 +24,7 @@
                 <div class="section-head">
                     <span class="eyebrow mb-3 block">Downloads</span>
                     <h2>Reports you can download</h2>
-                    <p class="section-head-row__intro">PDF reports from ASNEN conferences and programmes.</p>
+                    <p class="section-head-row__intro">Reports from ASNEN conferences, programmes, and annual updates.</p>
                 </div>
                 <a href="{{ route('site.resources.publications') }}" class="btn-secondary section-head-row__cta">All publications</a>
             </div>
@@ -65,7 +65,7 @@
                                                 href="{{ route('site.resources.publications.download', $report->slug) }}"
                                                 class="btn-primary report-card__download"
                                             >
-                                                Download PDF
+                                                {{ $report->downloadLabel() }}
                                                 @if($report->fileSizeLabel())
                                                     <span class="report-card__size">{{ $report->fileSizeLabel() }}</span>
                                                 @endif
