@@ -19,12 +19,56 @@
         enctype="multipart/form-data"
         class="admin-form"
         x-data="{
-            fileName: '',
+            files: [],
+            previews: [],
+            dragging: false,
+            revokePreviews() {
+                this.previews.forEach((p) => { if (p.url) URL.revokeObjectURL(p.url); });
+                this.previews = [];
+            },
+            setFiles(fileList) {
+                this.revokePreviews();
+                const list = Array.from(fileList || []);
+                this.files = list;
+                this.previews = list.map((file) => ({
+                    name: file.name,
+                    size: file.size,
+                    type: file.type || '',
+                    url: file.type && file.type.startsWith('image/') ? URL.createObjectURL(file) : null,
+                }));
+            },
             onFile(e) {
-                const f = e.target.files && e.target.files[0];
-                this.fileName = f ? f.name : '';
+                this.setFiles(e.target.files);
+            },
+            onDrop(e) {
+                this.dragging = false;
+                const dropped = e.dataTransfer && e.dataTransfer.files;
+                if (!dropped || !dropped.length) return;
+                const input = this.$refs.fileInput;
+                if (!input) return;
+                const dt = new DataTransfer();
+                Array.from(dropped).forEach((f) => dt.items.add(f));
+                input.files = dt.files;
+                this.setFiles(input.files);
+            },
+            removeAt(index) {
+                const input = this.$refs.fileInput;
+                if (!input) return;
+                const dt = new DataTransfer();
+                Array.from(this.files).forEach((f, i) => { if (i !== index) dt.items.add(f); });
+                input.files = dt.files;
+                this.setFiles(input.files);
+            },
+            formatSize(bytes) {
+                if (!bytes && bytes !== 0) return '';
+                if (bytes < 1024) return bytes + ' B';
+                if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+                return (bytes / 1048576).toFixed(1) + ' MB';
             }
         }"
+        @dragover.prevent="dragging = true"
+        @dragleave.prevent="dragging = false"
+        @drop.prevent="onDrop($event)"
     >
         @csrf
         @if(!empty($returnUrl))
@@ -34,26 +78,27 @@
         <div class="admin-form__body">
             <header class="admin-form__header">
                 <p class="admin-form__eyebrow">Media library</p>
-                <h2 class="admin-form__title">Upload a new asset</h2>
+                <h2 class="admin-form__title">Upload media</h2>
                 <p class="admin-form__intro">
-                    Add photos, video, or PDFs for heroes, programs, stories, events, partners, and team.
-                    After upload, attach the file on each content edit screen.
+                    Drop one or many photos, videos, or PDFs. After upload, attach them on each content edit screen.
                 </p>
             </header>
 
             <div class="admin-form__section">
-                <p class="admin-form__section-title">File</p>
+                <p class="admin-form__section-title">Files</p>
 
                 <div class="admin-field">
-                    <label for="file" class="admin-label">
-                        Choose file <span class="req" aria-hidden="true">*</span>
+                    <label for="files" class="admin-label">
+                        Choose files <span class="req" aria-hidden="true">*</span>
                     </label>
-                    <div class="admin-file">
+                    <div class="admin-file" :class="{ 'is-dragging': dragging }">
                         <input
                             type="file"
-                            name="file"
-                            id="file"
+                            name="files[]"
+                            id="files"
+                            x-ref="fileInput"
                             accept="image/*,video/*,application/pdf"
+                            multiple
                             required
                             @change="onFile($event)"
                             aria-describedby="file-hint"
@@ -64,19 +109,53 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                                 </svg>
                             </span>
-                            <p class="admin-file__title">Drop a file here, or click to browse</p>
-                            <p id="file-hint" class="admin-file__hint">Images, video, or PDF · max size per server limits</p>
-                            <p class="admin-file__name" x-show="fileName" x-text="fileName" x-cloak></p>
+                            <p class="admin-file__title">Drop files here, or click to browse</p>
+                            <p id="file-hint" class="admin-file__hint">Select multiple images, video, or PDFs · max 40 files · 10&nbsp;MB each</p>
+                            <p class="admin-file__name" x-show="files.length" x-cloak>
+                                <span x-text="files.length + (files.length === 1 ? ' file selected' : ' files selected')"></span>
+                            </p>
                         </div>
                     </div>
+                    @error('files')
+                        <p class="admin-error">{{ $message }}</p>
+                    @enderror
+                    @error('files.*')
+                        <p class="admin-error">{{ $message }}</p>
+                    @enderror
                     @error('file')
                         <p class="admin-error">{{ $message }}</p>
                     @enderror
+                </div>
+
+                <div class="admin-media-grid mt-4" x-show="previews.length" x-cloak>
+                    <template x-for="(item, index) in previews" :key="item.name + '-' + index">
+                        <div class="admin-media-thumb !cursor-default">
+                            <template x-if="item.url">
+                                <img :src="item.url" :alt="item.name" class="admin-media-thumb__img">
+                            </template>
+                            <template x-if="!item.url">
+                                <span class="admin-media-thumb__fallback" x-text="item.type.includes('pdf') ? 'PDF' : 'File'"></span>
+                            </template>
+                            <span class="admin-media-thumb__caption">
+                                <span x-text="item.name"></span>
+                                <span class="block text-charcoal/40" x-text="formatSize(item.size)"></span>
+                            </span>
+                            <button
+                                type="button"
+                                class="admin-media-thumb__remove"
+                                @click.prevent="removeAt(index)"
+                                :aria-label="'Remove ' + item.name"
+                            >
+                                <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+                            </button>
+                        </div>
+                    </template>
                 </div>
             </div>
 
             <div class="admin-form__section">
                 <p class="admin-form__section-title">Details</p>
+                <p class="admin-hint mb-3">Optional shared alt text and caption are applied to every file in this batch. You can refine each asset afterward.</p>
 
                 <div class="admin-field">
                     <label for="alt" class="admin-label">Alt text</label>
@@ -144,11 +223,11 @@
             </div>
 
             <div class="admin-form__actions">
-                <button type="submit" class="admin-btn-primary">
+                <button type="submit" class="admin-btn-primary" :disabled="files.length === 0">
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                     </svg>
-                    Upload media
+                    <span x-text="files.length > 1 ? ('Upload ' + files.length + ' files') : 'Upload media'"></span>
                 </button>
                 <a href="{{ route('admin.media.index') }}" class="admin-btn-secondary">Cancel</a>
             </div>
