@@ -78,7 +78,7 @@
     ];
 @endphp
 
-<div class="flex h-full flex-col">
+<div class="flex h-full min-h-0 flex-col">
     <div class="flex h-16 shrink-0 items-center gap-3 border-b border-white/10 px-4">
         <a href="{{ route('admin.dashboard') }}" class="flex min-w-0 items-center gap-3 rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand">
             <span class="inline-flex shrink-0 items-center justify-center rounded-lg bg-white p-1 shadow-sm">
@@ -91,7 +91,7 @@
         </a>
     </div>
 
-    <nav class="flex-1 overflow-y-auto px-2.5 py-3" aria-label="Admin modules">
+    <nav class="min-h-0 flex-1 overflow-y-auto overscroll-contain px-2.5 py-3" aria-label="Admin modules">
         <div class="space-y-1">
             @foreach ($sections as $index => $section)
                 @php

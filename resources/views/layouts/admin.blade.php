@@ -45,12 +45,12 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('head')
 </head>
-<body class="font-sans antialiased bg-sand text-charcoal" data-admin-app x-data="{ sidebarOpen: false }">
+<body class="h-screen overflow-hidden font-sans antialiased bg-sand text-charcoal" data-admin-app x-data="{ sidebarOpen: false }">
     <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-brand focus:px-4 focus:py-2 focus:text-white">
         Skip to main content
     </a>
 
-    <div class="flex min-h-screen">
+    <div class="flex h-full min-h-0">
         <div
             x-show="sidebarOpen"
             x-transition.opacity
@@ -62,14 +62,14 @@
 
         <aside
             :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
-            class="fixed inset-y-0 left-0 z-50 flex w-[17.5rem] flex-col border-r border-white/10 bg-charcoal text-white transition-transform duration-200 ease-in-out lg:static lg:translate-x-0"
+            class="fixed inset-y-0 left-0 z-50 flex h-full w-[17.5rem] flex-col overflow-hidden border-r border-white/10 bg-charcoal text-white transition-transform duration-200 ease-in-out lg:static lg:translate-x-0"
             aria-label="Admin navigation"
         >
             @include('admin.partials.sidebar')
         </aside>
 
-        <div class="flex min-w-0 flex-1 flex-col">
-            <header class="sticky top-0 z-30 border-b border-charcoal/10 bg-white/90 backdrop-blur-md">
+        <div class="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
+            <header class="z-30 shrink-0 border-b border-charcoal/10 bg-white/90 backdrop-blur-md">
                 <div class="flex h-16 items-center justify-between gap-4 px-4 lg:px-8">
                     <div class="flex min-w-0 items-center gap-3">
                         <button
@@ -143,14 +143,16 @@
                 <div aria-hidden="true" class="h-0.5 bg-gradient-to-r from-brand via-lime to-gold"></div>
             </header>
 
-            @include('admin.partials.flash')
-            <div class="px-4 lg:px-8">
-                @include('admin.partials.validation-errors')
-            </div>
+            <div class="min-h-0 flex-1 overflow-y-auto overscroll-contain">
+                @include('admin.partials.flash')
+                <div class="px-4 lg:px-8">
+                    @include('admin.partials.validation-errors')
+                </div>
 
-            <main id="main-content" class="flex-1 p-4 lg:p-8" role="main">
-                @yield('content')
-            </main>
+                <main id="main-content" class="p-4 lg:p-8" role="main">
+                    @yield('content')
+                </main>
+            </div>
         </div>
     </div>
 
