@@ -28,8 +28,31 @@ if [ -d public/storage ] && [ ! -L public/storage ]; then
 fi
 php artisan storage:link --force 2>/dev/null || true
 
+echo "== Storage permissions =="
+mkdir -p storage/app/public/{uploads,hero,brand,programs,stories,events,partners,team,resources,gallery}
+chown -R ubuntu:www-data storage bootstrap/cache || true
+find storage -type d -exec chmod 2775 {} \;
+find storage -type f -exec chmod 664 {} \;
+chmod -R g+w storage/app/public
+
+echo "== Remove broken media rows (path 0) =="
+php -r '
+require "vendor/autoload.php";
+$app = require "bootstrap/app.php";
+$app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
+$q = App\Models\MediaAsset::withTrashed()->where(function ($q) {
+    $q->where("path", "0")->orWhere("path", "")->orWhereNull("path");
+});
+$n = $q->count();
+$q->forceDelete();
+echo "removed={$n}\n";
+'
+
 echo "== Migrate =="
 php artisan migrate --force
+
+echo "== Backfill media content hashes =="
+php deploy/backfill-media-hashes.php
 
 echo "== Brand logo setting =="
 php deploy/ensure-brand-logo-setting.php

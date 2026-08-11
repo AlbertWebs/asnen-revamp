@@ -20,6 +20,7 @@ class MediaAsset extends Model
         'filename',
         'mime',
         'size',
+        'content_hash',
         'width',
         'height',
         'alt',
@@ -75,7 +76,7 @@ class MediaAsset extends Model
 
     public function publicUrl(): ?string
     {
-        if ($this->is_private || empty($this->path)) {
+        if ($this->is_private || empty($this->path) || $this->path === '0') {
             return null;
         }
 

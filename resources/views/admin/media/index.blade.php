@@ -19,8 +19,11 @@
         @forelse ($assets as $asset)
             <div class="admin-card">
                 <div class="admin-card__media">
-                    @if (str_starts_with($asset->mime ?? '', 'image/'))
-                        <img src="{{ asset('storage/'.$asset->path) }}" alt="{{ e($asset->alt ?? '') }}" class="h-full w-full object-cover">
+                    @php $previewUrl = $asset->publicUrl(); @endphp
+                    @if ($previewUrl && str_starts_with($asset->mime ?? '', 'image/'))
+                        <img src="{{ $previewUrl }}" alt="{{ e($asset->alt ?? $asset->filename) }}" class="h-full w-full object-cover">
+                    @elseif (str_starts_with($asset->mime ?? '', 'image/'))
+                        <span class="text-xs text-charcoal/50">Broken file (re-upload)</span>
                     @else
                         {{ $asset->mime }}
                     @endif

@@ -110,7 +110,7 @@
                                 </svg>
                             </span>
                             <p class="admin-file__title">Drop files here, or click to browse</p>
-                            <p id="file-hint" class="admin-file__hint">Select multiple images, video, or PDFs · max 40 files · 10&nbsp;MB each</p>
+                            <p id="file-hint" class="admin-file__hint">Select multiple images, video, or PDFs · max 40 files · 10&nbsp;MB each · duplicates are skipped automatically</p>
                             <p class="admin-file__name" x-show="files.length" x-cloak>
                                 <span x-text="files.length + (files.length === 1 ? ' file selected' : ' files selected')"></span>
                             </p>

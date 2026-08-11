@@ -8,7 +8,9 @@ use App\Http\Requests\Admin\MediaUploadRequest;
 use App\Models\MediaAsset;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 class MediaAssetController extends Controller
@@ -34,26 +36,63 @@ class MediaAssetController extends Controller
 
     public function store(MediaUploadRequest $request): RedirectResponse|\Illuminate\Http\JsonResponse
     {
-        $folder = $request->input('folder', 'uploads');
-        $files = [];
+        $folder = trim((string) $request->input('folder', 'uploads')) ?: 'uploads';
+        $files = $this->collectUploadedFiles($request);
 
-        if ($request->hasFile('files')) {
-            $uploaded = $request->file('files');
-            $files = is_array($uploaded) ? array_values(array_filter($uploaded)) : [$uploaded];
-        } elseif ($request->hasFile('file')) {
-            $files = [$request->file('file')];
+        if ($files === []) {
+            throw ValidationException::withMessages([
+                'files' => 'Please choose one or more valid files to upload.',
+            ]);
         }
 
         $assets = [];
+        $duplicates = [];
+        $errors = [];
+
         foreach ($files as $file) {
+            $original = $file->getClientOriginalName() ?: 'file';
+
+            if (! $file->isValid()) {
+                $errors[] = "{$original}: ".$file->getErrorMessage();
+                continue;
+            }
+
+            $realPath = $file->getRealPath();
+            if (! $realPath || ! is_readable($realPath)) {
+                $errors[] = "{$original}: could not read the uploaded file.";
+                continue;
+            }
+
+            $hash = hash_file('sha256', $realPath);
+            if (! $hash) {
+                $errors[] = "{$original}: could not fingerprint the file.";
+                continue;
+            }
+
+            $existing = MediaAsset::query()->where('content_hash', $hash)->first();
+            if ($existing) {
+                $duplicates[] = [
+                    'filename' => $original,
+                    'existing_id' => $existing->id,
+                    'existing_filename' => $existing->filename,
+                    'url' => $existing->publicUrl(),
+                ];
+                continue;
+            }
+
             $path = $file->store($folder, 'public');
+            if (! is_string($path) || $path === '' || $path === '0') {
+                $errors[] = "{$original}: could not save to storage. Check folder permissions.";
+                continue;
+            }
 
             $assets[] = MediaAsset::create([
                 'disk' => 'public',
                 'path' => $path,
-                'filename' => $file->getClientOriginalName(),
+                'filename' => $original,
                 'mime' => $file->getMimeType() ?? 'application/octet-stream',
-                'size' => $file->getSize(),
+                'size' => (int) $file->getSize(),
+                'content_hash' => $hash,
                 'alt' => $request->input('alt'),
                 'caption' => $request->input('caption'),
                 'folder' => $folder,
@@ -61,14 +100,27 @@ class MediaAssetController extends Controller
             ]);
         }
 
+        if ($assets === [] && $duplicates === [] && $errors !== []) {
+            throw ValidationException::withMessages([
+                'files' => implode(' ', $errors),
+            ]);
+        }
+
+        if ($assets === [] && $duplicates !== [] && $errors === []) {
+            $names = collect($duplicates)->pluck('filename')->implode(', ');
+            throw ValidationException::withMessages([
+                'files' => "No new files uploaded. Already in the library: {$names}.",
+            ]);
+        }
+
         $count = count($assets);
+        $dupCount = count($duplicates);
         $first = $assets[0] ?? null;
+        $message = $this->uploadSummaryMessage($count, $dupCount, $errors);
 
         if ($request->expectsJson() || $request->wantsJson()) {
             $payload = [
-                'message' => $count === 1
-                    ? 'Media uploaded successfully.'
-                    : "{$count} files uploaded successfully.",
+                'message' => $message,
                 'assets' => collect($assets)->map(fn (MediaAsset $asset) => [
                     'id' => $asset->id,
                     'label' => ($asset->alt ?: $asset->filename).' (#'.$asset->id.')',
@@ -76,33 +128,82 @@ class MediaAssetController extends Controller
                     'mime' => $asset->mime,
                     'folder' => $asset->folder,
                 ])->values()->all(),
+                'duplicates' => $duplicates,
+                'errors' => $errors,
             ];
 
-            // Keep single-asset shape for existing media-picker clients.
             if ($count === 1 && $first) {
                 $payload['asset'] = $payload['assets'][0];
             }
 
-            return response()->json($payload, 201);
+            return response()->json($payload, $count > 0 ? 201 : 200);
         }
 
         $return = $request->input('return');
         if (is_string($return) && str_starts_with($return, url('/'))) {
-            return redirect($return)
-                ->with('success', $count === 1
-                    ? 'Media uploaded. Select it in the image field and save.'
-                    : "{$count} files uploaded. Select them in the image field and save.");
+            return redirect($return)->with('success', $message);
         }
 
-        if ($count === 1 && $first) {
+        if ($count === 1 && $first && $dupCount === 0 && $errors === []) {
             return redirect()
                 ->route('admin.media.edit', $first)
-                ->with('success', 'Media uploaded successfully. You can now attach it on content edit screens.');
+                ->with('success', $message);
         }
 
         return redirect()
             ->route('admin.media.index')
-            ->with('success', "{$count} files uploaded successfully.");
+            ->with('success', $message);
+    }
+
+    /**
+     * @return list<UploadedFile>
+     */
+    private function collectUploadedFiles(MediaUploadRequest $request): array
+    {
+        $files = [];
+
+        if ($request->hasFile('files')) {
+            $uploaded = $request->file('files');
+            $uploaded = is_array($uploaded) ? $uploaded : [$uploaded];
+            foreach ($uploaded as $file) {
+                if ($file instanceof UploadedFile) {
+                    $files[] = $file;
+                }
+            }
+        } elseif ($request->hasFile('file')) {
+            $file = $request->file('file');
+            if ($file instanceof UploadedFile) {
+                $files[] = $file;
+            }
+        }
+
+        return $files;
+    }
+
+    /**
+     * @param  list<string>  $errors
+     */
+    private function uploadSummaryMessage(int $uploaded, int $duplicates, array $errors): string
+    {
+        $parts = [];
+
+        if ($uploaded === 1) {
+            $parts[] = '1 file uploaded.';
+        } elseif ($uploaded > 1) {
+            $parts[] = "{$uploaded} files uploaded.";
+        }
+
+        if ($duplicates === 1) {
+            $parts[] = '1 duplicate skipped (already in the library).';
+        } elseif ($duplicates > 1) {
+            $parts[] = "{$duplicates} duplicates skipped (already in the library).";
+        }
+
+        if ($errors !== []) {
+            $parts[] = 'Some files failed: '.implode(' ', $errors);
+        }
+
+        return trim(implode(' ', $parts)) ?: 'No files uploaded.';
     }
 
     public function edit(MediaAsset $medium): View
@@ -136,7 +237,7 @@ class MediaAssetController extends Controller
     {
         $this->authorize('delete', $medium);
 
-        if ($medium->path && Storage::disk($medium->disk)->exists($medium->path)) {
+        if ($medium->path && $medium->path !== '0' && Storage::disk($medium->disk)->exists($medium->path)) {
             Storage::disk($medium->disk)->delete($medium->path);
         }
 
