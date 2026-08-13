@@ -1,35 +1,25 @@
 @extends('layouts.public')
 
-@section('title', ($page?->seoMeta?->title ?? $page?->title ?? 'Impact Stories').' | '.$siteName)
+@section('title', ($page?->seoMeta?->title ?? $page?->title ?? 'Success Stories').' | '.$siteName)
 @section('meta_description', $page?->seoMeta?->description ?? $page?->excerpt ?? 'Evidence-led stories from ASNEN programmes and community outreach.')
 
 @section('content')
     @php
-        $heading = $page?->title ?? 'Impact stories';
+        $heading = $page?->title ?? 'Success Stories';
         $excerpt = $page?->excerpt ?? 'Evidence-led narratives from programmes, outreach, and community work across the ASNEN network.';
-        $featuredHref = null;
+        $featuredHref = $featuredStory?->publicUrl();
         $featuredEyebrow = 'Featured case study';
         if ($featuredStory) {
-            $isKomolion = $featuredStory->slug === 'komolion-2023-disability-assessment-medical-camp';
-            $featuredHref = $isKomolion
-                ? route('site.impact.komolion')
-                : route('site.impact.stories.show', $featuredStory->slug);
-            $featuredEyebrow = $isKomolion
+            $featuredEyebrow = $featuredStory->slug === \App\Models\ImpactStory::KOMOLION_SLUG
                 ? 'Komolion · Baringo County'
                 : collect([$featuredStory->location, $featuredStory->story_date?->format('Y')])->filter()->implode(' · ');
         }
-
-        $storyHref = function ($story) {
-            return $story->slug === 'komolion-2023-disability-assessment-medical-camp'
-                ? route('site.impact.komolion')
-                : route('site.impact.stories.show', $story->slug);
-        };
     @endphp
 
     <x-public.media-hero
         parent-label="Impact"
         :parent-url="route('site.impact.overview')"
-        current-label="Stories"
+        current-label="Success Stories"
         eyebrow="From the field"
         :title="$heading"
         title-max="14ch"
@@ -96,7 +86,7 @@
             @else
                 <div class="impact-story-grid reveal mt-8">
                     @foreach($stories as $story)
-                        @php $href = $storyHref($story); @endphp
+                        @php $href = $story->publicUrl(); @endphp
                         <article class="impact-story-card">
                             <a href="{{ $href }}" class="impact-story-card__media">
                                 <x-public.media-frame

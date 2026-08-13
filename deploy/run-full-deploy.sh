@@ -57,6 +57,9 @@ php deploy/sync-leadership-governance.php
 echo "== Merge who we are =="
 php deploy/sync-who-we-are.php
 
+echo "== Merge success stories =="
+php deploy/sync-success-stories.php
+
 echo "== Backfill media content hashes =="
 php deploy/backfill-media-hashes.php
 

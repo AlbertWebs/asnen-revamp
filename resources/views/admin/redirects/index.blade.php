@@ -6,7 +6,7 @@
 @section('content')
     <div class="admin-toolbar">
         <p class="admin-toolbar__copy">
-            Manage URL redirects and their publish status.
+            Manage URL redirects, including merged pages such as Governance, Our Story, and Komolion.
         </p>
         <div class="admin-toolbar__actions">
             @can('redirects.create')
@@ -20,20 +20,21 @@
             <table class="admin-table">
                 <thead>
                     <tr>
-                        <th scope="col">Name</th>
+                        <th scope="col">From</th>
+                        <th scope="col">To</th>
                         <th scope="col">Status</th>
                         <th scope="col" class="text-right">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse ($redirects as $item)
-                        @php
-                            $status = $item->status?->value ?? $item->status ?? ($item->is_active ?? false ? 'active' : 'inactive');
-                        @endphp
                         <tr>
-                            <td class="admin-table__primary">{{ $item->question }}</td>
+                            <td class="admin-table__primary">{{ $item->from_path }}</td>
+                            <td>{{ $item->to_path }}</td>
                             <td>
-                                <span class="admin-badge admin-badge--{{ $status }}">{{ str_replace('_', ' ', $status) }}</span>
+                                <span class="admin-badge admin-badge--{{ $item->is_active ? 'published' : 'archived' }}">
+                                    {{ $item->status_code }} {{ $item->is_active ? 'active' : 'inactive' }}
+                                </span>
                             </td>
                             <td class="text-right">
                                 <div class="admin-table__actions">
@@ -43,14 +44,14 @@
                                     @include('admin.partials.table-delete', [
                                         'action' => route('admin.redirects.destroy', $item),
                                         'permission' => 'redirects.delete',
-                                        'label' => (string) ($item->from_path ?? $item->question ?? 'this redirect'),
+                                        'label' => (string) ($item->from_path ?? 'this redirect'),
                                     ])
                                 </div>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="3" class="admin-table__empty">No records yet.</td>
+                            <td colspan="4" class="admin-table__empty">No records yet.</td>
                         </tr>
                     @endforelse
                 </tbody>

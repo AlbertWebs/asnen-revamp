@@ -46,7 +46,7 @@
                         <div class="grid gap-4 sm:grid-cols-2">
                             <div class="admin-field">
                                 <label for="link_url" class="admin-label">Link URL</label>
-                                <input type="text" name="link_url" id="link_url" value="{{ old('link_url', $region->link_url) }}" placeholder="/impact/komolion" class="admin-input">
+                                <input type="text" name="link_url" id="link_url" value="{{ old('link_url', $region->link_url) }}" placeholder="/impact/stories/komolion-2023-disability-assessment-medical-camp" class="admin-input">
                             </div>
                             <div class="admin-field">
                                 <label for="link_label" class="admin-label">Link label</label>

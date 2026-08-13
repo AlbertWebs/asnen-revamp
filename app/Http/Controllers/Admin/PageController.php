@@ -23,10 +23,11 @@ class PageController extends Controller
 
         $pages = Page::query()
             ->with('author')
-            ->latest()
-            ->paginate(20);
+            ->get();
 
-        return view('admin.pages.index', compact('pages'));
+        $sections = Page::groupedForAdmin($pages);
+
+        return view('admin.pages.index', compact('sections'));
     }
 
     public function create(): View

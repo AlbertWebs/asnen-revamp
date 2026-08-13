@@ -26,7 +26,7 @@ class HomeController extends Controller
             'metrics' => $this->verifiedPublishedMetrics()->get(),
             'programs' => Program::published()->orderBy('sort_order')->get(),
             'featuredStory' => ImpactStory::published()
-                ->where('slug', 'komolion-2023-disability-assessment-medical-camp')
+                ->where('slug', ImpactStory::KOMOLION_SLUG)
                 ->with(['outcomes', 'partners'])
                 ->first(),
             'partners' => $this->verifiedPublishedPartners()->with('logo')->get(),

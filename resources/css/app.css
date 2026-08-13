@@ -1195,6 +1195,25 @@
     .admin-table__meta {
         @apply mt-0.5 block text-xs font-normal text-charcoal/45;
     }
+    .admin-table tbody tr.admin-table__section {
+        @apply border-b border-charcoal/10;
+    }
+    .admin-table tbody tr.admin-table__section:hover {
+        background: theme('colors.sand.DEFAULT');
+        background-color: color-mix(in srgb, theme('colors.sand.DEFAULT') 80%, white);
+    }
+    .admin-table tbody tr.admin-table__section td {
+        @apply bg-sand/80 py-2.5 text-[0.7rem] font-bold uppercase tracking-[0.16em] text-charcoal/50;
+    }
+    .admin-table tbody tr.admin-table__depth-1 td:first-child {
+        padding-left: 1.85rem;
+    }
+    .admin-table tbody tr.admin-table__depth-2 td:first-child {
+        padding-left: 3.1rem;
+    }
+    .admin-table__tree {
+        @apply mr-1.5 text-charcoal/30;
+    }
     .admin-table__empty {
         @apply px-4 py-12 text-center text-sm text-charcoal/50;
     }

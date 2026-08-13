@@ -1275,7 +1275,7 @@ HTML,
             [
                 'slug' => 'impact-stories',
                 'title' => 'Success Stories',
-                'excerpt' => 'Impact stories from ASNEN programs and community initiatives.',
+                'excerpt' => 'Komolion and other impact stories from ASNEN programmes and community initiatives.',
                 'body' => '<p>Explore case studies and narratives that document ASNEN\'s work. Stories involving children or sensitive medical details require safeguarding review before publication.</p>',
             ],
             [
@@ -1300,6 +1300,11 @@ HTML,
                 $pageData['body']
             );
         }
+
+        Page::query()->where('slug', 'impact-komolion')->update([
+            'status' => PublishStatus::Archived,
+            'unpublished_at' => now(),
+        ]);
     }
 
     private function seedGetInvolvedPages(): void
@@ -1617,6 +1622,7 @@ HTML,
             ['/about/governance', '/about/leadership#governance'],
             ['/about/mission-vision-values', '/about/who-we-are#vision'],
             ['/about/our-story', '/about/who-we-are#story'],
+            ['/impact/komolion', '/impact/stories/komolion-2023-disability-assessment-medical-camp'],
         ];
 
         foreach ($redirects as [$from, $to]) {
@@ -1696,7 +1702,7 @@ HTML,
                 'map_color' => '#8CC63F',
                 'country' => 'Kenya',
                 'impact_label' => 'Medical camp · 2023',
-                'link_url' => '/impact/komolion',
+                'link_url' => '/impact/stories/komolion-2023-disability-assessment-medical-camp',
                 'link_label' => 'Read Komolion story',
                 'is_featured' => true,
                 'sort_order' => 1,
@@ -1794,7 +1800,7 @@ HTML,
                 'category' => 'field-note',
                 'reading_time_minutes' => 5,
                 'image' => 'galleries/baringo-2023/01.jpg',
-                'body' => '<p>The Komolion outreach showed what becomes possible when education, health, and community partners pull together. Families came for assessment and registration. Children were seen with care. Pathways to surgery and ongoing support became clearer.</p><p>The work also reminded us that impact is local before it is large. One school compound. One day of coordinated service. Many relationships that continue after the camp ends.</p><p><a href="/impact/komolion">Read the full Komolion case study</a> for outcomes, partners, and next steps.</p>',
+                'body' => '<p>The Komolion outreach showed what becomes possible when education, health, and community partners pull together. Families came for assessment and registration. Children were seen with care. Pathways to surgery and ongoing support became clearer.</p><p>The work also reminded us that impact is local before it is large. One school compound. One day of coordinated service. Many relationships that continue after the camp ends.</p><p><a href="/impact/stories/komolion-2023-disability-assessment-medical-camp">Read the full Komolion case study</a> for outcomes, partners, and next steps.</p>',
             ],
             [
                 'title' => 'Learning that travels: webinars and toolkits',

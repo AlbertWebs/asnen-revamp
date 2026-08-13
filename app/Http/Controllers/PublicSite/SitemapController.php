@@ -22,7 +22,6 @@ class SitemapController extends Controller
             route('site.about.partners'),
             route('site.programs.index'),
             route('site.impact.overview'),
-            route('site.impact.komolion'),
             route('site.impact.stories'),
             route('site.impact.reports'),
             route('site.impact.regions'),
@@ -34,7 +33,7 @@ class SitemapController extends Controller
         ]);
 
         Page::published()->pluck('slug')->each(function (string $slug) use ($urls) {
-            if (! in_array($slug, ['home', 'about-governance', 'about-mission-vision-values', 'about-our-story', 'vision-mission-values'], true)) {
+            if (! in_array($slug, ['home', 'about-governance', 'about-mission-vision-values', 'about-our-story', 'vision-mission-values', 'impact-komolion'], true)) {
                 $urls->push(url('/'.str_replace('-', '/', $slug)));
             }
         });

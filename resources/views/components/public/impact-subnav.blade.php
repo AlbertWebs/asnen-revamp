@@ -5,8 +5,7 @@
 @php
     $links = [
         'overview' => ['label' => 'Overview', 'url' => route('site.impact.overview')],
-        'stories' => ['label' => 'Stories', 'url' => route('site.impact.stories')],
-        'komolion' => ['label' => 'Komolion', 'url' => route('site.impact.komolion')],
+        'stories' => ['label' => 'Success Stories', 'url' => route('site.impact.stories')],
         'reports' => ['label' => 'Reports', 'url' => route('site.impact.reports')],
         'regions' => ['label' => 'Regions', 'url' => route('site.impact.regions')],
     ];

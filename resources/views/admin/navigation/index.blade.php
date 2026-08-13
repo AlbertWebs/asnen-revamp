@@ -6,7 +6,7 @@
 @section('content')
     <div class="admin-toolbar">
         <p class="admin-toolbar__copy">
-            Manage the menus used across the public site.
+            Manage the menus used across the public site. About and Impact dropdowns should match the live header: Who We Are, Leadership &amp; Governance, and Success Stories.
         </p>
         <div class="admin-toolbar__actions"></div>
     </div>

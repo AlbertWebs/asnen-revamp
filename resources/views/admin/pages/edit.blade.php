@@ -85,6 +85,16 @@
             then choose them in the Hero / About block below and click <strong>Save page</strong>.
         </div>
 
+        @if($page->exists && $page->mergedDestinationLabel())
+            <div class="admin-callout admin-callout--warn mb-4">
+                This page is no longer in the main menu. Its content still appears on the public <strong>{{ $page->mergedDestinationLabel() }}</strong> page.
+            </div>
+        @elseif($page->exists && $page->mergedSourceNote())
+            <div class="admin-callout mb-4">
+                {{ $page->mergedSourceNote() }}
+            </div>
+        @endif
+
         <div class="grid gap-6 lg:grid-cols-3">
             <div class="space-y-4 lg:col-span-1">
                 <div class="admin-form admin-form--full">

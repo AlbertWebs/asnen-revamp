@@ -47,8 +47,8 @@
                         <li>Captions where available</li>
                         <li>Photos reviewed before publishing</li>
                     </ul>
-                    <a href="{{ route('site.impact.komolion') }}" class="who-identity__aside-link">
-                        See Komolion story
+                    <a href="{{ route('site.impact.stories') }}" class="who-identity__aside-link">
+                        See success stories
                         <span aria-hidden="true">→</span>
                     </a>
                 </aside>

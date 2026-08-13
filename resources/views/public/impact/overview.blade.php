@@ -8,10 +8,8 @@
         $heading = $page->title ?? 'Impact';
         $excerpt = $page->excerpt ?? 'Evidence-led stories and learning from programmes across the ASNEN network.';
         $metricFootnote = null;
-        $isKomolion = $featuredStory?->slug === 'komolion-2023-disability-assessment-medical-camp';
-        $featuredHref = $isKomolion
-            ? route('site.impact.komolion')
-            : ($featuredStory ? route('site.impact.stories.show', $featuredStory->slug) : null);
+        $isKomolion = $featuredStory?->slug === \App\Models\ImpactStory::KOMOLION_SLUG;
+        $featuredHref = $featuredStory?->publicUrl();
         $featuredEyebrow = $isKomolion ? 'Komolion · Baringo County' : 'Featured impact story';
     @endphp
 
@@ -130,26 +128,20 @@
             </div>
 
             <div class="impact-path-grid reveal">
-                <a href="{{ route('site.impact.komolion') }}" class="impact-path">
-                    <span class="impact-path__num" aria-hidden="true">01</span>
-                    <h3 class="impact-path__title">Komolion story</h3>
-                    <p class="impact-path__desc">Disability assessment, NCPWD registration, and orthopedic outreach in Baringo County.</p>
-                    <span class="impact-path__link">Open case study <span aria-hidden="true">→</span></span>
-                </a>
                 <a href="{{ route('site.impact.stories') }}" class="impact-path">
-                    <span class="impact-path__num" aria-hidden="true">02</span>
+                    <span class="impact-path__num" aria-hidden="true">01</span>
                     <h3 class="impact-path__title">Success stories</h3>
-                    <p class="impact-path__desc">Published case studies and narratives from programmes and community initiatives.</p>
+                    <p class="impact-path__desc">Komolion and other published case studies from programmes and community initiatives.</p>
                     <span class="impact-path__link">Browse stories <span aria-hidden="true">→</span></span>
                 </a>
                 <a href="{{ route('site.impact.reports') }}" class="impact-path">
-                    <span class="impact-path__num" aria-hidden="true">03</span>
+                    <span class="impact-path__num" aria-hidden="true">02</span>
                     <h3 class="impact-path__title">Impact reports</h3>
                     <p class="impact-path__desc">Annual reports and publications documenting progress and learning.</p>
                     <span class="impact-path__link">View reports <span aria-hidden="true">→</span></span>
                 </a>
                 <a href="{{ route('site.impact.regions') }}" class="impact-path">
-                    <span class="impact-path__num" aria-hidden="true">04</span>
+                    <span class="impact-path__num" aria-hidden="true">03</span>
                     <h3 class="impact-path__title">Impact by region</h3>
                     <p class="impact-path__desc">How ASNEN's work reaches communities across Kenya and the wider continent.</p>
                     <span class="impact-path__link">See regions <span aria-hidden="true">→</span></span>

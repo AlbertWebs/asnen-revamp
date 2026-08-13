@@ -206,7 +206,7 @@
                         <li>Medical camps and outreach</li>
                         <li>Partnerships across Kenya and beyond</li>
                     </ul>
-                    <a href="{{ route('site.impact.komolion') }}" class="who-identity__aside-link">
+                    <a href="{{ route('site.impact.stories.show', \App\Models\ImpactStory::KOMOLION_SLUG) }}" class="who-identity__aside-link">
                         Read a field story
                         <span aria-hidden="true">→</span>
                     </a>

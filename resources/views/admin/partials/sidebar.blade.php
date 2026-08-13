@@ -31,7 +31,7 @@
         [
             'label' => 'Impact',
             'items' => [
-                ['label' => 'Impact Stories', 'route' => 'admin.impact-stories.index', 'active' => request()->routeIs('admin.impact-stories.*'), 'can' => 'impact_stories.view', 'icon' => 'M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z'],
+                ['label' => 'Success Stories', 'route' => 'admin.impact-stories.index', 'active' => request()->routeIs('admin.impact-stories.*'), 'can' => 'impact_stories.view', 'icon' => 'M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z'],
                 ['label' => 'Impact Metrics', 'route' => 'admin.impact-metrics.index', 'active' => request()->routeIs('admin.impact-metrics.*'), 'can' => 'impact_metrics.view', 'icon' => 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z'],
                 ['label' => 'Regions', 'route' => 'admin.regions.index', 'active' => request()->routeIs('admin.regions.*'), 'can' => 'regions.view', 'icon' => 'M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064'],
             ],

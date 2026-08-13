@@ -31,8 +31,13 @@ Redirect::updateOrCreate(
     ]
 );
 
-$page = Page::query()->where('slug', 'about-leadership')->first();
+$page = Page::query()->where('slug', 'about-leadership')->first()
+    ?? Page::query()->where('slug', 'leadership-governance')->first();
 if ($page) {
+    if ($page->slug !== 'about-leadership'
+        && ! Page::query()->where('slug', 'about-leadership')->where('id', '!=', $page->id)->exists()) {
+        $page->slug = 'about-leadership';
+    }
     $page->title = 'Leadership & Governance';
     $page->excerpt = 'Meet the people guiding ASNEN, and the accountability structures that keep the work honest.';
     $page->saveQuietly();

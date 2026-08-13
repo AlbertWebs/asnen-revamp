@@ -7,7 +7,7 @@
     <x-public.media-hero
         parent-label="Impact"
         :parent-url="route('site.impact.overview')"
-        current-label="Story"
+        current-label="Success Stories"
         eyebrow="Impact story"
         :title="$story->title"
         title-max="18ch"
@@ -16,6 +16,8 @@
         :secondary-cta="['label' => 'Impact overview', 'url' => route('site.impact.overview')]"
         :images="$bannerImages ?? []"
     />
+
+    <x-public.impact-subnav current="stories" />
 
     <x-public.section>
         <x-public.prose :html="$sanitizer->clean($story->body)" />

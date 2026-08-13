@@ -22,6 +22,8 @@ class ImpactStory extends Model
     use RequiresSafeguarding;
     use SoftDeletes;
 
+    public const KOMOLION_SLUG = 'komolion-2023-disability-assessment-medical-camp';
+
     protected $fillable = [
         'title',
         'slug',
@@ -80,5 +82,10 @@ class ImpactStory extends Model
     public function programs(): BelongsToMany
     {
         return $this->belongsToMany(Program::class, 'impact_story_program');
+    }
+
+    public function publicUrl(): string
+    {
+        return route('site.impact.stories.show', $this->slug);
     }
 }

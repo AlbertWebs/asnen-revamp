@@ -34,6 +34,6 @@ class PublicUrlOrPath implements ValidationRule
             return;
         }
 
-        $fail('The :attribute must be a valid URL or site path (for example /impact/komolion).');
+        $fail('The :attribute must be a valid URL or site path (for example /impact/stories).');
     }
 }

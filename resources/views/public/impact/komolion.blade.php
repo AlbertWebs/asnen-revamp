@@ -21,7 +21,7 @@
     <x-public.media-hero
         parent-label="Impact"
         :parent-url="route('site.impact.overview')"
-        current-label="Komolion Story"
+        current-label="Success Stories"
         eyebrow="Case study · Baringo County"
         :title="$story->title"
         title-max="20ch"
@@ -30,6 +30,8 @@
         :secondary-cta="['label' => 'Impact overview', 'url' => route('site.impact.overview')]"
         :images="$bannerImages ?? []"
     />
+
+    <x-public.impact-subnav current="stories" />
 
     @if($story->outcomes->isNotEmpty())
         <section class="case-outcomes" aria-label="Key outcomes">

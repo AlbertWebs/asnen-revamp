@@ -66,8 +66,7 @@ return [
                 'title' => 'Stories & evidence',
                 'items' => [
                     ['url' => '/impact', 'desc' => 'Impact overview and highlights.'],
-                    ['url' => '/impact/komolion', 'desc' => 'The Komolion community story.'],
-                    ['url' => '/impact/stories', 'desc' => 'Families and caregivers sharing outcomes.'],
+                    ['url' => '/impact/stories', 'label' => 'Success Stories', 'desc' => 'Case studies and community outcomes, including Komolion.'],
                 ],
             ],
             [

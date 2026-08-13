@@ -70,7 +70,7 @@ class ImpactStoryController extends Controller
         $story = ImpactStory::create($validated);
         $this->ensureGallery($story);
 
-        return redirect()->route('admin.impact-stories.edit', $story)->with('success', 'Impact story created. You can now drop gallery images below.');
+        return redirect()->route('admin.impact-stories.edit', $story)->with('success', 'Success story created. You can now drop gallery images below.');
     }
 
     public function edit(ImpactStory $impactStory): View
@@ -115,7 +115,7 @@ class ImpactStoryController extends Controller
         $impactStory->update($validated);
         $this->ensureGallery($impactStory);
 
-        return back()->with('success', 'Impact story updated.');
+        return back()->with('success', 'Success story updated.');
     }
 
     public function destroy(ImpactStory $impactStory): RedirectResponse
@@ -124,7 +124,7 @@ class ImpactStoryController extends Controller
 
         $impactStory->delete();
 
-        return redirect()->route('admin.impact-stories.index')->with('success', 'Impact story deleted.');
+        return redirect()->route('admin.impact-stories.index')->with('success', 'Success story deleted.');
     }
 
     public function publish(ImpactStory $impactStory): RedirectResponse
@@ -137,7 +137,7 @@ class ImpactStoryController extends Controller
 
         $impactStory->publish();
 
-        return back()->with('success', 'Impact story published.');
+        return back()->with('success', 'Success story published.');
     }
 
     public function unpublish(ImpactStory $impactStory): RedirectResponse
@@ -146,7 +146,7 @@ class ImpactStoryController extends Controller
 
         $impactStory->unpublish();
 
-        return back()->with('success', 'Impact story unpublished.');
+        return back()->with('success', 'Success story unpublished.');
     }
 
     public function approveSafeguarding(ImpactStory $impactStory): RedirectResponse

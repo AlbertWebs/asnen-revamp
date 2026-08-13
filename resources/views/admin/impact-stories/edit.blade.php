@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
-@section('title', $story->exists ? 'Edit Impact Story' : 'New Impact Story')
-@section('heading', $story->exists ? 'Edit Impact Story' : 'New Impact Story')
+@section('title', $story->exists ? 'Edit Success Story' : 'New Success Story')
+@section('heading', $story->exists ? 'Edit Success Story' : 'New Success Story')
 
 @section('content')
     @if ($story->exists)
@@ -13,7 +13,15 @@
                     <button type="submit" class="admin-btn-secondary border-amber-300 bg-amber-50 text-amber-900 hover:bg-amber-100">Approve safeguarding</button>
                 </form>
             @endcan
+            @if($story->isPublished())
+                <a href="{{ $story->publicUrl() }}" class="admin-btn-secondary" target="_blank" rel="noopener">View on site</a>
+            @endif
         </div>
+        @if($story->slug === \App\Models\ImpactStory::KOMOLION_SLUG)
+            <div class="admin-callout mb-4">
+                This is the featured Komolion case study. It appears first on Success Stories and no longer has a separate menu item.
+            </div>
+        @endif
     @endif
 
     <form method="POST" action="{{ $story->exists ? route('admin.impact-stories.update', $story) : route('admin.impact-stories.store') }}" class="admin-form admin-form--wide">
@@ -22,8 +30,8 @@
 
         <div class="admin-form__body">
             <header class="admin-form__header">
-                <p class="admin-form__eyebrow">Impact stories</p>
-                <h2 class="admin-form__title">{{ $story->exists ? 'Edit impact story' : 'New impact story' }}</h2>
+                <p class="admin-form__eyebrow">Success stories</p>
+                <h2 class="admin-form__title">{{ $story->exists ? 'Edit success story' : 'New success story' }}</h2>
             </header>
 
             <div class="admin-form__section">
@@ -82,7 +90,7 @@
         @include('admin.partials.gallery-dropzone', [
             'gallery' => $gallery,
             'heading' => 'Story gallery',
-            'help' => 'Drop all case-study photos here. They appear in the photo gallery on the public Komolion / story page. Edit captions below each image.',
+            'help' => 'Drop case-study photos here. They appear in the photo gallery on the public success story page. Edit captions below each image.',
         ])
         <p class="admin-hint mt-3 max-w-4xl">
             Linked gallery:

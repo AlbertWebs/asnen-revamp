@@ -277,9 +277,7 @@
                 <div class="impact-story-grid reveal">
                     @foreach($relatedStories as $story)
                         @php
-                            $href = $story->slug === 'komolion-2023-disability-assessment-medical-camp'
-                                ? route('site.impact.komolion')
-                                : route('site.impact.stories.show', $story->slug);
+                            $href = $story->publicUrl();
                         @endphp
                         <article class="impact-story-card">
                             <a href="{{ $href }}" class="impact-story-card__media">

@@ -1,12 +1,12 @@
 @extends('layouts.admin')
 
-@section('title', 'Impact Stories')
-@section('heading', 'Impact Stories')
+@section('title', 'Success Stories')
+@section('heading', 'Success Stories')
 
 @section('content')
     <div class="admin-toolbar">
         <p class="admin-toolbar__copy">
-            Manage impact stories and their publish status.
+            Manage success stories published under Impact, including the Komolion case study.
         </p>
         <div class="admin-toolbar__actions">
             @can('impact_stories.create')
@@ -31,12 +31,20 @@
                             $status = $item->status?->value ?? $item->status ?? ($item->is_active ?? false ? 'active' : 'inactive');
                         @endphp
                         <tr>
-                            <td class="admin-table__primary">{{ $item->title }}</td>
+                            <td class="admin-table__primary">
+                                {{ $item->title }}
+                                @if($item->slug)
+                                    <span class="admin-table__meta">{{ $item->slug }}</span>
+                                @endif
+                            </td>
                             <td>
                                 <span class="admin-badge admin-badge--{{ $status }}">{{ str_replace('_', ' ', $status) }}</span>
                             </td>
                             <td class="text-right">
                                 <div class="admin-table__actions">
+                                    @if($item->isPublished())
+                                        <a href="{{ $item->publicUrl() }}" class="admin-table__link" target="_blank" rel="noopener">View</a>
+                                    @endif
                                     @can('impact_stories.update')
                                         <a href="{{ route('admin.impact-stories.edit', $item) }}" class="admin-table__link">Edit</a>
                                     @endcan

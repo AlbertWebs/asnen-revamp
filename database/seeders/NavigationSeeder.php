@@ -62,7 +62,6 @@ class NavigationSeeder extends Seeder
         $impact = $this->item($menu, null, 'Impact', '/impact', ++$order);
         $impactChildren = [
             ['Impact Overview', '/impact'],
-            ['Komolion Story', '/impact/komolion'],
             ['Success Stories', '/impact/stories'],
             ['Impact Reports', '/impact/reports'],
             ['Impact by Region', '/impact/regions'],

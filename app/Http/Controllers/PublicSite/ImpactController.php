@@ -32,7 +32,7 @@ class ImpactController extends Controller
         $metrics = $this->verifiedPublishedMetrics()->get();
 
         $featuredStory = ImpactStory::published()
-            ->where('slug', 'komolion-2023-disability-assessment-medical-camp')
+            ->where('slug', ImpactStory::KOMOLION_SLUG)
             ->with(['outcomes', 'featuredImage', 'partners'])
             ->first();
 
@@ -61,32 +61,7 @@ class ImpactController extends Controller
 
     public function komolion()
     {
-        $story = ImpactStory::published()
-            ->where('slug', 'komolion-2023-disability-assessment-medical-camp')
-            ->with(['outcomes', 'partners.logo', 'programs', 'gallery.items.mediaAsset', 'featuredImage'])
-            ->firstOrFail();
-
-        $page = $this->pages->findBySlug('impact-komolion')
-            ?? $this->pages->findBySlug('impact');
-
-        $galleryImages = collect($story->gallery?->items ?? [])
-            ->map(fn ($item) => $item->mediaAsset)
-            ->filter()
-            ->values();
-
-        $bannerImages = $this->resolveBannerImages($page, $story->featuredImage);
-        if ($bannerImages->isEmpty() && $galleryImages->isNotEmpty()) {
-            $bannerImages = $galleryImages;
-        } elseif ($galleryImages->isNotEmpty() && $bannerImages->count() < 2) {
-            $bannerImages = $bannerImages->concat($galleryImages)->unique('id')->values();
-        }
-
-        return view('public.impact.komolion', [
-            'story' => $story,
-            'page' => $page,
-            'sanitizer' => $this->sanitizer,
-            'bannerImages' => $bannerImages,
-        ]);
+        return redirect()->route('site.impact.stories.show', ImpactStory::KOMOLION_SLUG, 301);
     }
 
     public function stories()
@@ -94,7 +69,7 @@ class ImpactController extends Controller
         $page = $this->pages->findBySlug('impact-stories');
 
         $featuredStory = ImpactStory::published()
-            ->where('slug', 'komolion-2023-disability-assessment-medical-camp')
+            ->where('slug', ImpactStory::KOMOLION_SLUG)
             ->with(['outcomes', 'featuredImage', 'partners'])
             ->first();
 
@@ -123,8 +98,12 @@ class ImpactController extends Controller
     {
         $story = ImpactStory::published()
             ->where('slug', $slug)
-            ->with(['outcomes', 'partners.logo', 'programs', 'featuredImage'])
+            ->with(['outcomes', 'partners.logo', 'programs', 'gallery.items.mediaAsset', 'featuredImage'])
             ->firstOrFail();
+
+        if ($slug === ImpactStory::KOMOLION_SLUG) {
+            return $this->komolionView($story);
+        }
 
         $page = $this->pages->findBySlug('impact-stories');
 
@@ -132,6 +111,32 @@ class ImpactController extends Controller
             'story' => $story,
             'sanitizer' => $this->sanitizer,
             'bannerImages' => $this->resolveBannerImages($page, $story->featuredImage),
+        ]);
+    }
+
+    private function komolionView(ImpactStory $story)
+    {
+        $page = $this->pages->findBySlug('impact-komolion')
+            ?? $this->pages->findBySlug('impact-stories')
+            ?? $this->pages->findBySlug('impact');
+
+        $galleryImages = collect($story->gallery?->items ?? [])
+            ->map(fn ($item) => $item->mediaAsset)
+            ->filter()
+            ->values();
+
+        $bannerImages = $this->resolveBannerImages($page, $story->featuredImage);
+        if ($bannerImages->isEmpty() && $galleryImages->isNotEmpty()) {
+            $bannerImages = $galleryImages;
+        } elseif ($galleryImages->isNotEmpty() && $bannerImages->count() < 2) {
+            $bannerImages = $bannerImages->concat($galleryImages)->unique('id')->values();
+        }
+
+        return view('public.impact.komolion', [
+            'story' => $story,
+            'page' => $page,
+            'sanitizer' => $this->sanitizer,
+            'bannerImages' => $bannerImages,
         ]);
     }
 

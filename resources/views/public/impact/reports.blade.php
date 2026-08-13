@@ -89,8 +89,8 @@
 
     <x-public.cta-band
         heading="Looking for stories behind the numbers?"
-        text="Explore the Komolion case study and other impact narratives from across the network."
-        :primary-cta="['label' => 'Komolion story', 'url' => route('site.impact.komolion')]"
+        text="Explore Komolion and other impact narratives from across the network."
+        :primary-cta="['label' => 'Success stories', 'url' => route('site.impact.stories')]"
         :secondary-cta="['label' => 'Impact overview', 'url' => route('site.impact.overview')]"
     />
 @endsection

@@ -160,7 +160,7 @@
                         <p class="text-sm font-semibold text-charcoal">Safeguarding queue</p>
                         <p class="mt-0.5 text-xs text-charcoal/55">Stories, pages, or galleries awaiting approval.</p>
                         @can('impact_stories.view')
-                            <a href="{{ route('admin.impact-stories.index') }}" class="mt-1 inline-block text-xs font-semibold text-brand hover:underline">Open stories</a>
+                            <a href="{{ route('admin.impact-stories.index') }}" class="mt-1 inline-block text-xs font-semibold text-brand hover:underline">Open success stories</a>
                         @endcan
                     </div>
                 </li>
