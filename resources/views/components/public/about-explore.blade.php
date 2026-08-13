@@ -9,8 +9,7 @@
         'who-we-are' => ['label' => 'Who we are', 'desc' => 'A pan-African coalition for belonging', 'url' => route('site.about.who-we-are')],
         'mission' => ['label' => 'Vision, mission & values', 'desc' => 'What guides ASNEN day to day', 'url' => route('site.about.mission')],
         'story' => ['label' => 'Our story', 'desc' => 'How the network grew from community need', 'url' => route('site.about.story')],
-        'leadership' => ['label' => 'Leadership & team', 'desc' => 'People guiding and supporting the work', 'url' => route('site.about.leadership')],
-        'governance' => ['label' => 'Governance', 'desc' => 'Accountability with transparency and care', 'url' => route('site.about.governance')],
+        'leadership' => ['label' => 'Leadership & governance', 'desc' => 'People, accountability, and how we stay trusted', 'url' => route('site.about.leadership')],
         'partners' => ['label' => 'Collaborators', 'desc' => 'Organisations walking with ASNEN', 'url' => route('site.about.partners')],
     ];
 

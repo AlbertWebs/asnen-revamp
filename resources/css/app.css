@@ -8,6 +8,7 @@
 @layer base {
     html {
         overflow-x: clip;
+        scroll-padding-top: 6.5rem;
     }
 
     body {
@@ -2781,6 +2782,9 @@
     }
 
     /* About / leadership */
+    #governance {
+        scroll-margin-top: 6.5rem;
+    }
     .about-subnav {
         border-bottom: 1px solid rgba(32, 33, 43, 0.1);
         background: #fff;

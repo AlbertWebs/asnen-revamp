@@ -51,7 +51,7 @@
                 ['About ASNEN', '/about/who-we-are'],
                 ['Vision, Mission & Values', '/about/mission-vision-values'],
                 ['Our Story', '/about/our-story'],
-                ['Leadership & Team', '/about/leadership'],
+                ['Leadership & Governance', '/about/leadership'],
                 ['Collaborators', '/about/partners'],
                 ['Contact', '/contact'],
             ],

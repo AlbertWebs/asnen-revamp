@@ -55,7 +55,7 @@ Route::name('site.')->group(function () {
     Route::get('/about/mission-vision-values', fn () => app(PageController::class)->show('about/mission-vision-values'))->name('about.mission');
     Route::get('/about/our-story', fn () => app(PageController::class)->show('about/our-story'))->name('about.story');
     Route::get('/about/leadership', fn () => app(PageController::class)->show('about/leadership'))->name('about.leadership');
-    Route::get('/about/governance', fn () => app(PageController::class)->show('about/governance'))->name('about.governance');
+    Route::get('/about/governance', fn () => redirect()->route('site.about.leadership', status: 301)->fragment('governance'))->name('about.governance');
     Route::get('/about/partners', fn () => app(PageController::class)->show('about/partners'))->name('about.partners');
 
     // What We Do / Programs

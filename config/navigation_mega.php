@@ -20,8 +20,7 @@ return [
             [
                 'title' => 'People',
                 'items' => [
-                    ['url' => '/about/leadership', 'desc' => 'Meet the team carrying the work.'],
-                    ['url' => '/about/governance', 'desc' => 'How we are organised and accountable.'],
+                    ['url' => '/about/leadership', 'label' => 'Leadership & Governance', 'desc' => 'Meet the team and how we stay accountable.'],
                 ],
             ],
             [

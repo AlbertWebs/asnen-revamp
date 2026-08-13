@@ -51,6 +51,9 @@ echo "removed={$n}\n";
 echo "== Migrate =="
 php artisan migrate --force
 
+echo "== Merge leadership and governance =="
+php deploy/sync-leadership-governance.php
+
 echo "== Backfill media content hashes =="
 php deploy/backfill-media-hashes.php
 

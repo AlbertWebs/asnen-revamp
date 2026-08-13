@@ -1203,15 +1203,9 @@ HTML,
             ],
             [
                 'slug' => 'about-leadership',
-                'title' => 'Leadership & Team',
-                'excerpt' => 'Meet the people guiding ASNEN - founding leadership, programme roles, and the team carrying inclusion work forward.',
+                'title' => 'Leadership & Governance',
+                'excerpt' => 'Meet the people guiding ASNEN, and the accountability structures that keep the work honest.',
                 'body' => '<p>ASNEN\'s public team directory introduces the people guiding and supporting the network. Names, titles, and portraits are kept accurate and up to date.</p>',
-            ],
-            [
-                'slug' => 'about-governance',
-                'title' => 'Governance',
-                'excerpt' => 'Accountability structures that guide ASNEN\'s work with transparency and integrity.',
-                'body' => '<p>ASNEN operates with governance practices that support ethical stewardship, safeguarding, financial accountability, and community accountability. Board and governance details are published here once verified by administrators.</p>',
             ],
             [
                 'slug' => 'about-partners',
@@ -1229,6 +1223,11 @@ HTML,
                 $pageData['body']
             );
         }
+
+        Page::query()->where('slug', 'about-governance')->update([
+            'status' => PublishStatus::Archived,
+            'unpublished_at' => now(),
+        ]);
     }
 
     /**
@@ -1611,6 +1610,7 @@ HTML,
             ['/contact.html', '/contact'],
             ['/gallery.html', '/resources/gallery'],
             ['/gallery', '/resources/gallery'],
+            ['/about/governance', '/about/leadership#governance'],
         ];
 
         foreach ($redirects as [$from, $to]) {

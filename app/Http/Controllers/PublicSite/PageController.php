@@ -5,6 +5,7 @@ namespace App\Http\Controllers\PublicSite;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\PublicSite\Concerns\QueriesPublicContent;
 use App\Models\Faq;
+use App\Models\Page;
 use App\Repositories\PageRepository;
 use App\Services\HtmlSanitizer;
 use Illuminate\Support\Str;
@@ -75,13 +76,8 @@ class PageController extends Controller
                 'page' => $page,
                 'sanitizer' => $this->sanitizer,
                 'introHtml' => $introHtml,
+                'governanceIntroHtml' => $this->governanceIntroHtml(),
                 'teamMembers' => $this->publishedTeamMembers()->with('photo')->get(),
-                'bannerImages' => $page->bannerImages(),
-            ]),
-            'about-governance' => view('public.about.governance', [
-                'page' => $page,
-                'sanitizer' => $this->sanitizer,
-                'introHtml' => $introHtml,
                 'bannerImages' => $page->bannerImages(),
             ]),
             'about-partners' => view('public.about.partners', [
@@ -97,6 +93,17 @@ class PageController extends Controller
                 'bannerImages' => $page->bannerImages(),
             ]),
         };
+    }
+
+    private function governanceIntroHtml(): string
+    {
+        $governance = Page::query()
+            ->where('slug', 'about-governance')
+            ->with(['blocks' => fn ($q) => $q->where('is_visible', true)])
+            ->first();
+
+        return $governance?->blocks->firstWhere('type', 'rich_text')?->content['body']
+            ?: '<p>ASNEN operates with governance practices that support ethical stewardship, safeguarding, financial accountability, and community accountability. Board and governance details are published here once verified by administrators.</p>';
     }
 
     /**

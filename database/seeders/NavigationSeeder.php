@@ -38,8 +38,7 @@ class NavigationSeeder extends Seeder
             ['Who We Are', '/about/who-we-are'],
             ['Vision, Mission & Values', '/about/mission-vision-values'],
             ['Our Story', '/about/our-story'],
-            ['Leadership & Team', '/about/leadership'],
-            ['Governance', '/about/governance'],
+            ['Leadership & Governance', '/about/leadership'],
             ['Collaborators', '/about/partners'],
         ];
         $childOrder = 0;
