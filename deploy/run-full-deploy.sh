@@ -54,6 +54,9 @@ php artisan migrate --force
 echo "== Merge leadership and governance =="
 php deploy/sync-leadership-governance.php
 
+echo "== Merge who we are =="
+php deploy/sync-who-we-are.php
+
 echo "== Backfill media content hashes =="
 php deploy/backfill-media-hashes.php
 

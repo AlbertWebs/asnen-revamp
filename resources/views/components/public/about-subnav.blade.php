@@ -5,8 +5,6 @@
 @php
     $links = [
         'who-we-are' => ['label' => 'Who we are', 'url' => route('site.about.who-we-are')],
-        'mission' => ['label' => 'Vision, mission & values', 'url' => route('site.about.mission')],
-        'story' => ['label' => 'Our story', 'url' => route('site.about.story')],
         'leadership' => ['label' => 'Leadership & governance', 'url' => route('site.about.leadership')],
         'partners' => ['label' => 'Collaborators', 'url' => route('site.about.partners')],
     ];

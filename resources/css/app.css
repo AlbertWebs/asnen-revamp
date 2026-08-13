@@ -2782,7 +2782,10 @@
     }
 
     /* About / leadership */
-    #governance {
+    #governance,
+    #vision,
+    #mission,
+    #story {
         scroll-margin-top: 6.5rem;
     }
     .about-subnav {

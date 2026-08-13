@@ -12,9 +12,7 @@ return [
             [
                 'title' => 'The organisation',
                 'items' => [
-                    ['url' => '/about/who-we-are', 'desc' => 'Who we are and what ASNEN stands for.'],
-                    ['url' => '/about/mission-vision-values', 'label' => 'Vision, Mission & Values', 'desc' => 'Vision, mission, and Ubuntu values.'],
-                    ['url' => '/about/our-story', 'desc' => 'How the network grew across Africa.'],
+                    ['url' => '/about/who-we-are', 'label' => 'Who We Are', 'desc' => 'Identity, vision, and how the network began.'],
                 ],
             ],
             [

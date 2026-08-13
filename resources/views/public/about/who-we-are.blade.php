@@ -55,8 +55,8 @@
         title-max="11ch"
         tagline="Inclusion for all, in all."
         :excerpt="$page->excerpt"
-        :primary-cta="['label' => 'Vision, mission & values', 'url' => route('site.about.mission')]"
-        :secondary-cta="['label' => 'Meet the team', 'url' => route('site.about.leadership')]"
+        :primary-cta="['label' => 'Meet the team', 'url' => route('site.about.leadership')]"
+        :secondary-cta="['label' => 'Get involved', 'url' => route('site.get-involved.index')]"
         :images="$heroImages"
         fallback-image="storage/galleries/community-moments/01.jpg"
     />
@@ -84,7 +84,7 @@
                         <li>Homegrown African models of support</li>
                         <li>Dignity across the lifespan</li>
                     </ul>
-                    <a href="{{ route('site.about.story') }}" class="who-identity__aside-link">
+                    <a href="#story" class="who-identity__aside-link">
                         Read our story
                         <span aria-hidden="true">→</span>
                     </a>
@@ -116,12 +116,127 @@
         </div>
     </section>
 
-    <x-public.about-explore current="who-we-are" />
+    @php
+        $sections = collect($missionSections ?? []);
+        $vision = $sections->firstWhere('heading', 'Vision');
+        $mission = $sections->firstWhere('heading', 'Mission');
+        $philosophy = $sections->firstWhere('heading', 'Philosophy');
+        $philosophyHtml = $philosophy['html'] ?? '<p>Ubuntu “I am because we are”, is not a tagline at ASNEN. It is the reason the work takes the shape it does. It is why we convene rather than compete, why we build peer circles rather than waiting lists, why caregivers become facilitators, and why we hold that inclusion belongs to everyone rather than to specialists alone. A person is a person through other people. The child who has been hidden is one of us. The mother who has carried this alone is one of us. We are because they are.</p>';
+        $milestones = [
+            [
+                'label' => 'Beginning',
+                'title' => 'Community need',
+                'body' => 'Educators, caregivers, and advocates recognised that children and young adults with disabilities deserve belonging, not exclusion.',
+            ],
+            [
+                'label' => 'Growth',
+                'title' => 'A living network',
+                'body' => 'Collaborative action became programmes, outreach, webinars, and partnerships across Kenya and beyond.',
+            ],
+            [
+                'label' => 'Today',
+                'title' => 'Still being written',
+                'body' => 'Classrooms, caregiver circles, medical camps, and policy forums continue to root inclusion in everyday life.',
+            ],
+        ];
+    @endphp
+
+    <section id="vision" class="section-editorial">
+        <div class="mx-auto max-w-editorial px-6 lg:px-7">
+            <div class="about-mvv reveal">
+                @if($vision)
+                    <article class="about-mvv__panel about-mvv__panel--vision">
+                        <span class="eyebrow mb-3 block">Vision</span>
+                        <h2 class="about-mvv__title">The Africa we work toward</h2>
+                        <div class="about-mvv__body">
+                            <x-public.prose :html="$sanitizer->clean($vision['html'])" />
+                        </div>
+                    </article>
+                @endif
+
+                @if($mission)
+                    <article id="mission" class="about-mvv__panel about-mvv__panel--mission">
+                        <span class="eyebrow mb-3 block">Mission</span>
+                        <h2 class="about-mvv__title">Why ASNEN exists</h2>
+                        <div class="about-mvv__body">
+                            <x-public.prose :html="$sanitizer->clean($mission['html'])" />
+                        </div>
+                    </article>
+                @endif
+            </div>
+        </div>
+    </section>
 
     <x-public.ubuntu-values
-        eyebrow="Grounded in Ubuntu"
-        heading="Behaviours we practice together, not slogans we leave on a page."
+        eyebrow="Core Values"
+        heading="Drawn from Ubuntu"
+        intro="Our values are drawn from Ubuntu, the understanding that our humanity is bound to one another. They are written as behaviours rather than aspirations, so that members, partners and funders may hold us to them."
     />
+
+    <section class="section-editorial">
+        <div class="mx-auto max-w-editorial px-6 lg:px-7">
+            <div class="section-head reveal">
+                <span class="eyebrow mb-3 block">Philosophy</span>
+                <h2>Ubuntu is why the work takes this shape</h2>
+            </div>
+            <div class="reveal max-w-3xl">
+                <x-public.prose :html="$sanitizer->clean($philosophyHtml)" />
+            </div>
+        </div>
+    </section>
+
+    <section id="story" class="section-editorial">
+        <div class="mx-auto max-w-editorial px-6 lg:px-7">
+            <div class="who-identity reveal">
+                <div class="who-identity__copy">
+                    <span class="eyebrow mb-3 block">How we began</span>
+                    <h2>Written with the communities we serve</h2>
+                    @if(!empty($storyIntroHtml))
+                        <div class="who-identity__body">
+                            <x-public.prose :html="$sanitizer->clean($storyIntroHtml)" />
+                        </div>
+                    @endif
+                </div>
+
+                <aside class="who-identity__aside">
+                    <p class="who-identity__aside-label">Throughline</p>
+                    <p class="who-identity__aside-quote">Belonging is the measure of our work.</p>
+                    <ul class="who-identity__aside-list">
+                        <li>Classrooms and caregiver circles</li>
+                        <li>Medical camps and outreach</li>
+                        <li>Partnerships across Kenya and beyond</li>
+                    </ul>
+                    <a href="{{ route('site.impact.komolion') }}" class="who-identity__aside-link">
+                        Read a field story
+                        <span aria-hidden="true">→</span>
+                    </a>
+                </aside>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-editorial bg-sand">
+        <div class="mx-auto max-w-editorial px-6 lg:px-7">
+            <div class="section-head reveal">
+                <span class="eyebrow mb-3 block">The arc</span>
+                <h2>Where the story turns</h2>
+                <p class="section-head-row__intro">ASNEN did not start as an institution first. It started as people refusing to leave children behind.</p>
+            </div>
+
+            <ol class="about-timeline reveal">
+                @foreach($milestones as $index => $item)
+                    <li class="about-timeline__item">
+                        <span class="about-timeline__num" aria-hidden="true">{{ str_pad((string) ($index + 1), 2, '0', STR_PAD_LEFT) }}</span>
+                        <p class="about-timeline__label">{{ $item['label'] }}</p>
+                        <h3 class="about-timeline__title">{{ $item['title'] }}</h3>
+                        <p class="about-timeline__body">{{ $item['body'] }}</p>
+                    </li>
+                @endforeach
+            </ol>
+        </div>
+    </section>
+
+    <x-public.about-explore current="who-we-are" />
 
     <x-public.cta-band
         heading="Walk with ASNEN"

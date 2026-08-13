@@ -1186,7 +1186,7 @@ HTML,
             [
                 'slug' => 'about-who-we-are',
                 'title' => 'Who We Are',
-                'excerpt' => 'A pan-African coalition for inclusive education and disability inclusion.',
+                'excerpt' => 'A pan-African coalition for inclusive education — our identity, vision, and story.',
                 'body' => '<p>The Africa Special Needs Education Network (ASNEN) brings together educators, caregivers, advocates, researchers, and community partners committed to inclusion across the lifespan. We believe African communities hold the wisdom, creativity, and resolve to build support systems that honour every person\'s dignity.</p><p>ASNEN develops and advances homegrown models that provide knowledge, information, capacity building, advocacy, collaboration, and practical support-so that inclusion is not an exception, but an expectation.</p>',
             ],
             [
@@ -1224,7 +1224,11 @@ HTML,
             );
         }
 
-        Page::query()->where('slug', 'about-governance')->update([
+        Page::query()->whereIn('slug', [
+            'about-governance',
+            'about-mission-vision-values',
+            'about-our-story',
+        ])->update([
             'status' => PublishStatus::Archived,
             'unpublished_at' => now(),
         ]);
@@ -1611,6 +1615,8 @@ HTML,
             ['/gallery.html', '/resources/gallery'],
             ['/gallery', '/resources/gallery'],
             ['/about/governance', '/about/leadership#governance'],
+            ['/about/mission-vision-values', '/about/who-we-are#vision'],
+            ['/about/our-story', '/about/who-we-are#story'],
         ];
 
         foreach ($redirects as [$from, $to]) {

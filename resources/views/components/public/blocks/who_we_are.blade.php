@@ -40,7 +40,7 @@
 
                 <div class="home-about__actions">
                     <a href="{{ $ctaUrl }}" class="btn-primary">{{ $ctaLabel }}</a>
-                    <a href="{{ route('site.about.mission') }}" class="btn-secondary">Mission &amp; values</a>
+                    <a href="{{ route('site.about.who-we-are') }}#vision" class="btn-secondary">Mission &amp; values</a>
                 </div>
             </div>
 

@@ -58,19 +58,8 @@ class PageController extends Controller
                 'page' => $page,
                 'sanitizer' => $this->sanitizer,
                 'bannerImages' => $page->bannerImages(),
-            ]),
-            'about-mission-vision-values', 'vision-mission-values' => view('public.about.mission', [
-                'page' => $page,
-                'sanitizer' => $this->sanitizer,
-                'introHtml' => $introHtml,
-                'sections' => $this->parseHeadingSections($introHtml ?? ''),
-                'bannerImages' => $page->bannerImages(),
-            ]),
-            'about-our-story' => view('public.about.story', [
-                'page' => $page,
-                'sanitizer' => $this->sanitizer,
-                'introHtml' => $introHtml,
-                'bannerImages' => $page->bannerImages(),
+                'missionSections' => $this->parseHeadingSections($this->aboutPageBody('about-mission-vision-values')),
+                'storyIntroHtml' => $this->aboutPageBody('about-our-story'),
             ]),
             'about-leadership' => view('public.about.leadership', [
                 'page' => $page,
@@ -95,15 +84,23 @@ class PageController extends Controller
         };
     }
 
-    private function governanceIntroHtml(): string
+    private function aboutPageBody(string $slug): string
     {
-        $governance = Page::query()
-            ->where('slug', 'about-governance')
+        $aboutPage = Page::query()
+            ->where('slug', $slug)
             ->with(['blocks' => fn ($q) => $q->where('is_visible', true)])
             ->first();
 
-        return $governance?->blocks->firstWhere('type', 'rich_text')?->content['body']
-            ?: '<p>ASNEN operates with governance practices that support ethical stewardship, safeguarding, financial accountability, and community accountability. Board and governance details are published here once verified by administrators.</p>';
+        return (string) ($aboutPage?->blocks->firstWhere('type', 'rich_text')?->content['body'] ?? '');
+    }
+
+    private function governanceIntroHtml(): string
+    {
+        $body = $this->aboutPageBody('about-governance');
+
+        return $body !== ''
+            ? $body
+            : '<p>ASNEN operates with governance practices that support ethical stewardship, safeguarding, financial accountability, and community accountability. Board and governance details are published here once verified by administrators.</p>';
     }
 
     /**

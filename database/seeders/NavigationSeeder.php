@@ -36,8 +36,6 @@ class NavigationSeeder extends Seeder
         $about = $this->item($menu, null, 'About', '/about', ++$order);
         $aboutChildren = [
             ['Who We Are', '/about/who-we-are'],
-            ['Vision, Mission & Values', '/about/mission-vision-values'],
-            ['Our Story', '/about/our-story'],
             ['Leadership & Governance', '/about/leadership'],
             ['Collaborators', '/about/partners'],
         ];

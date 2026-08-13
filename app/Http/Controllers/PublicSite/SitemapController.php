@@ -18,8 +18,6 @@ class SitemapController extends Controller
         $urls = collect([
             route('site.home'),
             route('site.about.who-we-are'),
-            route('site.about.mission'),
-            route('site.about.story'),
             route('site.about.leadership'),
             route('site.about.partners'),
             route('site.programs.index'),
@@ -36,7 +34,7 @@ class SitemapController extends Controller
         ]);
 
         Page::published()->pluck('slug')->each(function (string $slug) use ($urls) {
-            if (! in_array($slug, ['home', 'about-governance'], true)) {
+            if (! in_array($slug, ['home', 'about-governance', 'about-mission-vision-values', 'about-our-story', 'vision-mission-values'], true)) {
                 $urls->push(url('/'.str_replace('-', '/', $slug)));
             }
         });
