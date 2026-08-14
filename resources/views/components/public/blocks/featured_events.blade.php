@@ -10,6 +10,18 @@
         ->where('starts_at', '>=', now())
         ->orderBy('starts_at');
 
+    $now = now();
+    $ongoingQuery = fn () => \App\Models\Event::published()
+        ->with('featuredImage')
+        ->where('starts_at', '<=', $now)
+        ->where(function ($query) use ($now) {
+            $query->where('ends_at', '>=', $now)
+                ->orWhere(function ($inner) use ($now) {
+                    $inner->whereNull('ends_at')->whereDate('starts_at', $now->toDateString());
+                });
+        })
+        ->orderBy('starts_at');
+
     $pastQuery = fn () => \App\Models\Event::published()
         ->with('featuredImage')
         ->where('starts_at', '<', now())
@@ -20,8 +32,11 @@
         $events = $pastQuery()->limit($limit)->get();
         $mode = 'past';
     } else {
-        $events = $upcomingQuery()->limit($limit)->get();
-        $mode = 'upcoming';
+        $ongoing = $ongoingQuery()->limit($limit)->get();
+        $needed = $limit - $ongoing->count();
+        $upcoming = $needed > 0 ? $upcomingQuery()->limit($needed)->get() : collect();
+        $events = $ongoing->concat($upcoming)->values();
+        $mode = $ongoing->isNotEmpty() ? ($upcoming->isNotEmpty() ? 'mixed' : 'upcoming') : 'upcoming';
 
         if ($events->count() < $limit && ($fallbackToPast || ! $upcomingOnly)) {
             $needed = $limit - $events->count();

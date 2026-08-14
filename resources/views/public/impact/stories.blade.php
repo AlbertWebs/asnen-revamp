@@ -26,7 +26,7 @@
         tagline="Evidence from programmes and communities."
         :excerpt="$excerpt"
         :primary-cta="$featuredHref ? ['label' => 'Read featured story', 'url' => $featuredHref] : ['label' => 'Impact overview', 'url' => route('site.impact.overview')]"
-        :secondary-cta="['label' => 'View reports', 'url' => route('site.impact.reports')]"
+        :secondary-cta="['label' => 'View reports', 'url' => route('site.resources.publications')]"
         :images="$bannerImages ?? []"
     />
 
@@ -137,7 +137,7 @@
             </div>
 
             <div class="who-explore reveal">
-                <a href="{{ route('site.impact.reports') }}" class="who-explore__item">
+                <a href="{{ route('site.resources.publications') }}" class="who-explore__item">
                     <span class="who-explore__label">Impact reports</span>
                     <span class="who-explore__desc">Downloadable PDFs from conferences and programmes</span>
                     <span class="who-explore__arrow" aria-hidden="true">→</span>

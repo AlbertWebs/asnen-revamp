@@ -12,27 +12,48 @@
             'outreach' => 'Outreach',
             default => $event->type ? \Illuminate\Support\Str::headline($event->type) : 'Event',
         };
-        $when = $event->starts_at
-            ? $event->starts_at->format('l, j F Y · g:i A')
-            : null;
-        $where = $event->is_online ? 'Online' : $event->venue;
+        $profile = $event->pageProfile();
+        $allowRegistration = $event->isUpcoming() && (($profile['allow_registration'] ?? true) === true);
+        $heroPrimary = $profile['primary_cta'] ?? ($event->isUpcoming() ? ['label' => 'Register', 'url' => '#event-register'] : ['label' => 'All events', 'url' => route('site.events.index')]);
+        $heroSecondary = $profile['secondary_cta'] ?? ['label' => $event->isUpcoming() ? 'Past events' : 'Upcoming events', 'url' => $event->isUpcoming() ? route('site.events.past') : route('site.events.upcoming')];
+        if ($event->isPast()) {
+            $heroPrimary = ['label' => 'All events', 'url' => route('site.events.index')];
+            $heroSecondary = ['label' => 'Upcoming events', 'url' => route('site.events.upcoming')];
+        }
+        if (isset($heroPrimary['url']) && str_starts_with($heroPrimary['url'], '/')) {
+            $heroPrimary['url'] = url($heroPrimary['url']);
+        }
+        if (isset($heroSecondary['url']) && str_starts_with($heroSecondary['url'], '/')) {
+            $heroSecondary['url'] = url($heroSecondary['url']);
+        }
     @endphp
 
     <x-public.media-hero
         parent-label="Events & learning"
         :parent-url="route('site.events.index')"
         :current-label="$typeLabel"
-        :eyebrow="$typeLabel"
+        :eyebrow="$event->isPast() ? 'Past event' : ($profile['badge'] ?? $typeLabel)"
         :title="$event->title"
         title-max="18ch"
         :excerpt="$event->summary"
-        :primary-cta="$event->isUpcoming() ? ['label' => 'Register', 'url' => '#event-register'] : ['label' => 'All events', 'url' => route('site.events.index')]"
-        :secondary-cta="['label' => $event->isUpcoming() ? 'Past events' : 'Upcoming events', 'url' => $event->isUpcoming() ? route('site.events.past') : route('site.events.upcoming')]"
+        :primary-cta="$heroPrimary"
+        :secondary-cta="$heroSecondary"
         :images="$bannerImages ?? []"
     />
 
     <x-public.events-subnav :current="$event->type === 'conference' && str_contains($event->slug, 'ubuntu') ? 'ubuntu' : ($event->isUpcoming() ? 'upcoming' : 'past')" />
 
+    @if($profile)
+        @include('public.events.partials.featured-layout', [
+            'event' => $event,
+            'profile' => $profile,
+            'typeLabel' => $typeLabel,
+            'companionEvent' => $companionEvent ?? null,
+            'komolionStory' => $komolionStory ?? null,
+            'sanitizer' => $sanitizer,
+            'bannerImages' => $bannerImages ?? [],
+        ])
+    @else
     <section class="section-editorial">
         <div class="mx-auto max-w-editorial px-6 lg:px-7">
             <div class="event-detail reveal">
@@ -63,16 +84,16 @@
                             <dt>Type</dt>
                             <dd>{{ $typeLabel }}</dd>
                         </div>
-                        @if($when)
+                        @if($event->starts_at)
                             <div>
                                 <dt>When</dt>
-                                <dd>{{ $when }}</dd>
+                                <dd>{{ $event->starts_at->format('l, j F Y · g:i A') }}</dd>
                             </div>
                         @endif
-                        @if($where)
+                        @if($event->is_online || $event->venue)
                             <div>
                                 <dt>Where</dt>
-                                <dd>{{ $where }}</dd>
+                                <dd>{{ $event->is_online ? 'Online' : $event->venue }}</dd>
                             </div>
                         @endif
                         @if($event->timezone)
@@ -123,8 +144,9 @@
             </div>
         </div>
     </section>
+    @endif
 
-    @if($event->isUpcoming())
+    @if($allowRegistration)
         <section id="event-register" class="section-editorial bg-sand">
             <div class="mx-auto max-w-editorial px-6 lg:px-7">
                 <div class="event-register reveal">

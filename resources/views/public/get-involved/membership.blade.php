@@ -26,8 +26,89 @@
         :images="$bannerImages ?? []"
         fallback-image="storage/galleries/community-moments/03.jpg"
         :primary-cta="['label' => 'Apply for membership', 'url' => '#membership-application']"
-        :secondary-cta="['label' => 'All pathways', 'url' => route('site.get-involved.index')]"
+        :secondary-cta="['label' => 'Why membership matters', 'url' => '#why-membership-matters']"
     />
+
+    @php
+        $membershipCopy = config('membership_page', []);
+        $why = $membershipCopy['why'] ?? [];
+        $reasons = $membershipCopy['reasons'] ?? [];
+    @endphp
+
+    @if(! empty($why['paragraphs']))
+        <section id="why-membership-matters" class="section-editorial" aria-labelledby="why-membership-heading">
+            <div class="mx-auto max-w-editorial px-6 lg:px-7">
+                <div class="program-detail program-detail--deliver reveal">
+                    <div class="program-detail__main">
+                        <header class="program-detail__header">
+                            <span class="eyebrow program-detail__eyebrow">{{ $why['eyebrow'] ?? 'Why membership matters' }}</span>
+                            <h2 id="why-membership-heading">{{ $why['heading'] ?? 'Why membership matters' }}</h2>
+                            <div class="program-detail__body">
+                                @foreach($why['paragraphs'] as $paragraph)
+                                    <p>{{ $paragraph }}</p>
+                                @endforeach
+                            </div>
+                        </header>
+                    </div>
+
+                    <div class="program-detail__side">
+                        <figure class="program-detail__figure">
+                            <div class="program-detail__media">
+                                <div class="overflow-hidden rounded-2xl bg-sand" style="aspect-ratio: 4/5;">
+                                    <img
+                                        src="{{ asset($why['image'] ?? 'storage/galleries/community-moments/01.jpg') }}"
+                                        alt="{{ $why['image_alt'] ?? 'ASNEN community gathering' }}"
+                                        class="h-full w-full object-cover"
+                                        loading="lazy"
+                                        decoding="async"
+                                    >
+                                </div>
+                            </div>
+                            <figcaption class="program-detail__caption">
+                                <span class="program-detail__caption-label">{{ $why['caption_label'] ?? 'The network' }}</span>
+                                <span class="program-detail__caption-text">{{ $why['caption_text'] ?? 'Never facing a system alone.' }}</span>
+                            </figcaption>
+                        </figure>
+                        <p class="program-detail__side-cta">
+                            <a href="#membership-application">
+                                Apply for membership
+                                <span aria-hidden="true">→</span>
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    @endif
+
+    @if(! empty($reasons['items']))
+        <section class="section-editorial bg-sand" aria-labelledby="membership-reasons-heading">
+            <div class="mx-auto max-w-editorial px-6 lg:px-7">
+                <div class="section-head-row reveal">
+                    <div class="section-head">
+                        <span class="eyebrow mb-3 block">{{ $reasons['eyebrow'] ?? 'Five reasons to join' }}</span>
+                        <h2 id="membership-reasons-heading">{{ $reasons['heading'] ?? 'Five reasons to join' }}</h2>
+                        @if(! empty($reasons['intro']))
+                            <p class="section-head-row__intro">{{ $reasons['intro'] }}</p>
+                        @endif
+                    </div>
+                    <a href="#membership-application" class="btn-secondary section-head-row__cta">Apply now</a>
+                </div>
+
+                <ul class="program-deliverables reveal" aria-label="Five reasons to join ASNEN">
+                    @foreach($reasons['items'] as $index => $item)
+                        <li class="program-deliverable" style="--deliver-i: {{ $index }};">
+                            <span class="program-deliverable__index" aria-hidden="true">{{ str_pad((string) ($index + 1), 2, '0', STR_PAD_LEFT) }}</span>
+                            <div class="program-deliverable__copy">
+                                <h3 class="program-deliverable__title">{{ $item['title'] }}</h3>
+                                <p class="program-deliverable__body">{{ $item['body'] }}</p>
+                            </div>
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
+        </section>
+    @endif
 
     @if($plans->isNotEmpty())
         <section class="section-editorial">

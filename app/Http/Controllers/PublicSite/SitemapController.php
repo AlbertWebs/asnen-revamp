@@ -23,7 +23,7 @@ class SitemapController extends Controller
             route('site.programs.index'),
             route('site.impact.overview'),
             route('site.impact.stories'),
-            route('site.impact.reports'),
+            route('site.resources.publications'),
             route('site.impact.regions'),
             route('site.events.index'),
             route('site.resources.index'),

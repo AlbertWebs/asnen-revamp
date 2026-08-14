@@ -40,6 +40,24 @@ class EventStatusTest extends TestCase
 
         $this->assertTrue($upcoming->isUpcoming());
         $this->assertFalse($past->isUpcoming());
+        $this->assertTrue($past->isPast());
+    }
+
+    public function test_ongoing_events_are_between_start_and_end(): void
+    {
+        $ongoing = Event::create([
+            'title' => 'Live Session',
+            'slug' => 'live-session',
+            'starts_at' => now()->subHour(),
+            'ends_at' => now()->addHour(),
+            'status' => PublishStatus::Published,
+            'published_at' => now(),
+        ]);
+
+        $this->assertTrue($ongoing->isOngoing());
+        $this->assertFalse($ongoing->isUpcoming());
+        $this->assertFalse($ongoing->isPast());
+        $this->assertSame('Ongoing', $ongoing->timingLabel());
     }
 
     public function test_upcoming_events_page_lists_only_future_events(): void
@@ -90,5 +108,88 @@ class EventStatusTest extends TestCase
         $response->assertOk();
         $response->assertSee('Old Event');
         $response->assertDontSee('Future Event');
+    }
+
+    public function test_registration_events_appear_on_upcoming_and_detail_pages(): void
+    {
+        Event::create([
+            'title' => 'Why Registration Matters: A Conversation with NCPWD Leadership',
+            'slug' => 'why-registration-matters-ncpwd',
+            'type' => 'webinar',
+            'summary' => 'An online conversation with NCPWD leadership.',
+            'starts_at' => '2026-11-23 19:00:00',
+            'status' => PublishStatus::Published,
+            'published_at' => now(),
+        ]);
+
+        Event::create([
+            'title' => 'Disability Registration Day',
+            'slug' => 'disability-registration-day-2026',
+            'type' => 'outreach',
+            'summary' => 'A day-long registration camp.',
+            'starts_at' => '2026-12-05 08:00:00',
+            'status' => PublishStatus::Published,
+            'published_at' => now(),
+        ]);
+
+        $this->get(route('site.events.upcoming'))
+            ->assertOk()
+            ->assertSee('Why Registration Matters')
+            ->assertSee('Disability Registration Day');
+
+        $this->get(route('site.events.show', 'why-registration-matters-ncpwd'))
+            ->assertOk()
+            ->assertSee('Register to attend')
+            ->assertSee('Partner with this initiative')
+            ->assertSee('Partner With This Initiative')
+            ->assertSee('covering registration and mobilization')
+            ->assertSee('500 households')
+            ->assertSee('Embakasi')
+            ->assertSee('Add to calendar')
+            ->assertSee('Part 2: get registered');
+
+        $this->get(route('site.events.show', 'disability-registration-day-2026'))
+            ->assertOk()
+            ->assertSee('Acorn Special Tutorials, Muhuri Road')
+            ->assertSee('Download the partnership brief (PDF)')
+            ->assertSee('Part 1: understand why registration matters');
+
+        $this->get(route('site.events.upcoming'))
+            ->assertOk()
+            ->assertSee('Inclusion for all, in all')
+            ->assertSee('Ways to partner');
+
+        $this->get(route('site.events.calendar', 'why-registration-matters-ncpwd'))
+            ->assertOk()
+            ->assertHeader('content-type', 'text/calendar; charset=utf-8');
+
+        $this->get(route('site.get-involved.partnership-brief'))
+            ->assertOk()
+            ->assertSee('Presenting Partner');
+    }
+
+    public function test_ongoing_events_appear_on_upcoming_page(): void
+    {
+        Event::create([
+            'title' => 'Leaving a mark where it matters',
+            'slug' => 'leaving-a-mark-where-it-matters',
+            'type' => 'workshop',
+            'summary' => 'Eva Naputuni Nyoike in Windhoek.',
+            'starts_at' => now()->subDay(),
+            'ends_at' => now()->addDay(),
+            'status' => PublishStatus::Published,
+            'published_at' => now(),
+        ]);
+
+        $this->get(route('site.events.upcoming'))
+            ->assertOk()
+            ->assertSee('Ongoing events')
+            ->assertSee('Leaving a mark where it matters');
+
+        $this->get(route('site.events.show', 'leaving-a-mark-where-it-matters'))
+            ->assertOk()
+            ->assertSee('African Continental Curriculum Framework')
+            ->assertSee('Windhoek, Namibia')
+            ->assertDontSee('Partner With This Initiative');
     }
 }

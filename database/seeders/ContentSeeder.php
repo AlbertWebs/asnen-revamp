@@ -149,9 +149,10 @@ class ContentSeeder extends Seeder
             ['name' => 'Collaborative Action for Childcare', 'slug' => 'collaborative-action-for-childcare', 'description' => 'CAC', 'logo' => 'partners/cac.jpg', 'publish' => true],
             ['name' => 'Uthabiti', 'slug' => 'uthabiti', 'description' => 'As listed on asnenafrica.org collaborators', 'logo' => 'partners/uthabiti.jpg', 'publish' => true],
             ['name' => 'The Aga Khan University Hospital', 'slug' => 'aga-khan-university-hospital', 'description' => 'Aga Khan', 'logo' => 'partners/aga-khan.jpg', 'publish' => true],
+            ['name' => 'CURE International', 'slug' => 'cure-international', 'description' => 'CURE', 'logo' => 'partners/cure.jpeg', 'publish' => true],
+            ['name' => 'Noonkera', 'slug' => 'noonkera', 'description' => 'education is my foundation', 'logo' => 'partners/noonkera.jpeg', 'publish' => true],
             // Komolion report partners (draft linkage only)
             ['name' => 'Noogera Foundation', 'slug' => 'noogera-foundation', 'description' => null, 'logo' => null, 'publish' => false],
-            ['name' => 'CURE International', 'slug' => 'cure-international', 'description' => null, 'logo' => null, 'publish' => false],
             ['name' => 'NCPWD Baringo', 'slug' => 'ncpwd-baringo', 'description' => null, 'logo' => null, 'publish' => false],
         ];
 
@@ -462,6 +463,56 @@ class ContentSeeder extends Seeder
                 'ends_at' => '2023-07-26 20:00:00',
                 'image' => 'events/succession-children-disabilities.jpg',
             ],
+            [
+                'title' => 'Why Registration Matters: A Conversation with NCPWD Leadership',
+                'slug' => 'why-registration-matters-ncpwd',
+                'type' => 'webinar',
+                'summary' => 'An online conversation with NCPWD leadership on why disability registration matters, ahead of ASNEN\'s 5 December 2026 Disability Registration Day.',
+                'body' => '<p>Ahead of our Disability Registration Day on 5 December 2026, join ASNEN and leadership from the National Council for Persons with Disabilities (NCPWD) for an open conversation on why registration matters: what it unlocks for persons with disabilities and their caregivers, and why so many eligible families in Kenya remain unregistered.</p>',
+                'venue' => 'Online',
+                'is_online' => true,
+                'online_url' => null,
+                'starts_at' => '2026-11-23 19:00:00',
+                'ends_at' => '2026-11-23 20:30:00',
+                'image' => 'events/improving-support-system.jpg',
+            ],
+            [
+                'title' => 'Disability Registration Day',
+                'slug' => 'disability-registration-day-2026',
+                'type' => 'outreach',
+                'summary' => 'A day-long registration and medical assessment camp for children, caregivers and adults with disabilities across six Nairobi wards, delivered with NCPWD and the Ministry of Health.',
+                'body' => '<p>On 5 December 2026, ASNEN, together with the National Council for Persons with Disabilities (NCPWD) and the Ministry of Health, is holding a day-long registration and medical assessment camp. The day is open to children with disabilities, their caregivers, and any person with a disability across Kikuyu, Thogoto, Dagoretti, Kawangware, Uthiru and Waithaka wards.</p>',
+                'venue' => 'Acorn Special Tutorials, Dagoretti South',
+                'is_online' => false,
+                'online_url' => null,
+                'starts_at' => '2026-12-05 08:00:00',
+                'ends_at' => '2026-12-05 16:00:00',
+                'image' => 'galleries/baringo-2023/01.jpg',
+            ],
+            [
+                'title' => 'Leaving a mark where it matters',
+                'slug' => 'leaving-a-mark-where-it-matters',
+                'type' => 'workshop',
+                'summary' => 'Our Founder, Eva Naputuni Nyoike (OGW), participated in the Technical Validation Workshop of the African Continental Curriculum Framework in Windhoek, Namibia.',
+                'body' => <<<'HTML'
+<p>Our Founder, Eva Naputuni Nyoike (OGW), participated in the Technical Validation Workshop of the African Continental Curriculum Framework in Windhoek, Namibia.</p>
+<p>At this important continental platform, Eva advocated for something we believe is fundamental: a curriculum that sees every child, values every child, and leaves no child behind.</p>
+<p>She called for Ubuntu, "I am because you are", to be embraced as a guiding philosophy for the African Continental Curriculum Framework. A curriculum rooted in Ubuntu recognises that education is not only about academic achievement; it is about dignity, belonging, community, and ensuring that every learner has an opportunity to thrive.</p>
+<p>She also highlighted the critical importance of early identification and early intervention, particularly for children with disabilities and developmental differences. Too many children across Africa are identified only after years of struggle, exclusion, or missed opportunities.</p>
+<p>And Eva is determined to raise the conversation that is still too often missing: DISABILITY.</p>
+<p>If Africa is building a curriculum for its children, then children with disabilities must not be an afterthought. They must be visible from the beginning. They must be part of the design, the language, the systems, and the future.</p>
+<p>This is the mark we want to leave.</p>
+<p>Not just a curriculum for Africa, but a curriculum that truly sees Africa's children.</p>
+<p>Ubuntu. Inclusion. Early intervention. Equity. Dignity.</p>
+<p>Because when we say every child, we mean every child.</p>
+HTML,
+                'venue' => 'Windhoek, Namibia',
+                'is_online' => false,
+                'online_url' => null,
+                'starts_at' => '2026-08-11 08:00:00',
+                'ends_at' => '2026-08-22 18:00:00',
+                'image' => 'team/eva-naputuni.jpg',
+            ],
         ];
 
         foreach ($events as $event) {
@@ -651,10 +702,10 @@ class ContentSeeder extends Seeder
                 'source_label' => 'asnenafrica.org',
             ],
             [
-                'label' => 'Disability registrations / medical camp',
-                'value' => '4',
-                'numeric_value' => 4,
-                'public_label' => '4',
+                'label' => 'Disability registration and medical camps',
+                'value' => '5',
+                'numeric_value' => 5,
+                'public_label' => '5',
                 'source_label' => 'asnenafrica.org',
             ],
         ];
@@ -964,6 +1015,15 @@ HTML,
                 'file' => 'resources/saacs-asnen.pdf',
                 'cover' => 'events/aac-communication.jpg',
             ],
+            [
+                'title' => 'Ubuntu Medical Camp Report',
+                'slug' => 'ubuntu-medical-camp-report',
+                'category' => 'impact_report',
+                'year' => 2026,
+                'abstract' => 'Report from the Ubuntu medical camp and NCPWD registration at St. Nicholas Junior Academy, Embakasi, covering assessment, registration, and partner collaboration.',
+                'file' => 'resources/ubuntu-medical-camp-report.pdf',
+                'cover' => 'resources/ubuntu-medical-camp-cover.jpeg',
+            ],
         ];
 
         foreach ($definitions as $definition) {
@@ -1012,6 +1072,7 @@ HTML,
         $this->seedAboutPages();
         $this->seedWhatWeDoPages($programs);
         $this->seedImpactPages($komolion);
+        $this->seedEventsPages();
         $this->seedGetInvolvedPages();
         $this->seedUtilityPages();
     }
@@ -1305,6 +1366,51 @@ HTML,
             'status' => PublishStatus::Archived,
             'unpublished_at' => now(),
         ]);
+    }
+
+    private function seedEventsPages(): void
+    {
+        $pages = [
+            [
+                'slug' => 'events-learning',
+                'title' => 'Events & Learning',
+                'excerpt' => 'Conferences, webinars, workshops, and community gatherings advancing inclusive education.',
+                'body' => '<p>ASNEN convenes learning across the network: upcoming dates, past gatherings, open webinars, and the Ubuntu Conference series.</p>',
+            ],
+            [
+                'slug' => 'events-learning-upcoming',
+                'title' => 'Upcoming Events',
+                'excerpt' => 'Pre-Registration Webinar · 23 November 2026 · Disability Registration Day · 5 December 2026',
+                'body' => '<p>Inclusion for all, in all. No child left behind. Partner with ASNEN on this season\'s registration initiative with NCPWD and the Ministry of Health.</p>',
+            ],
+            [
+                'slug' => 'events-learning-past',
+                'title' => 'Past Events',
+                'excerpt' => 'Past gatherings, camps, and learning events from across the ASNEN network.',
+                'body' => '<p>Browse recaps and materials from previous ASNEN events.</p>',
+            ],
+            [
+                'slug' => 'events-learning-webinars',
+                'title' => 'Webinars',
+                'excerpt' => 'Open webinars and recordings on inclusive education, caregiving, and disability inclusion.',
+                'body' => '<p>Watch and register for ASNEN webinars that share practical knowledge with families, educators, and partners.</p>',
+            ],
+            [
+                'slug' => 'events-learning-ubuntu-conference',
+                'title' => 'Ubuntu Conference',
+                'excerpt' => 'ASNEN\'s flagship gathering for inclusive education across Africa.',
+                'body' => '<p>The Ubuntu Conference convenes educators, caregivers, advocates, and partners around African, homegrown models of inclusive practice.</p>',
+            ],
+        ];
+
+        foreach ($pages as $pageData) {
+            $this->upsertContentPage(
+                $pageData['slug'],
+                $pageData['title'],
+                $pageData['excerpt'],
+                $pageData['body']
+            );
+        }
     }
 
     private function seedGetInvolvedPages(): void

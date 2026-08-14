@@ -8,6 +8,7 @@ use App\Http\Controllers\PublicSite\Concerns\RespondsToAjaxForms;
 use App\Http\Requests\PublicSite\EventRegistrationFormRequest;
 use App\Models\Event;
 use App\Models\EventRegistration;
+use App\Models\ImpactStory;
 use App\Models\Publication;
 use App\Models\Webinar;
 use App\Repositories\PageRepository;
@@ -40,12 +41,14 @@ class EventController extends Controller
 
     public function upcoming()
     {
-        $page = $this->pages->findBySlug('events-upcoming')
+        $page = $this->pages->findBySlug('events-learning-upcoming')
+            ?? $this->pages->findBySlug('events-upcoming')
             ?? $this->pages->findBySlug('events-learning')
             ?? $this->pages->findBySlug('events');
 
         return view('public.events.upcoming', [
             'page' => $page,
+            'ongoing' => $this->ongoingQuery()->with('featuredImage')->get(),
             'events' => $this->upcomingQuery()->with('featuredImage')->paginate(12),
             'sanitizer' => $this->sanitizer,
             'bannerImages' => $this->resolveBannerImages($page),
@@ -54,7 +57,8 @@ class EventController extends Controller
 
     public function past()
     {
-        $page = $this->pages->findBySlug('events-past')
+        $page = $this->pages->findBySlug('events-learning-past')
+            ?? $this->pages->findBySlug('events-past')
             ?? $this->pages->findBySlug('events-learning')
             ?? $this->pages->findBySlug('events');
 
@@ -68,7 +72,8 @@ class EventController extends Controller
 
     public function webinars()
     {
-        $page = $this->pages->findBySlug('events-webinars')
+        $page = $this->pages->findBySlug('events-learning-webinars')
+            ?? $this->pages->findBySlug('events-webinars')
             ?? $this->pages->findBySlug('events-learning')
             ?? $this->pages->findBySlug('events');
 
@@ -85,7 +90,8 @@ class EventController extends Controller
 
     public function ubuntuConference()
     {
-        $page = $this->pages->findBySlug('events-ubuntu-conference')
+        $page = $this->pages->findBySlug('events-learning-ubuntu-conference')
+            ?? $this->pages->findBySlug('events-ubuntu-conference')
             ?? $this->pages->findBySlug('events-learning')
             ?? $this->pages->findBySlug('events');
 
@@ -126,17 +132,41 @@ class EventController extends Controller
             ->with(['file', 'cover'])
             ->where(function ($query) use ($slug) {
                 $query->where('slug', $slug)
-                    ->orWhere('slug', $slug.'-materials')
-                    ->orWhere('slug', 'saacs-asnen-aac');
+                    ->orWhere('slug', $slug.'-materials');
             })
             ->first();
+
+        $profile = $event->pageProfile();
+        $companionSlug = $profile['companion_slug'] ?? null;
+        $companionEvent = $companionSlug
+            ? Event::published()->with('featuredImage')->where('slug', $companionSlug)->first()
+            : null;
+
+        $komolionStory = $profile
+            ? ImpactStory::published()
+                ->with('featuredImage')
+                ->where('slug', ImpactStory::KOMOLION_SLUG)
+                ->first()
+            : null;
 
         return view('public.events.show', [
             'event' => $event,
             'page' => $page,
             'relatedPublication' => $relatedPublication,
+            'companionEvent' => $companionEvent,
+            'komolionStory' => $komolionStory,
             'sanitizer' => $this->sanitizer,
             'bannerImages' => $this->resolveBannerImages($page, $event->featuredImage),
+        ]);
+    }
+
+    public function calendar(string $slug)
+    {
+        $event = Event::published()->where('slug', $slug)->firstOrFail();
+
+        return response($event->toIcs(), 200, [
+            'Content-Type' => 'text/calendar; charset=utf-8',
+            'Content-Disposition' => 'attachment; filename="'.$event->slug.'.ics"',
         ]);
     }
 
@@ -175,10 +205,35 @@ class EventController extends Controller
             ->orderBy('starts_at');
     }
 
+    protected function ongoingQuery()
+    {
+        $now = now();
+
+        return Event::published()
+            ->where('starts_at', '<=', $now)
+            ->where(function ($query) use ($now) {
+                $query->where('ends_at', '>=', $now)
+                    ->orWhere(function ($inner) use ($now) {
+                        $inner->whereNull('ends_at')
+                            ->whereDate('starts_at', $now->toDateString());
+                    });
+            })
+            ->orderBy('starts_at');
+    }
+
     protected function pastQuery()
     {
+        $now = now();
+
         return Event::published()
-            ->where('starts_at', '<', now())
+            ->where('starts_at', '<', $now)
+            ->where(function ($query) use ($now) {
+                $query->where(function ($ended) use ($now) {
+                    $ended->whereNotNull('ends_at')->where('ends_at', '<', $now);
+                })->orWhere(function ($noEnd) use ($now) {
+                    $noEnd->whereNull('ends_at')->where('starts_at', '<', $now->copy()->startOfDay());
+                });
+            })
             ->orderByDesc('starts_at');
     }
 }

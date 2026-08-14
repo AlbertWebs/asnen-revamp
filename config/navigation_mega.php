@@ -72,7 +72,7 @@ return [
             [
                 'title' => 'Reports',
                 'items' => [
-                    ['url' => '/impact/reports', 'desc' => 'Published impact reports.'],
+                    ['url' => '/resources/publications', 'label' => 'Impact Reports', 'desc' => 'Reports, publications, and downloadable evidence.'],
                     ['url' => '/impact/regions', 'desc' => 'Where the work reaches.'],
                 ],
             ],
@@ -105,7 +105,7 @@ return [
             [
                 'title' => 'Library',
                 'items' => [
-                    ['url' => '/resources/publications', 'desc' => 'Reports and publications.'],
+                    ['url' => '/resources/publications', 'desc' => 'Reports, publications, and downloadable evidence.'],
                     ['url' => '/resources/toolkits', 'desc' => 'Practical guides for caregivers and educators.'],
                     ['url' => '/resources/webinars', 'desc' => 'Video and webinar library.'],
                 ],

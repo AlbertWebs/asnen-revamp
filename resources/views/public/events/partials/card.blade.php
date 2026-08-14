@@ -11,6 +11,10 @@
         $event->starts_at?->format('d M Y'),
         $event->is_online ? 'Online' : $event->venue,
     ])->filter()->implode(' · ');
+    $profile = $event->pageProfile();
+    if (! empty($profile['badge'])) {
+        $meta = $profile['badge'];
+    }
 @endphp
 
 <article class="event-home-card group">
@@ -38,7 +42,7 @@
             <p class="event-home-card__summary">{{ $event->summary }}</p>
         @endif
         <a href="{{ route('site.events.show', $event->slug) }}" class="event-home-card__link">
-            {{ $event->isUpcoming() ? 'View details' : 'View recap' }}
+            {{ ($event->isUpcoming() || $event->isOngoing()) ? 'View details' : 'View recap' }}
             <span aria-hidden="true">→</span>
         </a>
     </div>

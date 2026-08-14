@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\PublicSite\Concerns\QueriesPublicContent;
 use App\Http\Controllers\PublicSite\Concerns\ResolvesPageBanners;
 use App\Models\ImpactStory;
-use App\Models\Publication;
 use App\Models\Region;
 use App\Repositories\PageRepository;
 use App\Services\HtmlSanitizer;
@@ -137,32 +136,6 @@ class ImpactController extends Controller
             'page' => $page,
             'sanitizer' => $this->sanitizer,
             'bannerImages' => $bannerImages,
-        ]);
-    }
-
-    public function reports()
-    {
-        $page = $this->pages->findBySlug('impact-reports');
-        abort_unless($page, 404);
-        $page->load('blocks');
-
-        $introHtml = $page->blocks
-            ->firstWhere('type', 'rich_text')
-            ?->content['body'] ?? null;
-
-        $reports = Publication::published()
-            ->with(['cover', 'file'])
-            ->whereIn('category', ['report', 'annual_report', 'conference_report', 'impact_report'])
-            ->orderByDesc('year')
-            ->orderByDesc('published_at')
-            ->get();
-
-        return view('public.impact.reports', [
-            'page' => $page,
-            'introHtml' => $introHtml,
-            'reports' => $reports,
-            'sanitizer' => $this->sanitizer,
-            'bannerImages' => $this->resolveBannerImages($page),
         ]);
     }
 

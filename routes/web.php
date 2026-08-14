@@ -67,7 +67,7 @@ Route::name('site.')->group(function () {
     Route::get('/impact/komolion', [ImpactController::class, 'komolion'])->name('impact.komolion');
     Route::get('/impact/stories', [ImpactController::class, 'stories'])->name('impact.stories');
     Route::get('/impact/stories/{slug}', [ImpactController::class, 'showStory'])->name('impact.stories.show');
-    Route::get('/impact/reports', [ImpactController::class, 'reports'])->name('impact.reports');
+    Route::permanentRedirect('/impact/reports', '/resources/publications')->name('impact.reports');
     Route::get('/impact/regions', [ImpactController::class, 'regions'])->name('impact.regions');
 
     // Events & Learning
@@ -77,6 +77,7 @@ Route::name('site.')->group(function () {
         Route::get('/past', [EventController::class, 'past'])->name('past');
         Route::get('/webinars', [EventController::class, 'webinars'])->name('webinars');
         Route::get('/ubuntu-conference', [EventController::class, 'ubuntuConference'])->name('ubuntu-conference');
+        Route::get('/{slug}/calendar.ics', [EventController::class, 'calendar'])->name('calendar');
         Route::get('/{slug}', [EventController::class, 'show'])->name('show');
         Route::post('/{slug}/register', [EventController::class, 'register'])
             ->middleware('throttle:5,1')
@@ -112,6 +113,7 @@ Route::name('site.')->group(function () {
             ->middleware('throttle:5,1')
             ->name('volunteer.store');
         Route::get('/partner', [GetInvolvedController::class, 'partner'])->name('partner');
+        Route::get('/partner/disability-registration-brief', [GetInvolvedController::class, 'partnershipBrief'])->name('partnership-brief');
         Route::post('/partner', [GetInvolvedController::class, 'storePartner'])
             ->middleware('throttle:5,1')
             ->name('partner.store');

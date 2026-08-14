@@ -19,7 +19,7 @@
         tagline="I am because we are."
         :excerpt="$page?->excerpt ?? 'ASNEN\'s flagship gathering for inclusive education - rooted in Ubuntu, African wisdom, and shared practice.'"
         :primary-cta="$featured ? ['label' => 'Latest conference', 'url' => route('site.events.show', $featured->slug)] : ['label' => 'Past events', 'url' => route('site.events.past')]"
-        :secondary-cta="['label' => 'Impact reports', 'url' => route('site.impact.reports')]"
+        :secondary-cta="['label' => 'Impact reports', 'url' => route('site.resources.publications')]"
         :images="$bannerImages ?? []"
     />
 
@@ -57,7 +57,7 @@
                         <li>Lived experience at the centre</li>
                         <li>Learning that continues after the hall</li>
                     </ul>
-                    <a href="{{ route('site.impact.reports') }}" class="who-identity__aside-link">
+                    <a href="{{ route('site.resources.publications') }}" class="who-identity__aside-link">
                         Download reports
                         <span aria-hidden="true">→</span>
                     </a>

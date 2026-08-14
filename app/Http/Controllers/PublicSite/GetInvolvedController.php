@@ -94,6 +94,11 @@ class GetInvolvedController extends Controller
         return $this->storeForm('partner', $request->formData(), $request);
     }
 
+    public function partnershipBrief()
+    {
+        return view('public.get-involved.partnership-brief');
+    }
+
     public function donate()
     {
         $page = $this->pages->findBySlug('get-involved-donate');

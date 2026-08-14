@@ -259,10 +259,10 @@ class Page extends Model
                     [
                         'slug' => 'events-learning',
                         'children' => [
-                            ['slug' => 'events-learning-upcoming'],
-                            ['slug' => 'events-learning-past'],
-                            ['slug' => 'events-learning-webinars'],
-                            ['slug' => 'events-learning-ubuntu-conference'],
+                            ['slug' => 'events-learning-upcoming', 'aliases' => ['events-upcoming']],
+                            ['slug' => 'events-learning-past', 'aliases' => ['events-past']],
+                            ['slug' => 'events-learning-webinars', 'aliases' => ['events-webinars']],
+                            ['slug' => 'events-learning-ubuntu-conference', 'aliases' => ['events-ubuntu-conference']],
                         ],
                     ],
                 ],

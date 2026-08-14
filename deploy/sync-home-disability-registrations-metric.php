@@ -9,18 +9,33 @@ require __DIR__.'/../vendor/autoload.php';
 $app = require __DIR__.'/../bootstrap/app.php';
 $app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
 
-$metric = ImpactMetric::updateOrCreate(
-    ['label' => 'Disability registrations / medical camp'],
-    [
-        'value' => '4',
-        'numeric_value' => 4,
-        'public_label' => '4',
-        'source_label' => 'asnenafrica.org',
-        'verification_status' => VerificationStatus::Verified,
-        'status' => PublishStatus::Published,
-        'published_at' => now(),
-    ]
-);
+$metric = ImpactMetric::query()->where('label', 'Disability registration and medical camps')->first()
+    ?? ImpactMetric::query()->where('label', 'Disability registrations / medical camp')->first();
+
+$payload = [
+    'label' => 'Disability registration and medical camps',
+    'value' => '5',
+    'numeric_value' => 5,
+    'public_label' => '5',
+    'source_label' => 'asnenafrica.org',
+    'verification_status' => VerificationStatus::Verified,
+    'status' => PublishStatus::Published,
+    'published_at' => now(),
+];
+
+if ($metric) {
+    $metric->update($payload);
+} else {
+    $metric = ImpactMetric::create($payload);
+}
+
+ImpactMetric::query()
+    ->where('label', 'Disability registrations / medical camp')
+    ->where('id', '!=', $metric->id)
+    ->update([
+        'status' => PublishStatus::Draft,
+        'published_at' => null,
+    ]);
 
 $block = PageBlock::query()
     ->whereHas('page', fn ($q) => $q->where('slug', 'home'))
@@ -39,8 +54,8 @@ $ids = collect($content['metric_ids'] ?? [])
     ->values()
     ->all();
 
-if (! in_array($metric->id, $ids, true)) {
-    $ids[] = $metric->id;
+if (! in_array((int) $metric->id, $ids, true)) {
+    $ids[] = (int) $metric->id;
 }
 
 $content['heading'] = $content['heading'] ?? 'Impact at a Glance';

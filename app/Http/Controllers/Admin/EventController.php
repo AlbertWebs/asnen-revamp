@@ -18,9 +18,24 @@ class EventController extends Controller
     {
         abort_unless(auth()->user()?->can('events.view'), 403);
 
-        $events = Event::query()->orderByDesc('starts_at')->paginate(20);
+        $events = Event::query()->orderBy('starts_at')->get();
 
-        return view('admin.events.index', compact('events'));
+        $ongoing = $events
+            ->filter(fn (Event $event) => $event->isOngoing())
+            ->sortBy(fn (Event $event) => $event->effectiveEndsAt())
+            ->values();
+
+        $upcoming = $events
+            ->filter(fn (Event $event) => $event->isUpcoming())
+            ->sortBy('starts_at')
+            ->values();
+
+        $past = $events
+            ->filter(fn (Event $event) => $event->isPast())
+            ->sortByDesc('starts_at')
+            ->values();
+
+        return view('admin.events.index', compact('ongoing', 'upcoming', 'past'));
     }
 
     public function create(): View

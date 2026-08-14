@@ -33,7 +33,7 @@
             <div class="mx-auto max-w-editorial px-6 lg:px-7">
                 <x-public.empty-state
                     message="Impact highlights will appear here soon."
-                    :action="route('site.impact.reports')"
+                    :action="route('site.resources.publications')"
                     action-label="View impact reports"
                 />
             </div>
@@ -134,7 +134,7 @@
                     <p class="impact-path__desc">Komolion and other published case studies from programmes and community initiatives.</p>
                     <span class="impact-path__link">Browse stories <span aria-hidden="true">→</span></span>
                 </a>
-                <a href="{{ route('site.impact.reports') }}" class="impact-path">
+                <a href="{{ route('site.resources.publications') }}" class="impact-path">
                     <span class="impact-path__num" aria-hidden="true">02</span>
                     <h3 class="impact-path__title">Impact reports</h3>
                     <p class="impact-path__desc">Annual reports and publications documenting progress and learning.</p>

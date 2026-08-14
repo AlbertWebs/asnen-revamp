@@ -132,6 +132,6 @@
         heading="Explore more impact"
         text="Read other stories and download reports from ASNEN programmes across the network."
         :primary-cta="['label' => 'Back to Impact', 'url' => route('site.impact.overview')]"
-        :secondary-cta="['label' => 'Impact reports', 'url' => route('site.impact.reports')]"
+        :secondary-cta="['label' => 'Impact reports', 'url' => route('site.resources.publications')]"
     />
 @endsection

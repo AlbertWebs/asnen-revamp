@@ -63,7 +63,7 @@ class NavigationSeeder extends Seeder
         $impactChildren = [
             ['Impact Overview', '/impact'],
             ['Success Stories', '/impact/stories'],
-            ['Impact Reports', '/impact/reports'],
+            ['Impact Reports', '/resources/publications'],
             ['Impact by Region', '/impact/regions'],
         ];
         $childOrder = 0;

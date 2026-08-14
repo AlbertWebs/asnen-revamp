@@ -1,0 +1,116 @@
+<?php
+
+$initiative = [
+    'tagline' => 'Inclusion for all, in all. No child left behind.',
+    'season_line' => 'Pre-Registration Webinar · 23 November 2026 · Disability Registration Day · 5 December 2026',
+    'intro' => 'ASNEN, together with the National Council for Persons with Disabilities (NCPWD) and the Ministry of Health, is running two connected engagements this season: an online webinar on why disability registration matters, followed by a day-long registration and medical assessment camp for 500 children, caregivers and adults with disabilities across six Nairobi wards.',
+    'investment' => 'Registration is not a one-day benefit. It is the gateway to devolved funds, bursaries, assistive devices and legal protections, yet many eligible families remain unregistered simply because services never reach them. This is a single investment producing an ongoing return for 500 households.',
+    'why' => [
+        'A proven model: four registration events delivered to date, most recently in Embakasi, March 2026.',
+        'Delivered with government partners: NCPWD and the Ministry of Health.',
+        'A documented partnership story, photography and reporting from both engagements for your own CSR use.',
+    ],
+    'tiers' => [
+        [
+            'title' => 'Presenting Partner',
+            'body' => 'Lead sponsor: top billing at both events, a speaking role in the webinar, featured in all materials and the post-event report.',
+        ],
+        [
+            'title' => 'Community Partner',
+            'body' => 'Visibility at the Registration Day: logo on event materials and banners, mention in the recap.',
+        ],
+        [
+            'title' => 'Supporting Partner',
+            'body' => 'Listed as a supporter on the event page and in social media posts.',
+        ],
+    ],
+    'partner_intro' => 'ASNEN partners with organisations who want to help make days like this possible, from covering registration and mobilization costs to helping us reach communities that are otherwise hard to reach.',
+    'contact' => [
+        'org' => 'Africa Special Needs Education Network (ASNEN)',
+        'city' => 'Nairobi, Kenya',
+        'phones' => ['+254 712 652 621', '+254 703 906 990'],
+        'legal' => 'Registered CBO · Kenya CBO No. DAG/CBO/5/4/2022/216',
+    ],
+];
+
+return [
+    'initiative' => $initiative,
+
+    'why-registration-matters-ncpwd' => [
+        'badge' => 'Webinar · Online · 23 November 2026',
+        'listing_badge' => true,
+        'allow_registration' => true,
+        'companion_slug' => 'disability-registration-day-2026',
+        'companion_label' => 'Part 2: get registered',
+        'companion_intro' => 'This conversation is the first step. Disability Registration Day on 5 December 2026 is where families can complete registration and medical assessment in person.',
+        'steps_eyebrow' => 'The session',
+        'steps_heading' => 'How the webinar takes shape',
+        'highlights' => [
+            'Straight answers from NCPWD leadership, not just policy language',
+            'Space for caregivers and community members to ask questions',
+            'A clear on-ramp into the 5 December 2026 Registration Day',
+        ],
+        'steps' => [
+            ['title' => 'Opening remarks', 'body' => 'ASNEN sets the context for why this conversation matters now.'],
+            ['title' => 'NCPWD leadership session', 'body' => 'What registration unlocks, and where the gaps are.'],
+            ['title' => 'Open Q&A', 'body' => 'Questions from caregivers, partners and the public.'],
+            ['title' => "What's next", 'body' => 'How to take part in the 5 December 2026 Registration Day.'],
+        ],
+        'primary_cta' => ['label' => 'Register to attend', 'url' => '#event-register'],
+        'secondary_cta' => ['label' => 'Partner with this initiative', 'url' => '/get-involved/partner'],
+        'show_brief_download' => true,
+        'show_partner_ask' => true,
+        'show_komolion' => true,
+    ],
+    'disability-registration-day-2026' => [
+        'badge' => 'In-person · Acorn Special Tutorials, Dagoretti South · 5 December 2026 · 8:00am-4:00pm',
+        'listing_badge' => true,
+        'allow_registration' => false,
+        'companion_slug' => 'why-registration-matters-ncpwd',
+        'companion_label' => 'Part 1: understand why registration matters',
+        'companion_intro' => 'Join the 23 November 2026 webinar with NCPWD leadership first, then come to Registration Day ready to complete the process.',
+        'steps_eyebrow' => 'The day',
+        'steps_heading' => 'How the day takes shape',
+        'location' => 'Acorn Special Tutorials, Muhuri Road, Dagoretti South, Nairobi',
+        'highlights' => [
+            'Government registration and medical assessment, brought directly to the community',
+            'Open to caregivers and adults with disabilities, not children alone',
+            'Delivered in partnership with NCPWD and the Ministry of Health',
+        ],
+        'steps' => [
+            ['title' => 'Arrival & registration', 'body' => 'Beneficiaries check in from 8:00am.'],
+            ['title' => 'NCPWD registration', 'body' => 'Official disability registration completed on-site.'],
+            ['title' => 'Medical assessment', 'body' => 'Ministry of Health personnel assess needs, including referral for further care.'],
+            ['title' => 'Community support', 'body' => 'Community Health Promoters and local chiefs on hand throughout the day.'],
+        ],
+        'primary_cta' => ['label' => 'Partner with this initiative', 'url' => '/get-involved/partner'],
+        'secondary_cta' => ['label' => 'Download the partnership brief (PDF)', 'url' => '/get-involved/partner/disability-registration-brief'],
+        'show_brief_download' => true,
+        'show_partner_ask' => true,
+        'show_komolion' => true,
+    ],
+    'leaving-a-mark-where-it-matters' => [
+        'badge' => 'Ongoing · Windhoek, Namibia',
+        'listing_badge' => true,
+        'allow_registration' => false,
+        'show_partner_ask' => false,
+        'show_komolion' => false,
+        'steps_eyebrow' => 'What she called for',
+        'steps_heading' => 'The mark we want to leave',
+        'location' => 'Windhoek, Namibia',
+        'highlights' => [
+            'A curriculum that sees every child, values every child, and leaves no child behind',
+            'Ubuntu as a guiding philosophy for the African Continental Curriculum Framework',
+            'Early identification and early intervention for children with disabilities',
+            'Disability visible from the beginning: in the design, the language, the systems, and the future',
+        ],
+        'steps' => [
+            ['title' => 'Ubuntu', 'body' => 'Education is not only about academic achievement. It is about dignity, belonging, community, and ensuring that every learner has an opportunity to thrive.'],
+            ['title' => 'Early intervention', 'body' => 'Too many children across Africa are identified only after years of struggle, exclusion, or missed opportunities.'],
+            ['title' => 'Disability in the design', 'body' => 'If Africa is building a curriculum for its children, then children with disabilities must not be an afterthought. They must be part of the design from the beginning.'],
+            ['title' => 'Every child', 'body' => 'Not just a curriculum for Africa, but a curriculum that truly sees Africa\'s children. Because when we say every child, we mean every child.'],
+        ],
+        'primary_cta' => ['label' => 'What we do', 'url' => '/what-we-do'],
+        'secondary_cta' => ['label' => 'Meet our leadership', 'url' => '/about/leadership'],
+    ],
+];

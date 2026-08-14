@@ -83,7 +83,7 @@
             'links' => [
                 ['Impact Overview', '/impact'],
                 ['Success Stories', '/impact/stories'],
-                ['Impact Reports', '/impact/reports'],
+                ['Impact Reports', '/resources/publications'],
                 ['Events', '/events-learning'],
                 ['Webinars', '/events-learning/webinars'],
                 ['Resources', '/resources'],

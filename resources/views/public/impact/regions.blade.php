@@ -23,7 +23,7 @@
         tagline="Where belonging takes root."
         :excerpt="$page?->excerpt ?? 'Explore the places ASNEN has walked with families, schools, and partners.'"
         :primary-cta="['label' => 'Browse stories', 'url' => route('site.impact.stories')]"
-        :secondary-cta="['label' => 'View reports', 'url' => route('site.impact.reports')]"
+        :secondary-cta="['label' => 'View reports', 'url' => route('site.resources.publications')]"
         :images="$bannerImages ?? []"
     />
 
