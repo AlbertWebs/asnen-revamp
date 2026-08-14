@@ -57,7 +57,7 @@
                 </div>
 
                 <div
-                    class="gallery-lightbox reveal mt-8"
+                    class="gallery-lightbox mt-8"
                     x-data="{
                         slides: @js($slides),
                         open: false,
@@ -86,17 +86,17 @@
                     @keydown.arrow-left.window="if (open) prev()"
                 >
                     <div class="gallery-photo-grid">
-                        <template x-for="(slide, index) in slides" :key="index">
+                        @foreach($slides as $index => $slide)
                             <figure class="gallery-thumb">
                                 <button
                                     type="button"
                                     class="gallery-thumb__btn group"
-                                    @click="openAt(index)"
-                                    :aria-label="'View photo ' + (index + 1) + (slide.caption ? ': ' + slide.caption : '')"
+                                    @click="openAt({{ $index }})"
+                                    aria-label="View photo {{ $index + 1 }}{{ !empty($slide['caption']) ? ': '.$slide['caption'] : '' }}"
                                 >
                                     <img
-                                        :src="slide.src"
-                                        :alt="slide.alt"
+                                        src="{{ $slide['src'] }}"
+                                        alt="{{ $slide['alt'] }}"
                                         class="gallery-thumb__image"
                                         loading="lazy"
                                         decoding="async"
@@ -111,13 +111,11 @@
                                         </svg>
                                     </span>
                                 </button>
-                                <figcaption
-                                    class="gallery-thumb__caption"
-                                    x-show="slide.caption"
-                                    x-text="slide.caption"
-                                ></figcaption>
+                                @if(!empty($slide['caption']))
+                                    <figcaption class="gallery-thumb__caption">{{ $slide['caption'] }}</figcaption>
+                                @endif
                             </figure>
-                        </template>
+                        @endforeach
                     </div>
 
                     <div

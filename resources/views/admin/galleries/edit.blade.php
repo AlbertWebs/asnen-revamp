@@ -54,10 +54,36 @@
     </form>
 
     @if($gallery->exists)
+        @php
+            $namedAlbums = collect($albums ?? [])->reject(
+                fn ($album) => $album->slug === 'general-gallery' || (int) $album->id === (int) $gallery->id
+            )->values();
+        @endphp
+
+        @if($namedAlbums->isNotEmpty())
+            <div class="admin-form admin-form--wide mt-6">
+                <div class="admin-form__body">
+                    <div class="admin-form__header">
+                        <h2 class="admin-form__title">Albums</h2>
+                        <p class="admin-form__intro">Open an album to edit it, or move photos from the gallery below.</p>
+                    </div>
+                    <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                        @foreach($namedAlbums as $album)
+                            <a href="{{ route('admin.galleries.edit', $album) }}" class="rounded-xl border border-charcoal/10 bg-white px-4 py-3 transition hover:border-brand/40 hover:bg-brand/5">
+                                <span class="block font-semibold text-charcoal">{{ $album->title }}</span>
+                                <span class="mt-1 block text-sm text-charcoal/55">Edit album</span>
+                            </a>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+        @endif
+
         @include('admin.partials.gallery-dropzone', [
             'gallery' => $gallery,
-            'heading' => 'Gallery images',
-            'help' => 'Drag and drop all photos here, or click to browse. Captions show under each photo on the public gallery.',
+            'albums' => $albums ?? collect(),
+            'heading' => $gallery->isGeneralGallery() ? 'General Gallery' : 'Gallery images',
+            'help' => 'Drag and drop photos here, or click to browse. Use Album to move a photo into another gallery.',
         ])
     @else
         <p class="admin-hint mt-6 max-w-3xl">Save the gallery first, then drop images here.</p>

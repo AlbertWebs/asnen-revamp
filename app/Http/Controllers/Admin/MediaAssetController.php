@@ -123,10 +123,11 @@ class MediaAssetController extends Controller
                 'message' => $message,
                 'assets' => collect($assets)->map(fn (MediaAsset $asset) => [
                     'id' => $asset->id,
-                    'label' => ($asset->alt ?: $asset->filename).' (#'.$asset->id.')',
+                    'label' => $asset->pickerLabel(),
                     'url' => $asset->publicUrl(),
                     'mime' => $asset->mime,
                     'folder' => $asset->folder,
+                    'filename' => $asset->filename,
                 ])->values()->all(),
                 'duplicates' => $duplicates,
                 'errors' => $errors,

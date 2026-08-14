@@ -106,6 +106,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::post('galleries/{gallery}/unpublish', [GalleryController::class, 'unpublish'])->name('galleries.unpublish');
     Route::post('galleries/{gallery}/upload', [GalleryController::class, 'upload'])->name('galleries.upload');
     Route::patch('galleries/{gallery}/items/{item}', [GalleryController::class, 'updateItem'])->name('galleries.items.update');
+    Route::post('galleries/{gallery}/items/move', [GalleryController::class, 'moveItems'])->name('galleries.items.move');
     Route::delete('galleries/{gallery}/items/{item}', [GalleryController::class, 'destroyItem'])->name('galleries.items.destroy');
 
     Route::resource('donation-campaigns', DonationCampaignController::class);

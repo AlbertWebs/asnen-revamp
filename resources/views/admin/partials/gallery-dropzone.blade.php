@@ -1,15 +1,21 @@
 @props([
     'gallery',
+    'albums' => [],
     'heading' => 'Gallery images',
     'help' => 'Drag and drop photos here, or click to browse. Captions appear on the public page.',
 ])
 
 @php
     $gallery->loadMissing(['items.mediaAsset']);
+    $albumOptions = collect($albums)->map(fn ($album) => [
+        'id' => $album->id,
+        'title' => $album->title,
+    ])->values()->all();
     $initialItems = $gallery->items
         ->filter(fn ($item) => filled($item->mediaAsset?->publicUrl()))
         ->map(fn ($item) => [
             'id' => $item->id,
+            'gallery_id' => $item->gallery_id,
             'media_asset_id' => $item->media_asset_id,
             'caption' => $item->caption ?? '',
             'sort_order' => $item->sort_order,
@@ -24,9 +30,12 @@
     class="gallery-dropzone admin-form admin-form--wide mt-6"
     x-data="galleryDropzone({
         items: @js($initialItems),
+        albums: @js($albumOptions),
+        currentGalleryId: {{ (int) $gallery->id }},
         uploadUrl: @js(route('admin.galleries.upload', $gallery)),
         itemUpdateUrl: @js(route('admin.galleries.items.update', [$gallery, '__ID__'])),
         itemDeleteUrl: @js(route('admin.galleries.items.destroy', [$gallery, '__ID__'])),
+        itemMoveUrl: @js(route('admin.galleries.items.move', $gallery)),
         csrf: @js(csrf_token()),
     })"
 >
@@ -69,13 +78,47 @@
             No images yet. Drop photos above to build this gallery.
         </p>
 
+        <div class="flex flex-wrap items-end gap-3 rounded-lg border border-charcoal/10 bg-sand/40 p-3" x-show="items.length && albums.length > 1" x-cloak>
+            <div class="min-w-[12rem] flex-1">
+                <label class="admin-label" for="gallery-bulk-album">Move selected to</label>
+                <select id="gallery-bulk-album" class="admin-select" x-model="moveTargetId">
+                    <option value="">Choose album</option>
+                    <template x-for="album in albums" :key="album.id">
+                        <option :value="album.id" x-text="album.title" :disabled="album.id === currentGalleryId"></option>
+                    </template>
+                </select>
+            </div>
+            <button type="button" class="admin-btn-primary" :disabled="!selectedIds.length || !moveTargetId" @click="moveSelected()">
+                Move selected
+            </button>
+            <button type="button" class="text-sm font-medium text-charcoal/70 hover:underline" @click="selectAll()">Select all</button>
+            <button type="button" class="text-sm font-medium text-charcoal/70 hover:underline" x-show="selectedIds.length" @click="selectedIds = []">Clear</button>
+            <span class="font-mono text-[0.65rem] uppercase tracking-wide text-charcoal/40" x-show="selectedIds.length" x-text="selectedIds.length + ' selected'"></span>
+        </div>
+
         <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" x-show="items.length">
             <template x-for="(item, index) in items" :key="item.id">
                 <div class="overflow-hidden rounded-xl border border-charcoal/10 bg-white">
-                    <div class="aspect-[4/3] bg-sand">
+                    <div class="relative aspect-[4/3] bg-sand">
                         <img :src="item.url" :alt="item.alt || ''" class="h-full w-full object-cover">
+                        <label class="absolute left-2 top-2 inline-flex items-center gap-1 rounded bg-white/90 px-2 py-1 text-xs font-medium text-charcoal shadow-sm" x-show="albums.length > 1">
+                            <input type="checkbox" class="rounded border-charcoal/30" :checked="selectedIds.includes(item.id)" @change="toggleSelect(item.id)">
+                            Select
+                        </label>
                     </div>
                     <div class="space-y-2 p-3">
+                        <div x-show="albums.length > 1">
+                            <label class="admin-label">Album</label>
+                            <select
+                                class="admin-select"
+                                :value="item.gallery_id"
+                                @change="moveItem(item, $event.target.value)"
+                            >
+                                <template x-for="album in albums" :key="album.id">
+                                    <option :value="album.id" x-text="album.title"></option>
+                                </template>
+                            </select>
+                        </div>
                         <label class="admin-label">Caption</label>
                         <input
                             type="text"

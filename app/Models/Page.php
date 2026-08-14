@@ -35,6 +35,7 @@ class Page extends Model
         'about-mission-vision-values' => 'Who We Are',
         'about-our-story' => 'Who We Are',
         'impact-komolion' => 'Success Stories',
+        'impact-reports' => 'Reports & Publications',
     ];
 
     protected $fillable = [
@@ -91,6 +92,7 @@ class Page extends Model
         return match ($this->slug) {
             'home' => '/',
             'gallery' => '/resources/gallery',
+            'impact-reports' => '/resources/publications',
             'leadership-governance' => '/about/leadership',
             'vision-mission-values' => '/about/who-we-are#vision',
             default => $this->publicPathFromSlug(),
@@ -277,10 +279,9 @@ class Page extends Model
                             ['slug' => 'resources-toolkits'],
                             ['slug' => 'resources-webinars'],
                             ['slug' => 'resources-news'],
-                            ['slug' => 'gallery'],
+                            ['slug' => 'gallery', 'aliases' => ['resources-gallery']],
                         ],
                     ],
-                    ['slug' => 'gallery'],
                 ],
             ],
             [
@@ -337,6 +338,13 @@ class Page extends Model
             'about-who-we-are' => 'Vision, mission, values, and our story still come from the archived Vision and Our Story pages. Edit those pages to change those sections on the public Who We Are page.',
             'about-leadership', 'leadership-governance' => 'Governance copy still comes from the archived Governance page and appears on the public Leadership & Governance page.',
             'impact-stories' => 'Komolion is managed as a success story. Edit it under Success Stories rather than as a separate menu page.',
+            'impact-reports' => 'Impact reports now share the Reports & Publications page. Edit that page for intro copy, and manage files under Publications.',
+            'resources' => 'This is the Resources hub. Child pages cover publications, toolkits, webinars, news, and the gallery.',
+            'resources-publications' => 'This page lists reports and publications. Add or replace PDFs under Publications in the admin sidebar.',
+            'resources-toolkits' => 'Toolkit files are managed under Publications. This page controls the public Toolkits intro.',
+            'resources-webinars' => 'Individual recordings are managed under Webinars. This page controls the public library intro.',
+            'resources-news' => 'Individual articles are managed under Articles. This page controls the public News intro.',
+            'gallery' => 'Albums are managed under Galleries. This page controls the public Gallery intro.',
             default => null,
         };
     }

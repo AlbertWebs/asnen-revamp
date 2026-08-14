@@ -89,8 +89,9 @@
     @if($story->exists && $gallery)
         @include('admin.partials.gallery-dropzone', [
             'gallery' => $gallery,
+            'albums' => \App\Models\Gallery::orderedForPicker(),
             'heading' => 'Story gallery',
-            'help' => 'Drop case-study photos here. They appear in the photo gallery on the public success story page. Edit captions below each image.',
+            'help' => 'Drop case-study photos here. They appear in the photo gallery on the public success story page. Use Album to move a photo into another gallery.',
         ])
         <p class="admin-hint mt-3 max-w-4xl">
             Linked gallery:

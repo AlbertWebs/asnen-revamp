@@ -72,7 +72,7 @@ function initReveal() {
                 }
             });
         },
-        { threshold: 0.15 }
+        { threshold: 0.01, rootMargin: '0px 0px -8% 0px' }
     );
     nodes.forEach((el) => io.observe(el));
 }

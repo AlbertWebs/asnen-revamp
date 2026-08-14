@@ -28,16 +28,48 @@ class GalleryController extends Controller
             ->latest('gallery_date')
             ->paginate(12);
 
+        $floodGallery = Gallery::published()
+            ->where('slug', 'general-gallery')
+            ->with(['items.mediaAsset'])
+            ->first();
+
+        $floodSlides = $floodGallery
+            ? $floodGallery->items
+                ->filter(fn ($item) => filled($item->mediaAsset?->publicUrl()))
+                ->values()
+                ->map(fn ($item) => [
+                    'src' => $item->mediaAsset->publicUrl(),
+                    'alt' => $item->mediaAsset->alt ?? $item->caption ?? $floodGallery->title,
+                    'caption' => $item->caption,
+                ])
+                ->all()
+            : [];
+
+        $bannerImages = $this->resolveBannerImages($page);
+        if ($bannerImages->isEmpty() && $floodGallery) {
+            $bannerImages = $floodGallery->items
+                ->map(fn ($item) => $item->mediaAsset)
+                ->filter()
+                ->values()
+                ->take(8);
+        }
+
         return view('public.gallery.index', [
             'page' => $page,
             'galleries' => $galleries,
+            'floodGallery' => $floodGallery,
+            'floodSlides' => $floodSlides,
             'sanitizer' => $this->sanitizer,
-            'bannerImages' => $this->resolveBannerImages($page),
+            'bannerImages' => $bannerImages,
         ]);
     }
 
     public function show(string $slug)
     {
+        if ($slug === 'acorn-special-tutorials') {
+            return redirect()->route('site.resources.gallery.show', ['slug' => 'general-gallery'], 301);
+        }
+
         $gallery = Gallery::published()
             ->where('slug', $slug)
             ->with(['items.mediaAsset', 'coverItem.mediaAsset'])

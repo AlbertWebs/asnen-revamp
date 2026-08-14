@@ -72,6 +72,9 @@ php deploy/update-programme-copy.php
 echo "== ASNEN Annual Report 2024 =="
 php deploy/sync-annual-report-2024.php
 
+echo "== Rename Acorn album to General Gallery =="
+php deploy/rename-general-gallery.php
+
 echo "== Caches =="
 php artisan view:clear
 php artisan cache:clear

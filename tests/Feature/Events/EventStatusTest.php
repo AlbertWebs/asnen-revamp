@@ -190,6 +190,7 @@ class EventStatusTest extends TestCase
             ->assertOk()
             ->assertSee('African Continental Curriculum Framework')
             ->assertSee('Windhoek, Namibia')
+            ->assertSee('/namibia.mp4')
             ->assertDontSee('Partner With This Initiative');
     }
 }

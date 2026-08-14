@@ -84,7 +84,8 @@
                     'name' => 'featured_image_id',
                     'value' => $event->featured_image_id,
                     'label' => 'Event image',
-                    'help' => 'Card and event detail hero image.',
+                    'folder' => 'events',
+                    'help' => 'This photo appears on the event card and the public event page. Click a thumbnail to select it.',
                 ])
             </div>
 

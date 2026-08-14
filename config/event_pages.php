@@ -112,5 +112,9 @@ return [
         ],
         'primary_cta' => ['label' => 'What we do', 'url' => '/what-we-do'],
         'secondary_cta' => ['label' => 'Meet our leadership', 'url' => '/about/leadership'],
+        'video' => 'namibia.mp4',
+        'video_title' => 'Eva Naputuni Nyoike at the African Continental Curriculum Framework workshop in Windhoek',
+        'video_eyebrow' => 'From Windhoek',
+        'video_heading' => 'Watch the workshop',
     ],
 ];

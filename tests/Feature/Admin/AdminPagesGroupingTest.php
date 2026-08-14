@@ -49,4 +49,45 @@ class AdminPagesGroupingTest extends TestCase
         $this->assertSame(0, $section['rows'][0]['depth']);
         $this->assertSame(1, $section['rows'][1]['depth']);
     }
+
+    public function test_resources_pages_appear_in_admin_pages_group(): void
+    {
+        foreach ([
+            'resources' => 'Resources',
+            'resources-publications' => 'Reports & Publications',
+            'resources-toolkits' => 'Toolkits and Guides',
+            'resources-webinars' => 'Videos / Webinar Library',
+            'resources-news' => 'News & Insights',
+            'gallery' => 'Gallery',
+        ] as $slug => $title) {
+            $page = Page::create([
+                'title' => $title,
+                'slug' => $slug,
+                'status' => PublishStatus::Published,
+                'published_at' => now(),
+            ]);
+            if ($page->slug !== $slug) {
+                $page->slug = $slug;
+                $page->saveQuietly();
+            }
+        }
+
+        $section = collect(Page::groupedForAdmin(Page::query()->get()))
+            ->firstWhere('label', 'Resources');
+
+        $this->assertNotNull($section);
+        $this->assertSame(
+            [
+                'resources',
+                'resources-publications',
+                'resources-toolkits',
+                'resources-webinars',
+                'resources-news',
+                'gallery',
+            ],
+            collect($section['rows'])->pluck('page.slug')->all()
+        );
+        $this->assertSame(0, $section['rows'][0]['depth']);
+        $this->assertSame(1, $section['rows'][1]['depth']);
+    }
 }

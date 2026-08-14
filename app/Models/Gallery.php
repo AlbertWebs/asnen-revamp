@@ -50,4 +50,17 @@ class Gallery extends Model
     {
         return $this->hasMany(ImpactStory::class);
     }
+
+    public function isGeneralGallery(): bool
+    {
+        return $this->slug === 'general-gallery';
+    }
+
+    public static function orderedForPicker()
+    {
+        return static::query()
+            ->orderByRaw("CASE WHEN slug = 'general-gallery' THEN 1 ELSE 0 END")
+            ->orderBy('title')
+            ->get(['id', 'title', 'slug']);
+    }
 }

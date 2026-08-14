@@ -23,6 +23,34 @@
     }
 @endphp
 
+@if(! empty($profile['video']))
+    <section class="section-editorial" aria-labelledby="event-video-heading">
+        <div class="mx-auto max-w-editorial px-6 lg:px-7">
+            <div class="section-head-row reveal">
+                <div class="section-head">
+                    <span class="eyebrow mb-3 block">{{ $profile['video_eyebrow'] ?? 'From the event' }}</span>
+                    <h2 id="event-video-heading">{{ $profile['video_heading'] ?? 'Watch' }}</h2>
+                </div>
+            </div>
+            <div class="event-video reveal mt-8">
+                <video
+                    class="event-video__player"
+                    controls
+                    playsinline
+                    preload="metadata"
+                    @if($event->featuredImage?->publicUrl())
+                        poster="{{ $event->featuredImage->publicUrl() }}"
+                    @endif
+                    aria-label="{{ $profile['video_title'] ?? $event->title }}"
+                >
+                    <source src="{{ asset($profile['video']) }}" type="video/mp4">
+                    Your browser does not support this video.
+                </video>
+            </div>
+        </div>
+    </section>
+@endif
+
 @if($event->isPast())
     <section class="section-editorial bg-sand" aria-labelledby="event-recap-heading">
         <div class="mx-auto max-w-editorial px-6 lg:px-7">

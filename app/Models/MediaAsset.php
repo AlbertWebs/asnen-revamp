@@ -133,4 +133,28 @@ class MediaAsset extends Model
             default => 'File',
         };
     }
+
+    public function pickerLabel(): string
+    {
+        $alt = trim((string) $this->alt);
+        $file = pathinfo((string) ($this->filename ?: $this->path), PATHINFO_FILENAME);
+        $humanFile = trim(preg_replace('/[-_]+/', ' ', (string) $file) ?? '');
+        $folder = trim((string) ($this->folder ?: ''), '/.\\');
+        if ($folder === '' && filled($this->path)) {
+            $folder = trim((string) dirname((string) $this->path), '/.\\');
+        }
+        if ($folder === '.' || $folder === '') {
+            $folder = '';
+        }
+
+        $title = $alt !== '' ? $alt : $humanFile;
+        $parts = array_filter([
+            $title !== '' ? $title : null,
+            $folder !== '' ? $folder : null,
+        ]);
+
+        $label = implode(' · ', $parts);
+
+        return $label !== '' ? $label : 'Media #'.$this->id;
+    }
 }

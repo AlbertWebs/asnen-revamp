@@ -30,6 +30,7 @@ class GalleryController extends Controller
 
         return view('admin.galleries.edit', [
             'gallery' => new Gallery(['status' => PublishStatus::Draft]),
+            'albums' => Gallery::orderedForPicker(),
         ]);
     }
 
@@ -50,6 +51,7 @@ class GalleryController extends Controller
 
         return view('admin.galleries.edit', [
             'gallery' => $gallery,
+            'albums' => Gallery::orderedForPicker(),
         ]);
     }
 
@@ -146,18 +148,70 @@ class GalleryController extends Controller
 
         $data = $request->validate([
             'caption' => ['nullable', 'string', 'max:1000'],
+            'gallery_id' => ['sometimes', 'integer', 'exists:galleries,id'],
         ]);
 
-        $item->update([
-            'caption' => filled($data['caption'] ?? null) ? trim((string) $data['caption']) : null,
-        ]);
+        if (array_key_exists('caption', $data)) {
+            $item->caption = filled($data['caption'] ?? null) ? trim((string) $data['caption']) : null;
+            $item->save();
+        }
+
+        $targetId = isset($data['gallery_id']) ? (int) $data['gallery_id'] : $gallery->id;
+        if ($targetId !== $gallery->id) {
+            $target = Gallery::query()->findOrFail($targetId);
+            $this->moveItemToGallery($item, $target);
+
+            return response()->json([
+                'message' => 'Photo moved to '.$target->title.'.',
+                'moved' => true,
+                'item' => [
+                    'id' => $item->id,
+                    'caption' => $item->caption,
+                    'gallery_id' => $item->gallery_id,
+                ],
+            ]);
+        }
 
         return response()->json([
             'message' => 'Caption saved.',
+            'moved' => false,
             'item' => [
                 'id' => $item->id,
                 'caption' => $item->caption,
+                'gallery_id' => $item->gallery_id,
             ],
+        ]);
+    }
+
+    public function moveItems(Request $request, Gallery $gallery): JsonResponse
+    {
+        abort_unless(auth()->user()?->can('galleries.update'), 403);
+
+        $data = $request->validate([
+            'item_ids' => ['required', 'array', 'min:1'],
+            'item_ids.*' => ['integer'],
+            'gallery_id' => ['required', 'integer', 'exists:galleries,id'],
+        ]);
+
+        $target = Gallery::query()->findOrFail((int) $data['gallery_id']);
+        abort_if($target->id === $gallery->id, 422, 'Choose a different album.');
+
+        $items = GalleryItem::query()
+            ->where('gallery_id', $gallery->id)
+            ->whereIn('id', $data['item_ids'])
+            ->get();
+
+        $moved = 0;
+        foreach ($items as $item) {
+            $this->moveItemToGallery($item, $target);
+            $moved++;
+        }
+
+        return response()->json([
+            'message' => $moved === 1
+                ? '1 photo moved to '.$target->title.'.'
+                : $moved.' photos moved to '.$target->title.'.',
+            'moved_ids' => $items->pluck('id')->values(),
         ]);
     }
 
@@ -185,5 +239,29 @@ class GalleryController extends Controller
         $data['requires_safeguarding'] = $request->boolean('requires_safeguarding');
 
         return $data;
+    }
+
+    private function moveItemToGallery(GalleryItem $item, Gallery $target): void
+    {
+        if ($item->gallery_id === $target->id) {
+            return;
+        }
+
+        $duplicate = GalleryItem::query()
+            ->where('gallery_id', $target->id)
+            ->where('media_asset_id', $item->media_asset_id)
+            ->whereKeyNot($item->id)
+            ->first();
+
+        if ($duplicate) {
+            $item->delete();
+
+            return;
+        }
+
+        $maxSort = (int) ($target->items()->max('sort_order') ?? 0);
+        $item->gallery_id = $target->id;
+        $item->sort_order = $maxSort + 1;
+        $item->save();
     }
 }

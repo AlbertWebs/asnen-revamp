@@ -17,7 +17,7 @@
             </div>
 
             <div
-                class="gallery-lightbox reveal"
+                class="gallery-lightbox"
                 x-data="{
                     slides: @js($slides),
                     open: false,
@@ -46,17 +46,17 @@
                 @keydown.arrow-left.window="if (open) prev()"
             >
                 <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                    <template x-for="(slide, index) in slides" :key="index">
+                    @foreach($slides as $index => $slide)
                         <figure class="gallery-thumb">
                             <button
                                 type="button"
                                 class="gallery-thumb__btn group"
-                                @click="openAt(index)"
-                                :aria-label="'View photo ' + (index + 1) + (slide.caption ? ': ' + slide.caption : '')"
+                                @click="openAt({{ $index }})"
+                                aria-label="View photo {{ $index + 1 }}{{ !empty($slide['caption']) ? ': '.$slide['caption'] : '' }}"
                             >
                                 <img
-                                    :src="slide.src"
-                                    :alt="slide.alt"
+                                    src="{{ $slide['src'] }}"
+                                    alt="{{ $slide['alt'] }}"
                                     class="gallery-thumb__image"
                                     loading="lazy"
                                     decoding="async"
@@ -71,13 +71,11 @@
                                     </svg>
                                 </span>
                             </button>
-                            <figcaption
-                                class="p-3 text-sm text-charcoal/70"
-                                x-show="slide.caption"
-                                x-text="slide.caption"
-                            ></figcaption>
+                            @if(!empty($slide['caption']))
+                                <figcaption class="p-3 text-sm text-charcoal/70">{{ $slide['caption'] }}</figcaption>
+                            @endif
                         </figure>
-                    </template>
+                    @endforeach
                 </div>
 
                 <div

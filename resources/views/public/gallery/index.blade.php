@@ -4,13 +4,6 @@
 @section('meta_description', $page?->seoMeta?->description ?? $page?->excerpt ?? 'Photo albums from ASNEN programmes, conferences, and community outreach.')
 
 @section('content')
-    @php
-        $featured = $galleries->onFirstPage() ? $galleries->getCollection()->first() : null;
-        $rest = $featured
-            ? $galleries->getCollection()->slice(1)->values()
-            : $galleries->getCollection();
-    @endphp
-
     <x-public.media-hero
         parent-label="Resources"
         :parent-url="route('site.resources.index')"
@@ -20,92 +13,133 @@
         title-max="12ch"
         tagline="Moments from the work."
         :excerpt="$page?->excerpt ?? 'Photo albums from ASNEN programmes, conferences, and community outreach across Kenya and beyond.'"
-        :primary-cta="['label' => 'Impact stories', 'url' => route('site.impact.stories')]"
+        :primary-cta="['label' => 'Photo albums', 'url' => '#gallery-albums']"
         :secondary-cta="['label' => 'Events & learning', 'url' => route('site.events.index')]"
         :images="$bannerImages ?? []"
     />
 
     <x-public.resources-subnav current="gallery" />
 
-    <section class="section-editorial">
-        <div class="mx-auto max-w-editorial px-6 lg:px-7">
-            <div class="who-identity reveal">
-                <div class="who-identity__copy">
-                    <span class="eyebrow mb-3 block">Why we share photos</span>
-                    <h2>Belonging made visible</h2>
-                    <div class="who-identity__body">
-                        <p class="text-lg leading-relaxed text-charcoal-500">
-                            ASNEN albums document programmes, gatherings, and outreach with care for dignity and safeguarding. Every public album is reviewed before it appears here.
-                        </p>
-                    </div>
-                </div>
-                <aside class="who-identity__aside">
-                    <p class="who-identity__aside-label">How to browse</p>
-                    <p class="who-identity__aside-quote">Open an album, then tap a photo to see it larger.</p>
-                    <ul class="who-identity__aside-list">
-                        <li>Albums by place and programme</li>
-                        <li>Captions where available</li>
-                        <li>Photos reviewed before publishing</li>
-                    </ul>
-                    <a href="{{ route('site.impact.stories') }}" class="who-identity__aside-link">
-                        See success stories
-                        <span aria-hidden="true">→</span>
-                    </a>
-                </aside>
-            </div>
-        </div>
-    </section>
-
-    @if($featured)
-        @php
-            $featuredCover = $featured->coverItem?->mediaAsset;
-            $featuredCount = $featured->items_count ?? $featured->items->count();
-            $featuredMeta = collect([
-                $featured->gallery_date?->format('F Y'),
-                $featured->location,
-                $featuredCount ? $featuredCount.' '.\Illuminate\Support\Str::plural('photo', $featuredCount) : null,
-            ])->filter()->implode(' · ');
-        @endphp
-        <section class="section-editorial bg-sand">
-            <div class="mx-auto max-w-editorial px-6 lg:px-7">
-                <div class="section-head-row reveal">
+    @if(count($floodSlides ?? []) > 0)
+        <section class="section-editorial" aria-labelledby="gallery-flood-heading">
+            <div class="gallery-flood">
+                <div class="gallery-flood__head">
                     <div class="section-head">
-                        <span class="eyebrow mb-3 block">Featured album</span>
-                        <h2>Start here</h2>
-                        <p class="section-head-row__intro">A recent album from ASNEN programmes and gatherings.</p>
+                        <span class="eyebrow mb-3 block">General Gallery</span>
+                        <h2 id="gallery-flood-heading">{{ count($floodSlides) }} photographs</h2>
                     </div>
-                    <a href="{{ route('site.resources.gallery.show', $featured->slug) }}" class="btn-secondary section-head-row__cta">Open album</a>
+                    <a href="{{ route('site.resources.gallery.show', $floodGallery->slug) }}" class="btn-secondary section-head-row__cta">Open album</a>
                 </div>
 
-                <a href="{{ route('site.resources.gallery.show', $featured->slug) }}" class="gallery-feature reveal">
-                    <div class="gallery-feature__media">
-                        <x-public.media-frame
-                            :asset="$featuredCover"
-                            :alt="$featuredCover?->alt ?? $featured->title"
-                            ratio="16/9"
-                            rounded="rounded-2xl"
-                            label="Album cover"
-                        />
+                <div
+                    class="gallery-lightbox"
+                    x-data="{
+                        slides: @js($floodSlides),
+                        open: false,
+                        index: 0,
+                        get current() { return this.slides[this.index] || null },
+                        openAt(i) {
+                            this.index = i;
+                            this.open = true;
+                            document.documentElement.classList.add('overflow-hidden');
+                        },
+                        close() {
+                            this.open = false;
+                            document.documentElement.classList.remove('overflow-hidden');
+                        },
+                        next() {
+                            if (!this.slides.length) return;
+                            this.index = (this.index + 1) % this.slides.length;
+                        },
+                        prev() {
+                            if (!this.slides.length) return;
+                            this.index = (this.index - 1 + this.slides.length) % this.slides.length;
+                        }
+                    }"
+                    @keydown.escape.window="if (open) close()"
+                    @keydown.arrow-right.window="if (open) next()"
+                    @keydown.arrow-left.window="if (open) prev()"
+                >
+                    <div class="gallery-flood__grid">
+                        @foreach($floodSlides as $index => $slide)
+                            <figure class="gallery-thumb">
+                                <button
+                                    type="button"
+                                    class="gallery-thumb__btn group"
+                                    @click="openAt({{ $index }})"
+                                    aria-label="View photo {{ $index + 1 }}{{ !empty($slide['caption']) ? ': '.$slide['caption'] : '' }}"
+                                >
+                                    <img
+                                        src="{{ $slide['src'] }}"
+                                        alt="{{ $slide['alt'] }}"
+                                        class="gallery-thumb__image"
+                                        loading="{{ $index < 12 ? 'eager' : 'lazy' }}"
+                                        decoding="async"
+                                        width="800"
+                                        height="800"
+                                    >
+                                </button>
+                            </figure>
+                        @endforeach
                     </div>
-                    <div class="gallery-feature__copy">
-                        @if($featuredMeta)
-                            <p class="gallery-feature__meta">{{ $featuredMeta }}</p>
-                        @endif
-                        <h3 class="gallery-feature__title">{{ $featured->title }}</h3>
-                        @if($featured->description)
-                            <p class="gallery-feature__desc">{{ $featured->description }}</p>
-                        @endif
-                        <span class="gallery-feature__link">
-                            Browse photos
-                            <span aria-hidden="true">→</span>
-                        </span>
+
+                    <div
+                        x-show="open"
+                        x-cloak
+                        x-transition.opacity.duration.200ms
+                        class="gallery-lightbox__overlay"
+                        role="dialog"
+                        aria-modal="true"
+                        :aria-label="current?.alt || 'Expanded photo'"
+                        @click.self="close()"
+                    >
+                        <button type="button" class="gallery-lightbox__close" @click="close()" aria-label="Close photo">
+                            <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <path stroke-linecap="round" d="M6 6l12 12M18 6L6 18"/>
+                            </svg>
+                        </button>
+
+                        <button
+                            type="button"
+                            class="gallery-lightbox__nav gallery-lightbox__nav--prev"
+                            @click="prev()"
+                            aria-label="Previous photo"
+                            x-show="slides.length > 1"
+                        >
+                            <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+                            </svg>
+                        </button>
+
+                        <figure class="gallery-lightbox__stage" x-show="current">
+                            <img
+                                :src="current?.src"
+                                :alt="current?.alt || ''"
+                                class="gallery-lightbox__image"
+                                @click.stop
+                            >
+                            <figcaption class="gallery-lightbox__caption" x-show="current?.caption" x-text="current?.caption"></figcaption>
+                            <p class="gallery-lightbox__count" x-text="(index + 1) + ' / ' + slides.length"></p>
+                        </figure>
+
+                        <button
+                            type="button"
+                            class="gallery-lightbox__nav gallery-lightbox__nav--next"
+                            @click="next()"
+                            aria-label="Next photo"
+                            x-show="slides.length > 1"
+                        >
+                            <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                            </svg>
+                        </button>
                     </div>
-                </a>
+                </div>
             </div>
         </section>
     @endif
 
-    <section class="section-editorial {{ $featured ? '' : 'bg-sand' }}">
+    <section id="gallery-albums" class="section-editorial bg-sand">
         <div class="mx-auto max-w-editorial px-6 lg:px-7">
             <div class="section-head-row reveal">
                 <div class="section-head">
@@ -130,8 +164,8 @@
                     />
                 </div>
             @else
-                <div class="gallery-album-grid reveal mt-8">
-                    @foreach($rest as $gallery)
+                <div class="gallery-album-grid mt-8">
+                    @foreach($galleries as $gallery)
                         @php
                             $cover = $gallery->coverItem?->mediaAsset;
                             $count = $gallery->items_count ?? $gallery->items->count();
@@ -174,7 +208,7 @@
         </div>
     </section>
 
-    <section class="section-editorial bg-sand">
+    <section class="section-editorial">
         <div class="mx-auto max-w-editorial px-6 lg:px-7">
             <div class="section-head reveal">
                 <span class="eyebrow mb-3 block">Keep exploring</span>
