@@ -61,6 +61,15 @@
                 <a href="{{ route('site.get-involved.partner') }}" class="btn-secondary section-head-row__cta">Partner with us</a>
             </div>
 
+            <aside class="program-launch reveal mt-8" aria-labelledby="partners-beyond-zero-heading">
+                <span class="eyebrow mb-3 block">With Beyond Zero</span>
+                <h3 id="partners-beyond-zero-heading">Launch of the caregivers manual</h3>
+                <p>Together with Beyond Zero, ASNEN launched the caregivers manual. It is now available in Toolkits and Guides as the Caregiver Support Toolkit.</p>
+                <a href="{{ route('site.resources.publications.show', 'caregiver-support-toolkit') }}" class="btn-secondary mt-4 inline-flex">
+                    Open the caregivers manual
+                </a>
+            </aside>
+
             <div class="about-partners reveal mt-8">
                 <x-public.partner-logos :partners="$partners" layout="grid" />
             </div>

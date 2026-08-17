@@ -6,14 +6,19 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\PublicSite\Concerns\ResolvesPageBanners;
 use App\Http\Controllers\PublicSite\Concerns\RespondsToAjaxForms;
 use App\Http\Requests\PublicSite\EventRegistrationFormRequest;
+use App\Mail\EventRegistrationSubmitted;
 use App\Models\Event;
 use App\Models\EventRegistration;
+use App\Models\MailLog;
 use App\Models\ImpactStory;
 use App\Models\Publication;
 use App\Models\Webinar;
 use App\Repositories\PageRepository;
 use App\Services\HtmlSanitizer;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
+use Throwable;
 
 class EventController extends Controller
 {
@@ -174,6 +179,28 @@ class EventController extends Controller
     {
         $event = Event::published()->where('slug', $slug)->firstOrFail();
 
+        if (! $event->acceptsRegistration()) {
+            abort(403, 'Registration is closed for this event.');
+        }
+
+        $already = EventRegistration::query()
+            ->where('event_id', $event->id)
+            ->where('email', $request->validated('email'))
+            ->exists();
+
+        if ($already) {
+            $message = 'You are already registered for this event. We will be in touch with details.';
+
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => $message,
+                ]);
+            }
+
+            return back()->with('success', $message);
+        }
+
         $registration = EventRegistration::create([
             'event_id' => $event->id,
             'name' => $request->validated('name'),
@@ -187,6 +214,17 @@ class EventController extends Controller
             'user_agent' => $request->userAgent(),
         ]);
 
+        try {
+            Mail::send(new EventRegistrationSubmitted($event, $registration));
+        } catch (Throwable $e) {
+            MailLog::failLatest($e->getMessage());
+            Log::error('Failed to send event registration notification email.', [
+                'registration_id' => $registration->id,
+                'event_id' => $event->id,
+                'exception' => $e->getMessage(),
+            ]);
+        }
+
         $token = Str::random(64);
         session(['event_registration_token_'.$token => $registration->id]);
 
@@ -194,7 +232,8 @@ class EventController extends Controller
             $request,
             $token,
             'event',
-            'Your event registration has been received. We will be in touch with details.'
+            'Your registration is confirmed. We will email you with joining details.',
+            includeRedirect: false,
         );
     }
 

@@ -35,6 +35,8 @@
                                 <th scope="col">When</th>
                                 <th scope="col">Timing</th>
                                 <th scope="col">Status</th>
+                                <th scope="col">Registered</th>
+                                <th scope="col">Sign-up form</th>
                                 <th scope="col" class="text-right">Actions</th>
                             </tr>
                         </thead>
@@ -57,8 +59,31 @@
                                     <td>
                                         <span class="admin-badge admin-badge--{{ $status }}">{{ str_replace('_', ' ', $status) }}</span>
                                     </td>
+                                    <td>{{ $item->registrations_count ?? 0 }}</td>
+                                    <td>
+                                        @can('events.update')
+                                            <form method="POST" action="{{ route('admin.events.registration.toggle', $item) }}">
+                                                @csrf
+                                                <button
+                                                    type="submit"
+                                                    class="admin-switch {{ $item->allow_registration ? 'is-on' : '' }}"
+                                                    role="switch"
+                                                    aria-checked="{{ $item->allow_registration ? 'true' : 'false' }}"
+                                                    aria-label="{{ $item->allow_registration ? 'Turn registration off' : 'Turn registration on' }}"
+                                                >
+                                                    <span class="admin-switch__knob" aria-hidden="true"></span>
+                                                    <span class="admin-switch__label">{{ $item->allow_registration ? 'On' : 'Off' }}</span>
+                                                </button>
+                                            </form>
+                                        @else
+                                            <span class="admin-badge">{{ $item->allow_registration ? 'On' : 'Off' }}</span>
+                                        @endcan
+                                    </td>
                                     <td class="text-right">
                                         <div class="admin-table__actions">
+                                            @can('events.view')
+                                                <a href="{{ route('admin.events.registrations', $item) }}" class="admin-table__link">Registrants</a>
+                                            @endcan
                                             @can('events.update')
                                                 <a href="{{ route('admin.events.edit', $item) }}" class="admin-table__link">Edit</a>
                                             @endcan
@@ -72,7 +97,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="admin-table__empty">{{ $group['empty'] }}</td>
+                                    <td colspan="7" class="admin-table__empty">{{ $group['empty'] }}</td>
                                 </tr>
                             @endforelse
                         </tbody>

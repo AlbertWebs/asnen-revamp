@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\FormSubmissionController;
 use App\Http\Controllers\Admin\GalleryController;
 use App\Http\Controllers\Admin\HeroImageController;
+use App\Http\Controllers\Admin\MailLogController;
 use App\Http\Controllers\Admin\ImpactMetricController;
 use App\Http\Controllers\Admin\ImpactStoryController;
 use App\Http\Controllers\Admin\MediaAssetController;
@@ -57,6 +58,9 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::resource('events', EventController::class);
     Route::post('events/{event}/publish', [EventController::class, 'publish'])->name('events.publish');
     Route::post('events/{event}/unpublish', [EventController::class, 'unpublish'])->name('events.unpublish');
+    Route::post('events/{event}/registration', [EventController::class, 'toggleRegistration'])->name('events.registration.toggle');
+    Route::get('events/{event}/registrations', [EventController::class, 'registrations'])->name('events.registrations');
+    Route::post('events/{event}/registrations/email', [EventController::class, 'emailRegistrants'])->name('events.registrations.email');
 
     Route::resource('webinars', WebinarController::class);
     Route::post('webinars/{webinar}/publish', [WebinarController::class, 'publish'])->name('webinars.publish');
@@ -85,6 +89,9 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
 
     Route::get('form-submissions/export', [FormSubmissionController::class, 'export'])->name('form-submissions.export');
     Route::resource('form-submissions', FormSubmissionController::class)->only(['index', 'show', 'update']);
+
+    Route::get('mail-logs', [MailLogController::class, 'index'])->name('mail-logs.index');
+    Route::get('mail-logs/{mail_log}', [MailLogController::class, 'show'])->name('mail-logs.show');
 
     Route::get('newsletter-subscribers/export', [NewsletterSubscriberController::class, 'export'])->name('newsletter-subscribers.export');
     Route::resource('newsletter-subscribers', NewsletterSubscriberController::class)->only(['index']);

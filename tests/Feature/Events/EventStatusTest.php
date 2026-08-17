@@ -140,6 +140,8 @@ class EventStatusTest extends TestCase
         $this->get(route('site.events.show', 'why-registration-matters-ncpwd'))
             ->assertOk()
             ->assertSee('Register to attend')
+            ->assertSee('Reserve your place')
+            ->assertSee('Confirm my place')
             ->assertSee('Partner with this initiative')
             ->assertSee('Partner With This Initiative')
             ->assertSee('covering registration and mobilization')
@@ -147,6 +149,12 @@ class EventStatusTest extends TestCase
             ->assertSee('Embakasi')
             ->assertSee('Add to calendar')
             ->assertSee('Part 2: get registered');
+
+        Event::query()->where('slug', 'why-registration-matters-ncpwd')->update(['allow_registration' => false]);
+
+        $this->get(route('site.events.show', 'why-registration-matters-ncpwd'))
+            ->assertOk()
+            ->assertDontSee('Confirm my place');
 
         $this->get(route('site.events.show', 'disability-registration-day-2026'))
             ->assertOk()

@@ -3,10 +3,12 @@
 namespace Tests\Feature\Forms;
 
 use App\Enums\FormSubmissionStatus;
+use App\Mail\AdminFormSubmitted;
 use App\Models\FormDefinition;
 use App\Models\FormSubmission;
 use App\Services\MathCaptcha;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 
 class ContactFormTest extends TestCase
@@ -41,13 +43,17 @@ class ContactFormTest extends TestCase
 
     public function test_valid_contact_form_submits_successfully(): void
     {
-        $response = $this->post(route('site.contact.store'), array_merge([
+        Mail::fake();
+
+        $payload = [
             'name' => 'Jane Doe',
             'email' => 'jane@example.com',
             'phone' => '+254700000000',
             'subject' => 'Program inquiry',
             'message' => 'I would like to learn more about inclusive education programs.',
-        ], $this->captchaPayload()));
+        ];
+
+        $response = $this->post(route('site.contact.store'), array_merge($payload, $this->captchaPayload()));
 
         $response->assertRedirect();
 
@@ -55,8 +61,13 @@ class ContactFormTest extends TestCase
         $this->assertNotNull($submission);
         $this->assertSame(FormSubmissionStatus::New, $submission->status);
         $this->assertFalse($submission->honeypot_caught);
-        $this->assertSame('Jane Doe', $submission->data['name']);
+        $this->assertSame($payload, array_intersect_key($submission->data, $payload));
         $this->assertArrayNotHasKey('math_token', $submission->data);
+
+        Mail::assertSent(AdminFormSubmitted::class, function (AdminFormSubmitted $mail) {
+            return $mail->hasTo('info@asnenafrica.org')
+                && $mail->hasTo('admin@example.com');
+        });
     }
 
     public function test_ajax_contact_form_returns_json_success(): void

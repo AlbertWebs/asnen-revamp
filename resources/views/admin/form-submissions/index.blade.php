@@ -20,10 +20,11 @@
             <table class="admin-table">
                 <thead>
                     <tr>
-                        <th scope="col">Form</th>
-                        <th scope="col">Status</th>
-                        <th scope="col">Submitted</th>
-                        <th scope="col" class="text-right">Actions</th>
+                                <th scope="col">Form</th>
+                                <th scope="col">From</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Submitted</th>
+                                <th scope="col" class="text-right">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -34,6 +35,12 @@
                         <tr>
                             <td class="admin-table__primary">{{ $submission->formDefinition?->name }}</td>
                             <td>
+                                <span class="block font-medium text-charcoal">{{ $submission->contactName() ?: 'No name' }}</span>
+                                @if($submission->contactEmail())
+                                    <span class="block text-xs text-charcoal/55">{{ $submission->contactEmail() }}</span>
+                                @endif
+                            </td>
+                            <td>
                                 <span class="admin-badge admin-badge--{{ $status }}">{{ str_replace('_', ' ', $status) }}</span>
                             </td>
                             <td>{{ $submission->created_at?->diffForHumans() }}</td>
@@ -43,7 +50,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="admin-table__empty">No submissions yet.</td>
+                            <td colspan="5" class="admin-table__empty">No submissions yet.</td>
                         </tr>
                     @endforelse
                 </tbody>

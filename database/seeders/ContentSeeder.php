@@ -70,7 +70,7 @@ class ContentSeeder extends Seeder
                 'title' => 'Caregiver Training',
                 'slug' => 'caregiver-training',
                 'summary' => 'Our caregiver training equips parents, guardians, and professional caregivers with evidence-informed strategies, community connections, and ongoing support frameworks grounded in compassion and reciprocity.',
-                'body' => '<p>Our caregiver training equips parents, guardians, and professional caregivers with evidence-informed strategies, community connections, and ongoing support frameworks grounded in compassion and reciprocity.</p>',
+                'body' => '<p>Our caregiver training equips parents, guardians, and professional caregivers with evidence-informed strategies, community connections, and ongoing support frameworks grounded in compassion and reciprocity.</p><p>ASNEN launched the caregivers manual with Beyond Zero. The Caregiver Support Toolkit is a training manual and facilitator guide for families of children with disability, with practical tools for homes and community settings.</p>',
                 'sort_order' => 2,
             ],
             [
@@ -132,7 +132,7 @@ class ContentSeeder extends Seeder
         // Sourced from https://asnenafrica.org/about.html collaborators carousel
         $definitions = [
             ['name' => 'Kenya Private Schools Association', 'slug' => 'kpsa', 'description' => 'KPSA', 'logo' => 'partners/kpsa.jpg', 'publish' => true],
-            ['name' => 'Beyond Zero', 'slug' => 'beyond-zero', 'description' => 'Beyond Zero', 'logo' => 'partners/beyond-zero.jpg', 'publish' => true],
+            ['name' => 'Beyond Zero', 'slug' => 'beyond-zero', 'description' => 'ASNEN launched the caregivers manual with Beyond Zero. The Caregiver Support Toolkit is available in Toolkits and Guides.', 'logo' => 'partners/beyond-zero.jpg', 'publish' => true],
             ['name' => 'National Council for Persons with Disabilities', 'slug' => 'ncpwd', 'description' => 'NCPWD', 'logo' => 'partners/ncpwd.jpg', 'publish' => true],
             ['name' => 'Ministry of Education', 'slug' => 'ministry-of-education', 'description' => 'Government of Kenya', 'logo' => 'partners/ministry-of-education.jpg', 'publish' => true],
             ['name' => 'Ministry of Health', 'slug' => 'ministry-of-health', 'description' => 'Government of Kenya', 'logo' => 'partners/ministry-of-health.jpg', 'publish' => true],
@@ -982,7 +982,7 @@ HTML,
                 'slug' => 'caregiver-support-toolkit',
                 'category' => 'toolkit',
                 'year' => 2024,
-                'abstract' => 'Training manual and facilitator’s guide for caregivers of children with disability - practical tools, conversation prompts, and session outlines for homes and community settings.',
+                'abstract' => 'Launched with Beyond Zero. Training manual and facilitator guide for caregivers of children with disability, with practical tools, conversation prompts, and session outlines for homes and community settings.',
                 'file' => null,
                 'cover' => 'resources/caregiver-support-toolkit.jpg',
                 'version' => '1.0',

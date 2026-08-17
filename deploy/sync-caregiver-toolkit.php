@@ -30,7 +30,7 @@ $media = MediaAsset::updateOrCreate(
 $pub = Publication::where('slug', 'caregiver-support-toolkit')->firstOrFail();
 $pub->update([
     'cover_id' => $media->id,
-    'abstract' => "Training manual and facilitator's guide for caregivers of children with disability - practical tools, conversation prompts, and session outlines for homes and community settings.",
+    'abstract' => 'Launched with Beyond Zero. Training manual and facilitator guide for caregivers of children with disability, with practical tools, conversation prompts, and session outlines for homes and community settings.',
 ]);
 
 FormDefinition::updateOrCreate(

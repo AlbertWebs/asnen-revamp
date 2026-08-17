@@ -5,9 +5,12 @@ namespace App\Http\Controllers\Admin;
 use App\Enums\PublishStatus;
 use App\Http\Controllers\Admin\Concerns\NormalizesNullableIds;
 use App\Http\Controllers\Controller;
+use App\Mail\EventRegistrantMessage;
 use App\Models\Event;
+use App\Models\EventRegistration;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
 
 class EventController extends Controller
@@ -18,7 +21,7 @@ class EventController extends Controller
     {
         abort_unless(auth()->user()?->can('events.view'), 403);
 
-        $events = Event::query()->orderBy('starts_at')->get();
+        $events = Event::query()->withCount('registrations')->orderBy('starts_at')->get();
 
         $ongoing = $events
             ->filter(fn (Event $event) => $event->isOngoing())
@@ -100,6 +103,56 @@ class EventController extends Controller
         return back()->with('success', 'Event unpublished.');
     }
 
+    public function registrations(Event $event): View
+    {
+        abort_unless(auth()->user()?->can('events.view'), 403);
+
+        $registrations = $event->registrations()->latest()->paginate(50);
+
+        return view('admin.events.registrations', compact('event', 'registrations'));
+    }
+
+    public function emailRegistrants(Request $request, Event $event): RedirectResponse
+    {
+        abort_unless(auth()->user()?->can('events.update'), 403);
+
+        $data = $request->validate([
+            'subject' => ['required', 'string', 'max:150'],
+            'body' => ['required', 'string', 'max:8000'],
+        ]);
+
+        $recipients = $event->registrations()
+            ->whereNotNull('email')
+            ->where('email', '!=', '')
+            ->get()
+            ->unique(fn (EventRegistration $row) => strtolower($row->email));
+
+        abort_if($recipients->isEmpty(), 422, 'This event has no registered emails yet.');
+
+        foreach ($recipients as $registration) {
+            Mail::to($registration->email)->queue(new EventRegistrantMessage(
+                event: $event,
+                registration: $registration,
+                subjectLine: $data['subject'],
+                body: $data['body'],
+            ));
+        }
+
+        return back()->with('success', 'Queued email to '.$recipients->count().' registrant'.($recipients->count() === 1 ? '' : 's').'.');
+    }
+
+    public function toggleRegistration(Event $event): RedirectResponse
+    {
+        abort_unless(auth()->user()?->can('events.update'), 403);
+
+        $event->allow_registration = ! $event->allow_registration;
+        $event->save();
+
+        return back()->with('success', $event->allow_registration
+            ? 'Registration is on. The public form will show.'
+            : 'Registration is off. The public form is hidden.');
+    }
+
     private function validateEvent(Request $request, ?Event $event = null): array
     {
         $validated = $request->validate([
@@ -115,11 +168,13 @@ class EventController extends Controller
             'ends_at' => ['nullable', 'date', 'after:starts_at'],
             'timezone' => ['nullable', 'string', 'max:50'],
             'capacity' => ['nullable', 'integer', 'min:1'],
+            'allow_registration' => ['nullable', 'boolean'],
             'featured_image_id' => ['nullable', 'integer', 'exists:media_assets,id'],
             'verification_status' => ['nullable', 'string'],
         ]);
 
         $validated['is_online'] = $request->boolean('is_online');
+        $validated['allow_registration'] = $request->boolean('allow_registration');
 
         return $validated;
     }

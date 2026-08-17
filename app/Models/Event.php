@@ -29,6 +29,7 @@ class Event extends Model
         'ends_at',
         'timezone',
         'capacity',
+        'allow_registration',
         'registration_opens_at',
         'registration_closes_at',
         'featured_image_id',
@@ -41,6 +42,7 @@ class Event extends Model
     {
         return [
             'is_online' => 'boolean',
+            'allow_registration' => 'boolean',
             'starts_at' => 'datetime',
             'ends_at' => 'datetime',
             'registration_opens_at' => 'datetime',
@@ -93,6 +95,15 @@ class Event extends Model
         }
 
         return 'past';
+    }
+
+    public function acceptsRegistration(): bool
+    {
+        if ($this->isPast()) {
+            return false;
+        }
+
+        return (bool) $this->allow_registration;
     }
 
     public function timingLabel(): string

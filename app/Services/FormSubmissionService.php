@@ -6,9 +6,12 @@ use App\Enums\FormSubmissionStatus;
 use App\Mail\AdminFormSubmitted;
 use App\Models\FormDefinition;
 use App\Models\FormSubmission;
+use App\Models\MailLog;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
+use Throwable;
 
 class FormSubmissionService
 {
@@ -29,13 +32,23 @@ class FormSubmissionService
 
         if (! $honeypotCaught) {
             $submission->load('formDefinition');
-            $recipients = $form->notify_emails ?? [];
-
-            if ($recipients !== []) {
-                Mail::queue(new AdminFormSubmitted($submission));
-            }
+            $this->sendStaffNotification($submission);
         }
 
         return $submission;
+    }
+
+    private function sendStaffNotification(FormSubmission $submission): void
+    {
+        try {
+            Mail::send(new AdminFormSubmitted($submission));
+        } catch (Throwable $e) {
+            MailLog::failLatest($e->getMessage());
+            Log::error('Failed to send form notification email.', [
+                'submission_id' => $submission->id,
+                'form' => $submission->formDefinition?->slug,
+                'exception' => $e->getMessage(),
+            ]);
+        }
     }
 }

@@ -210,6 +210,17 @@
                             @endforeach
                         </ul>
                     @endif
+
+                    @if($program->slug === 'caregiver-training')
+                        <aside class="program-launch" aria-labelledby="caregiver-manual-heading">
+                            <span class="eyebrow mb-3 block">With Beyond Zero</span>
+                            <h3 id="caregiver-manual-heading">Launch of the caregivers manual</h3>
+                            <p>ASNEN launched the caregivers manual with Beyond Zero. It is a training manual and facilitator guide for families of children with disability, with practical tools for homes and community settings.</p>
+                            <a href="{{ route('site.resources.publications.show', 'caregiver-support-toolkit') }}" class="btn-secondary mt-4 inline-flex">
+                                Open the caregivers manual
+                            </a>
+                        </aside>
+                    @endif
                 </div>
 
                 <div class="program-detail__side">

@@ -13,6 +13,7 @@ trait RespondsToAjaxForms
         string $token,
         string $type,
         ?string $message = null,
+        bool $includeRedirect = true,
     ): JsonResponse|RedirectResponse {
         $redirect = route('site.forms.confirmation', [
             'token' => $token,
@@ -22,11 +23,16 @@ trait RespondsToAjaxForms
         $message ??= 'Thank you for your submission.';
 
         if ($request->expectsJson() || $request->ajax()) {
-            return response()->json([
+            $payload = [
                 'success' => true,
                 'message' => $message,
-                'redirect' => $redirect,
-            ]);
+            ];
+
+            if ($includeRedirect) {
+                $payload['redirect'] = $redirect;
+            }
+
+            return response()->json($payload);
         }
 
         return redirect()->to($redirect);

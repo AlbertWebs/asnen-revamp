@@ -2,11 +2,15 @@
 
 namespace App\Providers;
 
+use App\Listeners\RecordOutgoingMail;
 use App\Services\Donations\NullPaymentGateway;
 use App\Services\Donations\PaymentGatewayInterface;
 use App\Services\HtmlSanitizer;
 use App\Services\Settings;
 use App\View\Composers\PublicLayoutComposer;
+use Illuminate\Mail\Events\MessageSending;
+use Illuminate\Mail\Events\MessageSent;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -31,6 +35,9 @@ class AppServiceProvider extends ServiceProvider
         Gate::before(function ($user, $ability) {
             return $user->hasRole('Super Admin') ? true : null;
         });
+
+        Event::listen(MessageSending::class, [RecordOutgoingMail::class, 'sending']);
+        Event::listen(MessageSent::class, [RecordOutgoingMail::class, 'sent']);
 
         View::composer(['layouts.public', 'public.*'], PublicLayoutComposer::class);
 

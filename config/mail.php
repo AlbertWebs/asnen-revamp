@@ -18,6 +18,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Log channel for the "log" mail driver
+    |--------------------------------------------------------------------------
+    |
+    | Defaults to the "mail" logging channel (storage/logs/mail.log) so mail
+    | bodies are not dropped when LOG_LEVEL is error on the main stack.
+    |
+    */
+
+    'log_channel' => env('MAIL_LOG_CHANNEL', 'mail'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Mailer Configurations
     |--------------------------------------------------------------------------
     |
@@ -39,18 +51,25 @@ return [
 
         'smtp' => [
             'transport' => 'smtp',
+            // Optional override; if unset, port 465 uses smtps (implicit SSL), other ports use smtp (often STARTTLS).
             'scheme' => env('MAIL_SCHEME'),
             'url' => env('MAIL_URL'),
             'host' => env('MAIL_HOST', '127.0.0.1'),
             'port' => env('MAIL_PORT', 2525),
             'username' => env('MAIL_USERNAME'),
             'password' => env('MAIL_PASSWORD'),
+            // Passed to Symfony DSN options (tls/ssl); port 465 + unset scheme already enables implicit TLS.
+            'encryption' => env('MAIL_ENCRYPTION'),
             'timeout' => null,
             'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url((string) env('APP_URL', 'http://localhost'), PHP_URL_HOST)),
         ],
 
         'ses' => [
             'transport' => 'ses',
+        ],
+
+        'ses-v2' => [
+            'transport' => 'ses-v2',
         ],
 
         'postmark' => [
@@ -72,7 +91,7 @@ return [
 
         'log' => [
             'transport' => 'log',
-            'channel' => env('MAIL_LOG_CHANNEL'),
+            'channel' => env('MAIL_LOG_CHANNEL', 'mail'),
         ],
 
         'array' => [
@@ -111,8 +130,15 @@ return [
     */
 
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
+        'address' => env('MAIL_FROM_ADDRESS', 'notify@asnenafrica.org'),
         'name' => env('MAIL_FROM_NAME', env('APP_NAME', 'Laravel')),
     ],
+
+    'reply_to' => [
+        'address' => env('MAIL_REPLY_TO_ADDRESS', env('MAIL_FROM_ADDRESS', 'notify@asnenafrica.org')),
+        'name' => env('MAIL_REPLY_TO_NAME', env('MAIL_FROM_NAME', env('APP_NAME', 'Laravel'))),
+    ],
+
+    'form_notify_address' => env('MAIL_FORM_NOTIFY_ADDRESS', 'info@asnenafrica.org'),
 
 ];

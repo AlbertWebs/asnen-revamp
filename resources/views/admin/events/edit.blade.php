@@ -7,6 +7,9 @@
     @if ($event->exists)
         <div class="mb-4 flex flex-wrap items-center gap-3">
             @include('admin.partials.publish-buttons', ['model' => $event, 'routePrefix' => 'events'])
+            @can('events.view')
+                <a href="{{ route('admin.events.registrations', $event) }}" class="admin-btn-secondary">Registrants</a>
+            @endcan
         </div>
     @endif
 
@@ -54,6 +57,10 @@
                 <label class="admin-check">
                     <input type="checkbox" name="is_online" id="is_online" value="1" @checked(old('is_online', $event->is_online))>
                     <span>Online event</span>
+                </label>
+                <label class="admin-check">
+                    <input type="checkbox" name="allow_registration" id="allow_registration" value="1" @checked(old('allow_registration', $event->exists ? $event->allow_registration : true))>
+                    <span>Show the public registration form</span>
                 </label>
                 <div class="admin-field">
                     <label for="online_url" class="admin-label">Online URL</label>

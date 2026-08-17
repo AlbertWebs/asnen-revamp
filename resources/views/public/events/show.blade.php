@@ -13,12 +13,15 @@
             default => $event->type ? \Illuminate\Support\Str::headline($event->type) : 'Event',
         };
         $profile = $event->pageProfile();
-        $allowRegistration = $event->isUpcoming() && (($profile['allow_registration'] ?? true) === true);
-        $heroPrimary = $profile['primary_cta'] ?? ($event->isUpcoming() ? ['label' => 'Register', 'url' => '#event-register'] : ['label' => 'All events', 'url' => route('site.events.index')]);
+        $allowRegistration = $event->acceptsRegistration();
+        $heroPrimary = $profile['primary_cta'] ?? ($allowRegistration ? ['label' => 'Register', 'url' => '#event-register'] : ['label' => 'All events', 'url' => route('site.events.index')]);
         $heroSecondary = $profile['secondary_cta'] ?? ['label' => $event->isUpcoming() ? 'Past events' : 'Upcoming events', 'url' => $event->isUpcoming() ? route('site.events.past') : route('site.events.upcoming')];
         if ($event->isPast()) {
             $heroPrimary = ['label' => 'All events', 'url' => route('site.events.index')];
             $heroSecondary = ['label' => 'Upcoming events', 'url' => route('site.events.upcoming')];
+        }
+        if (! $allowRegistration && (($heroPrimary['url'] ?? '') === '#event-register')) {
+            $heroPrimary = ['label' => 'All events', 'url' => route('site.events.index')];
         }
         if (isset($heroPrimary['url']) && str_starts_with($heroPrimary['url'], '/')) {
             $heroPrimary['url'] = url($heroPrimary['url']);
@@ -110,7 +113,7 @@
                         @endif
                     </dl>
 
-                    @if($event->isUpcoming())
+                    @if($allowRegistration)
                         <a href="#event-register" class="btn-primary mt-5 inline-flex w-full justify-center">Register for this event</a>
                     @elseif($event->online_url)
                         <a href="{{ $event->online_url }}" class="btn-secondary mt-5 inline-flex w-full justify-center" target="_blank" rel="noopener noreferrer">Open event link</a>
@@ -153,44 +156,50 @@
                     <div class="event-register__copy">
                         <span class="eyebrow mb-3 block">Registration</span>
                         <h2>Reserve your place</h2>
-                        <p class="section-head-row__intro">Share your details and ASNEN will confirm your registration. Required fields are marked.</p>
+                        <p class="event-register__lede">It takes about a minute. We only use these details to confirm your place and send joining information.</p>
+                        <ul class="event-register__points">
+                            <li>Confirmation by email</li>
+                            <li>Joining link closer to the date</li>
+                            <li>No payment required</li>
+                        </ul>
                     </div>
 
-                    <div class="volunteer-panel">
-                        <div class="volunteer-panel__head">
-                            <h3 class="volunteer-panel__title">Event registration</h3>
-                            <p class="volunteer-panel__hint">We use your details only to manage this event.</p>
+                    <div class="event-register__card">
+                        <div class="event-register__card-head">
+                            <h3 class="event-register__card-title">Register for this event</h3>
+                            <p class="event-register__card-hint">Required fields are marked with an asterisk.</p>
                         </div>
 
                         <x-public.form
                             :action="route('site.events.register', $event->slug)"
-                            submit-label="Submit registration"
-                            class="site-form"
+                            submit-label="Confirm my place"
+                            class="site-form event-register__form"
+                            data-ajax-stay="register"
                         >
                             <div class="site-form__grid">
-                                <div class="site-form__field site-form__field--full">
-                                    <label for="name" class="site-form__label">Full name</label>
-                                    <input type="text" id="name" name="name" value="{{ old('name') }}" required autocomplete="name" class="site-form__input @error('name') site-form__input--error @enderror">
+                                <div class="site-form__field">
+                                    <label for="name" class="site-form__label">Full name <span class="site-form__req" aria-hidden="true">*</span></label>
+                                    <input type="text" id="name" name="name" value="{{ old('name') }}" required autocomplete="name" placeholder="Your name" class="site-form__input @error('name') site-form__input--error @enderror">
                                     @error('name')<p class="site-form__error">{{ $message }}</p>@enderror
                                 </div>
                                 <div class="site-form__field">
-                                    <label for="email" class="site-form__label">Email</label>
-                                    <input type="email" id="email" name="email" value="{{ old('email') }}" required autocomplete="email" class="site-form__input @error('email') site-form__input--error @enderror">
+                                    <label for="email" class="site-form__label">Email <span class="site-form__req" aria-hidden="true">*</span></label>
+                                    <input type="email" id="email" name="email" value="{{ old('email') }}" required autocomplete="email" placeholder="you@example.com" class="site-form__input @error('email') site-form__input--error @enderror">
                                     @error('email')<p class="site-form__error">{{ $message }}</p>@enderror
                                 </div>
                                 <div class="site-form__field">
                                     <label for="phone" class="site-form__label">Phone <span class="site-form__optional">(optional)</span></label>
-                                    <input type="tel" id="phone" name="phone" value="{{ old('phone') }}" autocomplete="tel" class="site-form__input @error('phone') site-form__input--error @enderror">
+                                    <input type="tel" id="phone" name="phone" value="{{ old('phone') }}" autocomplete="tel" placeholder="+254 7XX XXX XXX" class="site-form__input @error('phone') site-form__input--error @enderror">
                                     @error('phone')<p class="site-form__error">{{ $message }}</p>@enderror
                                 </div>
-                                <div class="site-form__field site-form__field--full">
+                                <div class="site-form__field">
                                     <label for="organization" class="site-form__label">Organisation <span class="site-form__optional">(optional)</span></label>
-                                    <input type="text" id="organization" name="organization" value="{{ old('organization') }}" class="site-form__input @error('organization') site-form__input--error @enderror">
+                                    <input type="text" id="organization" name="organization" value="{{ old('organization') }}" placeholder="School, NGO, or workplace" class="site-form__input @error('organization') site-form__input--error @enderror">
                                     @error('organization')<p class="site-form__error">{{ $message }}</p>@enderror
                                 </div>
                                 <div class="site-form__field site-form__field--full">
-                                    <label for="notes" class="site-form__label">Notes <span class="site-form__optional">(optional)</span></label>
-                                    <textarea id="notes" name="notes" rows="4" class="site-form__input site-form__textarea @error('notes') site-form__input--error @enderror">{{ old('notes') }}</textarea>
+                                    <label for="notes" class="site-form__label">Anything we should know? <span class="site-form__optional">(optional)</span></label>
+                                    <textarea id="notes" name="notes" rows="3" placeholder="Access needs, questions, or who you are attending with" class="site-form__input site-form__textarea @error('notes') site-form__input--error @enderror">{{ old('notes') }}</textarea>
                                     @error('notes')<p class="site-form__error">{{ $message }}</p>@enderror
                                 </div>
                                 <div class="site-form__field site-form__field--full">

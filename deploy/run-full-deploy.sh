@@ -69,6 +69,12 @@ php deploy/ensure-brand-logo-setting.php
 echo "== What We Do programme copy + SEO =="
 php deploy/update-programme-copy.php
 
+echo "== Caregivers manual launch with Beyond Zero =="
+php deploy/sync-beyond-zero-manual.php
+
+echo "== Form notify emails =="
+php deploy/sync-form-notify-emails.php
+
 echo "== ASNEN Annual Report 2024 =="
 php deploy/sync-annual-report-2024.php
 

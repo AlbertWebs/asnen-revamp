@@ -65,6 +65,17 @@ return [
             'replace_placeholders' => true,
         ],
 
+        /*
+        | Used by the "log" mail driver (MAIL_MAILER=log). LogTransport writes at DEBUG;
+        | keep this channel at debug so messages appear even when LOG_LEVEL=error on stack.
+        */
+        'mail' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/mail.log'),
+            'level' => env('MAIL_LOG_LEVEL', 'debug'),
+            'replace_placeholders' => true,
+        ],
+
         'daily' => [
             'driver' => 'daily',
             'path' => storage_path('logs/laravel.log'),

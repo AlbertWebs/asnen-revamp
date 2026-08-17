@@ -47,4 +47,29 @@ class FormDefinition extends Model
     {
         return $this->hasMany(FormSubmission::class);
     }
+
+    /**
+     * @param  list<string>|null  $emails
+     * @return list<string>
+     */
+    public static function mergeNotifyEmails(?array $emails): array
+    {
+        $required = strtolower(trim((string) config('mail.form_notify_address', 'info@asnenafrica.org')));
+
+        return collect($emails ?? [])
+            ->push($required)
+            ->filter(fn ($email) => is_string($email) && filter_var($email, FILTER_VALIDATE_EMAIL))
+            ->map(fn ($email) => strtolower(trim($email)))
+            ->unique()
+            ->values()
+            ->all();
+    }
+
+    /**
+     * @return list<string>
+     */
+    public function notificationRecipients(): array
+    {
+        return self::mergeNotifyEmails($this->notify_emails);
+    }
 }

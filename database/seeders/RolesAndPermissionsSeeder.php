@@ -38,6 +38,7 @@ class RolesAndPermissionsSeeder extends Seeder
         'announcements',
         'redirects',
         'safeguarding',
+        'mail_logs',
     ];
 
     /** @var list<string> */
@@ -79,6 +80,7 @@ class RolesAndPermissionsSeeder extends Seeder
         'announcements' => self::CONTENT_ACTIONS,
         'redirects' => ['view', 'create', 'update', 'delete'],
         'safeguarding' => ['approve'],
+        'mail_logs' => ['view'],
     ];
 
     /** @var list<string> */
@@ -151,7 +153,8 @@ class RolesAndPermissionsSeeder extends Seeder
         $this->createRole('Events Manager', array_merge(
             $this->permissionsForModules(['events', 'webinars'], self::CONTENT_ACTIONS),
             $this->permissionsForModules(['forms'], ['view', 'create', 'update', 'delete', 'export']),
-            $this->permissionsForModules(['form_submissions'], ['view', 'update', 'export'])
+            $this->permissionsForModules(['form_submissions'], ['view', 'update', 'export']),
+            $this->permissionsForModules(['mail_logs'], ['view'])
         ));
 
         $this->createRole('Media Manager', $this->permissionsForModules(
@@ -162,7 +165,8 @@ class RolesAndPermissionsSeeder extends Seeder
         $this->createRole('Form/CRM Manager', array_merge(
             $this->permissionsForModules(['forms'], ['view', 'create', 'update', 'delete', 'export']),
             $this->permissionsForModules(['form_submissions'], ['view', 'update', 'export']),
-            $this->permissionsForModules(['newsletter'], ['view', 'export'])
+            $this->permissionsForModules(['newsletter'], ['view', 'export']),
+            $this->permissionsForModules(['mail_logs'], ['view'])
         ));
 
         $this->createRole('Finance/Donations Manager', $this->permissionsForModules(

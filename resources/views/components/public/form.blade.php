@@ -28,13 +28,18 @@
         @method($method)
     @endif
 
-    {{ $slot }}
+    <div data-ajax-success class="site-form__success" hidden role="status"></div>
+    <div data-ajax-done class="site-form__done" hidden role="status"></div>
 
-    <input type="text" name="website" tabindex="-1" autocomplete="off" class="site-form__honeypot" aria-hidden="true">
-    <input type="hidden" name="math_token" value="">
-    <input type="hidden" name="math_answer" value="">
+    <div data-ajax-body>
+        {{ $slot }}
 
-    @if($showSubmit)
-        <button type="submit" class="btn-primary site-form__submit">{{ $submitLabel }}</button>
-    @endif
+        <input type="text" name="website" tabindex="-1" autocomplete="off" class="site-form__honeypot" aria-hidden="true">
+        <input type="hidden" name="math_token" value="">
+        <input type="hidden" name="math_answer" value="">
+
+        @if($showSubmit)
+            <button type="submit" class="btn-primary site-form__submit">{{ $submitLabel }}</button>
+        @endif
+    </div>
 </form>

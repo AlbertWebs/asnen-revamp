@@ -206,12 +206,28 @@ async function submitAjaxForm(form) {
             return;
         }
 
-        if (payload.redirect) {
+        if (payload.redirect && !form.hasAttribute('data-ajax-stay')) {
             window.location.href = payload.redirect;
             return;
         }
 
-        showInlineSuccess(form, payload.message || 'Thank you. Your submission was received.');
+        const message = payload.message || 'Thank you. Your submission was received.';
+        const stay = form.hasAttribute('data-ajax-stay') || !payload.redirect;
+        if (stay) {
+            const body = form.querySelector('[data-ajax-body]');
+            const done = form.querySelector('[data-ajax-done]');
+            if (body) body.hidden = true;
+            if (done) {
+                done.hidden = false;
+                const title = form.dataset.ajaxStay === 'register' ? 'You are registered' : 'Thank you';
+                done.innerHTML = `<p class="site-form__done-title">${escapeHtml(title)}</p><p>${escapeHtml(message)}</p>`;
+            } else {
+                showInlineSuccess(form, message);
+            }
+            form.reset();
+            return;
+        }
+        showInlineSuccess(form, message);
         form.reset();
     } catch (error) {
         showErrors(form, {}, 'Network error. Check your connection and try again.');

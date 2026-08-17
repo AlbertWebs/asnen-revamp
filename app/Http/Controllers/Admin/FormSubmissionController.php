@@ -29,13 +29,18 @@ class FormSubmissionController extends Controller
         abort_unless(auth()->user()?->can('form_submissions.view'), 403);
 
         $formSubmission->load('formDefinition', 'assignedTo');
+        $assignees = \App\Models\User::query()->orderBy('name')->get(['id', 'name', 'email']);
 
-        return view('admin.form-submissions.show', compact('formSubmission'));
+        return view('admin.form-submissions.show', compact('formSubmission', 'assignees'));
     }
 
     public function update(Request $request, FormSubmission $formSubmission): RedirectResponse
     {
         abort_unless(auth()->user()?->can('form_submissions.update'), 403);
+
+        if ($request->input('assigned_to') === '') {
+            $request->merge(['assigned_to' => null]);
+        }
 
         $validated = $request->validate([
             'status' => ['required', 'string'],

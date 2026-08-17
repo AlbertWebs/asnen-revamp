@@ -87,6 +87,15 @@
                 <a href="{{ route('site.resources.publications') }}" class="btn-secondary section-head-row__cta">All publications</a>
             </div>
 
+            <aside class="program-launch reveal mt-8" aria-labelledby="toolkit-beyond-zero-heading">
+                <span class="eyebrow mb-3 block">With Beyond Zero</span>
+                <h3 id="toolkit-beyond-zero-heading">Launch of the caregivers manual</h3>
+                <p>ASNEN launched the caregivers manual with Beyond Zero. Find the Caregiver Support Toolkit in the library below.</p>
+                <a href="{{ route('site.resources.publications.show', 'caregiver-support-toolkit') }}" class="btn-secondary mt-4 inline-flex">
+                    Open the caregivers manual
+                </a>
+            </aside>
+
             <div class="reveal mt-8">
                 @if($publications->isEmpty())
                     <x-public.empty-state

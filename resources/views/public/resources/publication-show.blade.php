@@ -63,6 +63,14 @@
                     <p class="pub-show__abstract">{{ $publication->abstract }}</p>
                 @endif
 
+                @if($publication->slug === 'caregiver-support-toolkit')
+                    <aside class="program-launch" aria-labelledby="pub-beyond-zero-heading">
+                        <span class="eyebrow mb-3 block">With Beyond Zero</span>
+                        <h3 id="pub-beyond-zero-heading">Launch of the caregivers manual</h3>
+                        <p>ASNEN launched this caregivers manual with Beyond Zero, as a training resource for families of children with disability.</p>
+                    </aside>
+                @endif
+
                 @if($publication->file)
                     <div class="pub-show__actions">
                         <a href="{{ route('site.resources.publications.download', $publication->slug) }}" class="btn-primary">
